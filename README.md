@@ -9,4 +9,4 @@ http://www.punyu.net/php
 **Flashやhtml5のお絵描きサイトはいっぱいあるんだけど、そうじゃないんだ。
 おじさんは昔のjavaアプレットそっくりの環境が欲しいんだ。**
 
-というPaintBBSNEOを応援するためにまずはphp7に対応させました！
+というPaintBBSNEO https://github.com/funige/neo/ を応援するためにまずはphp7に対応させました！
