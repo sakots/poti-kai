@@ -50,3 +50,38 @@ potiboard～.zip がスクリプト一式、poti_5u～.zipが拙作テンプレ�
 [2018/01/11] v1.32 lot.050602a  
 【仕様変更】  
 　・php7対応  
+
+## テンプレート5uの履歴
+
+[2018/01/22]  
+・githubに公開  
+・template_ini.phpの最適化  
+
+※アップデートは template_ini.php 上書き  
+
+[2018/01/16]  
+・外部URLからwindow.openerで掲示板を操作できる可能性がある問題を修正  
+
+※アップデートは n5u_main.html template_ini.php 上書き  
+
+[2018/01/13]  
+・URL入力欄復活  
+・レスフォーム表示の場合に省略されたレスが読めなかった問題修正  
+
+※アップデートは n5u_main.html n5u_other.html template_ini.php 上書き  
+
+[2018/01/12]  
+・お絵描き画面のUI改善  
+・NEOを1.2.3にアップデート  
+
+※アップデートは n5u_paint.html n5u_main.css template_ini.php PaingBBS.js PaingBBS.css 上書き  
+
+[2018/01/11]  
+・ブラウザにhtmlファイルをキャッシュさせないようにした  
+
+※アップデートは n5u_main.html n5u_catalog.html template_ini.php 上書き  
+
+[2018/01/10]  
+・URL変更、また管理のしやすさの観点からスキンのファイル名を変更  
+
+※アップデートは全て上書き  
