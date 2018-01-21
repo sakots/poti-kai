@@ -1,0 +1,145 @@
+@charset "UTF-8";
+body {
+	background-color: #FED;
+	color: #000;
+	font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI","Noto Sans Japanese","ヒラギノ角ゴ ProN W3", Meiryo, sans-serif;
+	width: 87%;
+	margin: 24pt auto 24pt auto;
+}
+a:link    { color:#369; }
+a:visited { color:#636; }
+a:active  { color:#C00; }
+a:hover   { color:#C00; }
+
+.resma {
+	color:#666;
+}
+
+header > section, main section .thread, footer,
+input, select, textarea,
+.delfo td, .tmpimg p, #catalog div {
+	border: 1px dotted #363;
+	background-color: #CFC;
+	clear: both;
+}
+input, select, textarea {
+	border-style: solid;
+	border-color: #363 #030 #030 #363;
+	background-color: #FFF;
+}
+input[type="text"], select, textarea {
+	border-color: #030 #363 #363 #030;
+}
+figure {
+	background-color: #CFC;
+}
+header > section, main section .thread,
+footer, #catalog div {
+	padding: 16px;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, .rsub {
+	color: #141;
+}
+header h1 {
+	font-family: "Comic Sans MS";
+	color: #141;
+}
+h2, .thfoot {
+	border-color: #363;
+	border-style: dotted;
+}
+.res h4 {
+	border-color: #363;
+	border-style: dotted;
+	border-width: 1px 0px 0px 0px;
+	padding: 1ex;
+}
+h1.oekaki {
+	font-size: 100%;
+}
+header h1 {
+	margin-bottom: 0px;
+}
+header h2 {
+	font-size: 100%;
+}
+h2 {
+	color: #D86;
+	border-width: 0px 0px 1px 0px;
+	margin-top: 0px;
+}
+ul {
+	font-size: 85%;
+}
+figure {
+	float: left;
+	font-size: 85%;
+	margin: 0px;
+	padding: 0ex 1em 0px 0ex;
+}
+h3 {
+	font-size: 100%;
+}
+.res h3 {
+	background-color: #CFC;
+}
+table {
+	font-size: 85%;
+}
+.thfoot {
+	border-width: 1px 0px 0px 0px;
+	padding-top: 0.5em;
+	clear: left;
+	text-align: right;
+}
+.delf {
+	float: right;
+}
+.page {
+	float: left;
+}
+em.thispage {
+	font-style: normal;
+	font-weight: bold;
+}
+footer {
+	clear: both;
+	text-align: right;
+}
+footer p {
+	font-size: 85%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#appstage {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.palette {
+	width: 180px;
+}
+.palette fieldset {
+	text-align: center;
+}
+.timeid {
+	clear: both;
+}
+.timeid form {
+	float: left;
+}
+.timeid > p {
+	float: right;
+}
+dt {
+	font-weight: bold;
+}
+#catalog {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}

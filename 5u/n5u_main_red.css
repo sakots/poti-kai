@@ -1,0 +1,132 @@
+@charset "UTF-8";
+
+body {
+	background-color: #FFF;
+	color: #000;
+	font-family: sans-serif;
+	width: 70%;
+	margin: 24pt auto 24pt auto;
+}
+a:link    { color:#369; }
+a:visited { color:#666; }
+a:active  { color:#C00; }
+a:hover   { color:#C00; }
+
+.resma {
+	color:#666;
+}
+
+header > section, main section .thread, footer,
+input, select, textarea,
+.delfo td, .tmpimg p, #catalog div {
+	border: 1px solid #C00;
+	background-color: #FFF;
+	clear: both;
+}
+figure {
+	background-color: #FFF;
+}
+header > section, main section .thread,
+footer, #catalog div {
+	border-radius: 8px;
+	padding: 16px;
+	box-shadow: 3px 3px 10px #C00;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, .rsub {
+	color: #C00;
+}
+h2, .thfoot {
+	border-color: #C00;
+	border-style: solid;
+	margin-top: 0px;
+}
+.res h4 {
+	border-color: #C00;
+	border-style: dashed;
+	border-width: 1px 0px 0px 0px;
+	padding: 1ex;
+}
+h1.oekaki {
+	font-size: 100%;
+}
+header h1 {
+	margin-bottom: 0px;
+}
+header h2 {
+	font-size: 100%;
+}
+h2 {
+	border-width: 0px 0px 1px 0px;
+}
+ul {
+	font-size: 85%;
+}
+figure {
+	float: left;
+	font-size: 85%;
+	margin: 0px;
+	padding: 1ex 1em 0px 0ex;
+}
+h3 {
+	font-size: 100%;
+}
+table {
+	font-size: 85%;
+}
+.thfoot {
+	border-width: 1px 0px 0px 0px;
+	padding-top: 0.5em;
+	clear: left;
+	text-align: right;
+}
+.delf {
+	float: right;
+}
+.page {
+	float: left;
+}
+em.thispage {
+	font-style: normal;
+	font-weight: bold;
+}
+footer {
+	clear: both;
+	text-align: right;
+}
+footer p {
+	font-size: 85%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#appstage {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.palette {
+	width: 180px;
+}
+.palette fieldset {
+	text-align: center;
+}
+.timeid {
+	clear: both;
+}
+.timeid form {
+	float: left;
+}
+.timeid > p {
+	float: right;
+}
+dt {
+	font-weight: bold;
+}
+#catalog {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}

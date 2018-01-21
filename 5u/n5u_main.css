@@ -1,0 +1,187 @@
+@charset "UTF-8";
+
+body {
+	background-color: #FFF;
+	color: #000;
+	font-family: sans-serif;
+	width: 70%;
+	margin: 24pt auto 24pt auto;
+}
+a:link    { color:#369; }
+a:visited { color:#666; }
+a:active  { color:#C00; }
+a:hover   { color:#C00; }
+
+.resma {
+	color:#666;
+}
+
+header > section, footer,
+input, select, textarea,
+.delfo td, .tmpimg p, #catalog div {
+	border: 1px solid #999;
+	background-color: #FFF;
+	clear: both;
+}
+figure {
+	background-color: #FFF;
+}
+header > section, footer, #catalog div {
+	border-radius: 8px;
+	padding: 16px;
+	box-shadow: 3px 3px 10px #CCC;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, .rsub {
+	color: #C00;
+}
+h2 {
+	border-color: #C00;
+	border-style: solid;
+	margin-top: 0px;
+}
+.thfoot {
+	border-color: #036;
+	border-style: solid;
+	margin-top: 0px;
+}
+.res h4 {
+	border-color: #CCC;
+	border-style: dashed;
+	border-width: 1px 0px 0px 0px;
+	padding: 1ex 1ex 1ex 0ex;
+}
+h1.oekaki {
+	font-size: 100%;
+}
+header h1 {
+	margin-bottom: 0px;
+}
+header h2 {
+	font-size: 100%;
+}
+h2 {
+	border-width: 0px 0px 1px 0px;
+}
+
+.thread h2 {
+	border-radius: 8px 8px 0px 0px;
+	border-width: 0px;
+	background: linear-gradient(90deg, #036, #69C);
+	box-shadow: 3px 3px 10px #CCC;
+	padding: 8px;
+	color: #FFF;
+	margin-bottom: 0px;
+}
+.thread > section {
+	box-shadow: 3px 3px 10px #CCC;
+	border-width: 0px 1px 0px 1px;
+	border-style: solid;
+	border-color: #FFF;
+	background-color: #FFF;
+}
+.thread .res {
+	padding: 8px 8px 0px 8px;
+	margin-top: 0px;
+	margin-bottom: 0em;
+}
+.thread .thfoot {
+	box-shadow: 3px 3px 10px #CCC;
+	border-radius: 0px 0px 8px 8px;
+	margin-bottom: 1.5em;
+	padding: 8px;
+}
+ul {
+	font-size: 85%;
+}
+figure {
+	float: left;
+	font-size: 85%;
+	margin: 0px;
+	padding: 1ex 1em 0px 8px;
+}
+.res figure {
+	padding-left: 0px;
+}
+h3 {
+	font-size: 100%;
+}
+table {
+	font-size: 85%;
+}
+.thfoot {
+	border-width: 1px 0px 0px 0px;
+	padding-top: 0.5em;
+	clear: left;
+	text-align: right;
+}
+.delf {
+	float: right;
+}
+.page {
+	float: left;
+}
+em.thispage {
+	font-style: normal;
+	font-weight: bold;
+}
+footer {
+	clear: both;
+	text-align: right;
+}
+footer p {
+	font-size: 85%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#appstage {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.palette {
+	width: 180px;
+}
+.palette fieldset {
+	text-align: center;
+}
+.timeid {
+	clear: both;
+}
+.timeid form {
+	float: left;
+}
+.timeid > p {
+	float: right;
+}
+dt {
+	font-weight: bold;
+}
+#catalog {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.siihelp p {
+	clear: both;
+}
+.siihelp > section {
+	margin: 0px;
+	padding: 8px;
+	border-radius: 0px 0px 8px 8px;
+}
+.siihelp h2 {
+	margin-top: 1em;
+}
+.siihelp h3 {
+	margin: 0px;
+	padding-top: 1em;
+}
+.siihelp p, .siihelp dl {
+	margin-top: 0px;
+	padding-top: 1em;
+}
