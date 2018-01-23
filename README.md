@@ -11,7 +11,7 @@ http://www.punyu.net/php
 
 というPaintBBSNEO https://github.com/funige/neo/ を応援するためにまずはphp7に対応させました！
 
-potiboard～.zip がスクリプト一式、poti_5u～.zipが拙作テンプレート一式です。  
+potiboard.zip がスクリプト一式、poti_5u.zipが拙作テンプレート一式です。  
 ディレクトリ内に未圧縮ソースが入っています。掲示板設置法等は中のテキストファイルを読んで下さい。  
 
 ## サンプル/サポート掲示板
