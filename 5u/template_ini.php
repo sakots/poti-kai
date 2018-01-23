@@ -1,13 +1,13 @@
 <?php
 /*
-  * Template - 5u - lot.180122  by sakots  >> https://sakots.red/poti/
+  * Template - 5u - lot.180123  by sakots  >> https://sakots.red/poti/
   *
   * potiboard.php(v1.30～)のTemplate設定ファイルです。
   *
 */
 
 //テンプレートのバージョン
-define('TEMPLATE_VER', "lot.180122");
+define('TEMPLATE_VER', "lot.180123");
 
 
 /* ---------- ADD:2004/06/22 ---------- */

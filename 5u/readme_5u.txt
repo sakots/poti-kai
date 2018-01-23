@@ -1,5 +1,5 @@
 
-POTI-board用テンプレート「5u」 lot.180122
+POTI-board用テンプレート「5u」 lot.180123
 by sakots >> https://sakots.red/
 
 このファイル一式はPOTI-board v1.30 lot.050114以降用に作成されたデザインテンプレートです。
@@ -77,6 +77,11 @@ NEO readmeより
 メールアドレスとURL入力欄はこのご時世無駄なので消しました。
 
 ■変更履歴
+
+[2018/01/23]
+・コメントスパム対策
+
+※アップデートは n5u_main.html template_ini.php 上書き
 
 [2018/01/22]
 ・githubに公開
