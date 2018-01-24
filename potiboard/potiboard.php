@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board v1.32.10 lot.180122
+  * POTI-board v1.32.11 lot.180124
   *   (C)SakaQ >> http://www.punyu.net/php/
   *   & sakots >> https://sakots.red/poti/
   *
@@ -66,8 +66,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , 'v1.32.10');
-define('POTI_VERLOT' , 'v1.32 lot.180122');
+define('POTI_VER' , 'v1.32.11');
+define('POTI_VERLOT' , 'v1.32.11 lot.180124');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1382,6 +1382,9 @@ function init(){
 function paintform($picw,$pich,$palette,$anime,$pch=""){
 	global $admin,$shi,$ctype,$type,$no,$pwd,$ext;
 	global $resto,$mode,$savetype,$quality,$qualitys,$usercode;
+
+	global $useneo; //NEOを使う
+	if ($useneo) $dat['useneo'] = true; //NEOを使う
 
 	if($picw < 100) $picw = 100;
 	if($pich < 100) $pich = 100;
