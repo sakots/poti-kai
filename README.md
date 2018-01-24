@@ -21,6 +21,11 @@ potiboard.zip がスクリプト一式、5u.zip/5r.zip が拙作テンプレー�
 
 ## 履歴
 
+[2018/01/24] v1.32.11 lot.180124  
+【仕様変更】  
+　・NEOを使う/使わない選択式のスキンに対応  
+　・readme整理  
+
 [2018/01/22] v1.32.10 lot.180122  
 【仕様改善】  
 　・phpの些細なエラーを減らした  
@@ -51,13 +56,14 @@ potiboard.zip がスクリプト一式、5u.zip/5r.zip が拙作テンプレー�
 【仕様変更】  
 　・php7対応  
 
-## テンプレート5uの履歴
+## テンプレート5u/5rの履歴
 
 [2018/01/24]  
 ・外部メタファイル追加  
 
-※アップデートは n5u_main.html n5u_catalog.html template_ini.php 上書き  
+※5uアップデートは n5u_main.html n5u_catalog.html template_ini.php 上書き  
 　meta.php追加  
+　5r新規公開
 
 [2018/01/23]  
 ・コメントスパム対策  
