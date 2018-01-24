@@ -1,153 +1,160 @@
 
-POTI-board�p�e���v���[�g�u5u�v lot.180123
+POTI-board用テンプレート「5u」 lot.180124
 by sakots >> https://sakots.red/
 
-���̃t�@�C���ꎮ��POTI-board v1.30 lot.050114�ȍ~�p�ɍ쐬���ꂽ�f�U�C���e���v���[�g�ł��B
-�W����HTML5�ɑΉ��APaintBBSNEO��g�ݍ��܂��Ă��������܂����B�u�����[�v�Ɠǂ݂܂��B
+このファイル一式はPOTI-board v1.30 lot.050114以降用に作成されたデザインテンプレートです。
+標準でHTML5に対応、PaintBBSNEOを組み込ませていただきました。「ごうー」と読みます。
 
-���ǋL
+■追記
 
-PaintBBSNEO�̑g�ݍ��݂������Ă��������܂����Bfigune���񂠂肪�Ƃ��������܂��B
+PaintBBSNEOの組み込みを許可していただきました。figuneさんありがとうございます。
 https://github.com/funige/neo/
-NEO�̃o�[�W�����A�b�v�́A�ŐV�ł�.js�t�@�C����.css�t�@�C����
-���ꂼ��PaingBBS.js��PaintBBS.css�ɖ��O��ς��ď㏑�����Ă��������B
-NEO��p�ł��̂ŃA�v���b�g��jar�t�@�C���v��܂���B
+NEOのバージョンアップは、最新版の.jsファイルと.cssファイルを
+それぞれPaingBBS.jsとPaintBBS.cssに名前を変えて上書きしてください。
+NEO専用ですのでアプレットのjarファイル要りません。
 
 
-���e�t�@�C������
+■各ファイル説明
 
-template_ini.php  �e���v���[�g�ݒ�t�@�C��
-5u_main.html      ���C�������X �e���v���[�g
-5u_other.html     ���̑� �e���v���[�g
-5u_paint.html     ���G���� �e���v���[�g
-5u_catalog.html   �J�^���O �e���v���[�g
-5u.css            �J�X�^�}�C�Y�p�X�^�C���V�[�g
-5u_main.css       �e���v��
-siihelp.php       ��p����HELP
-palette.txt       ��p�p���b�g�f�[�^
-PaingBBS.js       neo�{��
-PaintBBS.css      neo�{��
+template_ini.php  テンプレート設定ファイル
+n5u_main.html     メイン＆レス テンプレート
+n5u_other.html    その他 テンプレート
+n5u_paint.html    お絵かき テンプレート
+n5u_catalog.html  カタログ テンプレート
+n5u.css           カスタマイズ用スタイルシート
+n5u_main.css      テンプレ
+siihelp.php       専用しぃHELP
+palette.txt       専用パレットデータ
+meta.php          head内追加メタファイル
+(PaingBBS.js)     neo本体
+(PaintBBS.css)    neo本体
 
-���ݒ�
+■設定
 
 [ config.php ]
 
-���G�����@�\���g�p����ꍇ�A�ݒ�� 2 �ɂ��ĉ������B
-�@define(USE_PAINT, 2);
+お絵かき機能を使用する場合、設定は 2 にして下さい。
+　define(USE_PAINT, 2);
 
-���p����A�v���b�g�͉���I��ł�NEO����ł��B
-�@define(APPLET, 0);
+利用するアプレットは何を選んでもNEO一択です。
+　define(APPLET, 0);
 
-����@�\�͎g���܂���B
-�@define(USE_ANIME, 0);
-�@define(DEF_ANIME, 0);
+動画機能は使えません。
+　define(USE_ANIME, 0);
+　define(DEF_ANIME, 0);
 
-�R���e�B�j���[�͉摜����ł���悤�ł��B
+コンティニューは画像からできるようです。
 
 [ picpost.php ]
-NEO readme���
-���M���ꂽ�摜��User-Agent�����ĕs���ȓ��e���ǂ����`�F�b�N���Ă���悤�ł��B
-�A�v���ł�User-Agent���ȒP�ɋU���ł���̂ł����A���ߍ��݂�NEO�ł͋U���͓���̂ŁA
-���̃`�F�b�N���O���K�v������܂��B
-�Ƃ̂��ƂŁA
+NEO readmeより
+送信された画像のUser-Agentを見て不正な投稿かどうかチェックしているようです。
+アプリではUser-Agentを簡単に偽装できるのですが、埋め込みのNEOでは偽装は難しいので、
+このチェックを外す必要があります。
+とのことで、
 
-�@/*
-�@if($h=='S'){
- �@   if(!strstr($u_agent,'Shi-Painter/')){
-�@        unlink($full_imgfile);
-�@        error("UA error�B�摜�͕ۑ�����܂���B");
-�@        exit;
-�@    }
-�@    $ext = '.spch';
-�@}else{
-�@    if(!strstr($u_agent,'PaintBBS/')){
-�@        unlink($full_imgfile);
-�@        error("UA error�B�摜�͕ۑ�����܂���B");
-�@        exit;
-�@    }
-�@    $ext = '.pch';
-�@}
-�@*/
+　/*
+　if($h=='S'){
+ 　   if(!strstr($u_agent,'Shi-Painter/')){
+　        unlink($full_imgfile);
+　        error("UA error。画像は保存されません。");
+　        exit;
+　    }
+　    $ext = '.spch';
+　}else{
+　    if(!strstr($u_agent,'PaintBBS/')){
+　        unlink($full_imgfile);
+　        error("UA error。画像は保存されません。");
+　        exit;
+　    }
+　    $ext = '.pch';
+　}
+　*/
 
-�̕������R�����g�A�E�g���Ă��������B
+の部分をコメントアウトしてください。
 
-���⑫
+■補足
 
-�Ǝ��^�O��Ή��A�����F�ς�����Ή��B
-���[���A�h���X��URL���͗��͂��̂��������ʂȂ̂ŏ����܂����B
+独自タグ非対応、文字色変えも非対応。
+メールアドレスとURL入力欄はこのご時世無駄なので消しました。
 
-���ύX����
+■変更履歴
+
+[2018/01/24]
+・外部メタファイル追加
+
+※アップデートは n5u_main.html n5u_catalog.html template_ini.php 上書き
+　meta.php追加
 
 [2018/01/23]
-�E�R�����g�X�p���΍�
+・コメントスパム対策
 
-���A�b�v�f�[�g�� n5u_main.html template_ini.php �㏑��
+※アップデートは n5u_main.html template_ini.php 上書き
 
 [2018/01/22]
-�Egithub�Ɍ��J
-�Etemplate_ini.php�̍œK��
+・githubに公開
+・template_ini.phpの最適化
 
-���A�b�v�f�[�g�� template_ini.php �㏑��
+※アップデートは template_ini.php 上書き
 
 [2018/01/16]
-�E�O��URL����window.opener�Ōf���𑀍�ł���\������������C��
+・外部URLからwindow.openerで掲示板を操作できる可能性がある問題を修正
 
-���A�b�v�f�[�g�� n5u_main.html template_ini.php �㏑��
+※アップデートは n5u_main.html template_ini.php 上書き
 
 [2018/01/13]
-�EURL���͗�����
-�E���X�t�H�[���\���̏ꍇ�ɏȗ����ꂽ���X���ǂ߂Ȃ��������C��
+・URL入力欄復活
+・レスフォーム表示の場合に省略されたレスが読めなかった問題修正
 
-���A�b�v�f�[�g�� n5u_main.html n5u_other.html template_ini.php �㏑��
+※アップデートは n5u_main.html n5u_other.html template_ini.php 上書き
 
 [2018/01/12]
-�E���G�`����ʂ�UI���P
-�ENEO��1.2.3�ɃA�b�v�f�[�g
+・お絵描き画面のUI改善
+・NEOを1.2.3にアップデート
 
-���A�b�v�f�[�g�� n5u_paint.html n5u_main.css template_ini.php PaingBBS.js PaingBBS.css �㏑��
+※アップデートは n5u_paint.html n5u_main.css template_ini.php PaingBBS.js PaingBBS.css 上書き
 
 [2018/01/11]
-�E�u���E�U��html�t�@�C�����L���b�V�������Ȃ��悤�ɂ���
+・ブラウザにhtmlファイルをキャッシュさせないようにした
 
-���A�b�v�f�[�g�� n5u_main.html n5u_catalog.html template_ini.php �㏑��
+※アップデートは n5u_main.html n5u_catalog.html template_ini.php 上書き
 
 [2018/01/10]
-�EURL�ύX�A�܂��Ǘ��̂��₷���̊ϓ_����X�L���̃t�@�C������ύX
+・URL変更、また管理のしやすさの観点からスキンのファイル名を変更
 
-���A�b�v�f�[�g�͑S�ď㏑��
+※アップデートは全て上書き
 
 [2017/12/11]
-�ENEO��1.2.0�ɍX�V
-�E�f�t�H���g��CSS�X�V
+・NEOを1.2.0に更新
+・デフォルトのCSS更新
 
-���A�b�v�f�[�g�� 5u_paint.html 5u_main.css template_ini.php PaintBBS.css PaintBBS.js siihelp.php �㏑��
+※アップデートは 5u_paint.html 5u_main.css template_ini.php PaintBBS.css PaintBBS.js siihelp.php 上書き
 
 [2017/11/30]
-�E�f�t�H���g��CSS�X�V
-�E���̑��e���v���[�gCSS������������
+・デフォルトのCSS更新
+・その他テンプレートCSSをいくつか同梱
 
-���A�b�v�f�[�g��5u_main.css template_ini.php �㏑��
+※アップデートは5u_main.css template_ini.php 上書き
 
 [2017/11/15]
-�E�J�X�^�}�C�Y���₷���悤��CSS�𕪗�
+・カスタマイズしやすいようにCSSを分離
 
-���A�b�v�f�[�g��5u.css 5u_main.css template_ini.php �㏑��
+※アップデートは5u.css 5u_main.css template_ini.php 上書き
 
 [2017/11/04]
-�E���J
+・公開
 
 [2017/11/05]
-�E���X���ł��Ȃ��������P
-�E�J�^���O���[�h����
+・レスができない問題を改善
+・カタログモード実装
 
-���A�b�v�f�[�g�͑S�ď㏑��
+※アップデートは全て上書き
 
-[2017/11/05 2���]
-�Esage�@�\�b�����
-�E�J�^���O���[�h�f�t�H���g�l�ύX
+[2017/11/05 2回め]
+・sage機能暫定実装
+・カタログモードデフォルト値変更
 
-���A�b�v�f�[�g�� 5u.css 5u_main.html 5u_catalog.html template_ini.php �㏑��
+※アップデートは 5u.css 5u_main.html 5u_catalog.html template_ini.php 上書き
 
-���Ō��
+■最後に
 
-�D���ɉ������Ă����̂ŉ��ɐ����������܂��񂩂˂��B
+好きに改造していいので俺に生活費をくれませんかねえ。
