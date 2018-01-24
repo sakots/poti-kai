@@ -53,6 +53,12 @@ potiboard.zip がスクリプト一式、poti_5u.zipが拙作テンプレート�
 
 ## テンプレート5uの履歴
 
+[2018/01/24]  
+・外部メタファイル追加  
+
+※アップデートは n5u_main.html n5u_catalog.html template_ini.php 上書き  
+　meta.php追加  
+
 [2018/01/23]  
 ・コメントスパム対策  
 
