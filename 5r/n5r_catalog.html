@@ -1,0 +1,111 @@
+<?php header( 'Etag:' . time() ); ?>
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="{$charset}">
+		<link rel="stylesheet" href="n5r.css" type="text/css">
+		<script type="text/javascript" src="loadcookie.js"></script>
+		<?php echo "\n"; include('meta.php'); echo "\n"; ?>
+		<title>{$title}</title>
+	</head>
+	<body>
+		<header>
+			<h1>{$title}</h1>
+			<section>
+				<p>
+					[<a href="{$home}" target="_top">HOME</a>]
+					[<a href="{$self}?mode=newpost">投稿</a>]
+					[<a href="{$self}?mode=admin">管理</a>]
+					[<a href="{$self2}">標準モード</a>]
+				</p>
+				<h2>カタログモード</h2>
+				<!--{def paint}--><?php echo "\n"; ?>
+				<section class="epost">
+					<form action="{$self}" method="post" enctype="multipart/form-data">
+						<p>
+							<input class="button" type="submit" value="お絵かき">
+							<!--{def applet}--><?php echo "\n"; ?>
+							<select class="form" name="shi">
+								<option value="0" selected>PaintBBS NEO</option>
+							</select>
+							<!--{/def}--><?php echo "\n"; ?>
+							<label>幅：<input class="form" type="text" name="picw" value="{$pdefw}" size="4"></label>
+							<label>高さ：<input class="form" type="text" name="pich" value="{$pdefh}" size="3"></label>
+							<label>
+								保存タイプ
+								<select class="form" name="savetype">
+									<option value="PNG" selected>PNG</option>
+								</select>
+							</label>
+							<!--{def resno}--><?php echo "\n"; ?>
+							<input type="hidden" name="resto" value="{$resno}">
+							<!--{/def}--><?php echo "\n"; ?>
+							<input type="hidden" name="mode" value="paint">
+						</p>
+					</form>
+					<!--{/def}--><?php echo "\n"; ?>
+				</section>
+			</section>
+		</header>
+		<main>
+			<section id="catalog">
+				<!--{each y}--><!--{each y/x}--><!--{def y/x/no}--><?php echo "\n"; ?>
+				<div>
+					<!--{def y/x/imgsrc}--><?php echo "\n"; ?>
+					<p><a href="{$self}?res={$y/x/no}" title="{$y/x/sub} (by {$y/x/name}{$y/x/trip})"><img src="{$y/x/imgsrc}" alt="{$y/x/sub} (by {$y/x/name}{$y/x/trip})"></a></p>
+					<!--{/def}--><?php echo "\n"; ?>
+					<!--{def y/x/txt}--><?php echo "\n"; ?>
+					<p><a href="{$self}?res={$y/x/no}" title="{$y/x/sub} (by {$y/x/name}{$y/x/trip})">{$y/x/sub} (by {$y/x/name}{$y/x/trip})</a></p>
+					<!--{/def}--><?php echo "\n"; ?>
+					<p>[{$y/x/no}] {$y/x/now}<!--{def y/x/updatemark}-->{$y/x/updatemark}<!--{/def}--><!--{def y/x/id}--> ID:{$y/x/id}<!--{/def}--></p>
+				</div>
+				<!--{/def}--><!--{/each}--><!--{/each}--><?php echo "\n"; ?>
+			</section>
+			<section>
+				<form class="delf" action="{$self}" method="post">
+					<p>
+						No <input class="form" type="text" name="del[]" size="4" value="">
+						Pass <input class="form" type="password" name="pwd" size="6" value="">
+						<select class="form" name="mode">
+							<option value="edit" selected>編集</option>
+							<!--{def userdel}--><?php echo "\n"; ?>
+							<option value="usrdel">削除</option>
+							<!--{/def}--><?php echo "\n"; ?>
+						</select>
+						<input class="button" type="submit" value=" OK ">
+					</p>
+				</form>
+				<!--{def notres}--><?php echo "\n"; ?>
+				<p class="page">
+					<!--{ndef prev}-->[START]<!--{/ndef}--><!--{def prev}-->[<a href="{$prev}">BACK</a>]<!--{/def}--><?php echo "\n"; ?>
+					{$paging}
+					<!--{def next}-->[<a href="{$next}">NEXT</a>]<!--{/def}--><!--{ndef next}-->[END]<!--{/ndef}--><?php echo "\n"; ?>
+
+				</p>
+				<!--{/def}--><?php echo "\n"; ?>
+			</section>
+			<script type="text/javascript"><!--
+				l(); //LoadCookie
+			//--></script>
+		</main>
+		<footer>
+			<!--著作権表示 削除しないでください-->
+			<!-- GazouBBS v3.0 --><!-- ふたば改0.8 --><!-- POTI-board -->
+			<p>
+				<a href="http://www.punyu.net/" target="_top" title="POTI-board {$verlot} (by PunyuNet)">POTI-board {$ver}</a>
+				Web Style by <a href="https://sakots.red/" target="_top" title="5r {$tver} (by 赤原文庫)">5r</a>
+			</p>
+			<p>
+				OriginalScript -
+				<a href="http://www.2chan.net/" target="_top" title="futaba.php v0.8 lot.031015 (by futaba)">futaba.php</a>
+				(<a href="http://php.s3.to" target="_top" title="gazou.php v3.0 (by Let's PHP!)">gazou.php</a>custom )
+			</p>
+			<p>
+				UseFunction -
+				<a href="http://hoover.ktplan.ne.jp/kaihatsu/php/" target="_top" title="HTML template v1.3.2 (by The PHP Den)">HTML template</a>
+				<a href="http://wondercatstudio.com/" target="_top" title="by WonderCatStudio">DynamicPalette</a>
+				<a href="https://github.com/funige/neo/" target="_top" title="by ImageCanvas">PaintBBS NEO</a>
+			</p>
+		</footer>
+	</body>
+</html>

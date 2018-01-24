@@ -1,0 +1,193 @@
+@charset "UTF-8";
+
+body {
+	background-color: #000;
+	background: linear-gradient(#020, #000);
+	background-attachment: fixed;
+	color: #FFF;
+	font-family: sans-serif;
+	width: 70%;
+	margin: 24pt auto 24pt auto;
+}
+a:link    { color:#060; }
+a:visited { color:#666; }
+a:active  { color:#C00; }
+a:hover   { color:#C00; }
+
+.resma {
+	background-color: #030
+}
+
+header > section, footer,
+input, select, textarea,
+.delfo td, .tmpimg p, #catalog div {
+	border: 1px solid #060;
+	background-color: #000;
+	color: #FFF;
+	clear: both;
+}
+figure {
+	background-color: #000;
+}
+header > section, footer, #catalog div {
+	padding: 16px;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+}
+h1, h2, .rsub {
+	color: #FFF;
+}
+h2 {
+	border-color: #060;
+	border-style: solid;
+	margin-top: 0px;
+}
+.thfoot {
+	border-color: #030;
+	border-style: solid;
+	margin-top: 0px;
+}
+.res h4 {
+	border-color: #010;
+	border-style: solid;
+	border-width: 1px 0px 0px 0px;
+	padding: 1ex 1ex 1ex 0ex;
+}
+h1.oekaki {
+	font-size: 100%;
+}
+header h1 {
+	margin-bottom: 0px;
+}
+header h2 {
+	font-size: 100%;
+}
+h2 {
+	border-width: 0px 0px 1px 0px;
+}
+
+.thread h2 {
+	border-width: 0px;
+	font-size: 114%;
+	color: #FFF;
+	background-color: #121;
+	border: 1px solid #030;
+	margin-top: 1em;
+	margin-bottom: 0px;
+	padding: 8px;
+}
+.thread > section {
+	border: 1px solid #030;
+	background-color: #000;
+}
+.thread .res {
+	padding: 8px 8px 0px 8px;
+	margin-top: 0px;
+	margin-bottom: 0em;
+}
+.thread .thfoot {
+	margin-bottom: 1.5em;
+	padding: 8px;
+}
+ul {
+	font-size: 85%;
+}
+figure {
+	float: left;
+	font-size: 85%;
+	margin: 0px;
+	padding: 1ex 1em 0px 8px;
+}
+.res figure {
+	padding-left: 0px;
+}
+
+.res h4 {
+	clear: left;
+}
+
+h3 {
+	font-size: 100%;
+	background-color: #000;
+	border: 1px solid #030;
+	border-width: 0px 1px;
+	margin: 0px;
+	padding: 8px;
+}
+table {
+	font-size: 85%;
+}
+.thfoot {
+	border-width: 1px 0px 0px 0px;
+	padding-top: 0.5em;
+	clear: left;
+	text-align: right;
+}
+.delf {
+	float: right;
+}
+.page {
+	float: left;
+}
+em.thispage {
+	font-style: normal;
+	font-weight: bold;
+}
+footer {
+	clear: both;
+	text-align: right;
+}
+footer p {
+	font-size: 85%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#appstage {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.palette {
+	width: 180px;
+}
+.palette fieldset {
+	text-align: center;
+}
+.timeid {
+	clear: both;
+}
+.timeid form {
+	float: left;
+}
+.timeid > p {
+	float: right;
+}
+dt {
+	font-weight: bold;
+}
+#catalog {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.siihelp p {
+	clear: both;
+}
+.siihelp > section {
+	margin: 0px;
+	padding: 8px;
+}
+.siihelp h2 {
+	margin-top: 1em;
+}
+.siihelp h3 {
+	margin: 0px;
+	padding-top: 1em;
+}
+.siihelp p, .siihelp dl {
+	margin-top: 0px;
+	padding-top: 1em;
+}
