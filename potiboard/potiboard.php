@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board v1.32.11 lot.180124
+  * POTI-board v1.32.12 lot.180130
   *   (C)SakaQ >> http://www.punyu.net/php/
   *   & sakots >> https://sakots.red/poti/
   *
@@ -66,8 +66,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , 'v1.32.11');
-define('POTI_VERLOT' , 'v1.32.11 lot.180124');
+define('POTI_VER' , 'v1.32.12');
+define('POTI_VERLOT' , 'v1.32.12 lot.180130');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -645,7 +645,7 @@ function updatelog($resno=0){
 
 /* オートリンク */
 function auto_link($proto){
-	$proto = preg_replace("{(https?|ftp|news)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)}","<a href=\"\\1\\2\" target=\"_blank\" rel=\"nofollow noopener\">\\1\\2</a>",$proto);
+	$proto = preg_replace("{(https?|ftp|news)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)}","<a href=\"\\1\\2\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">\\1\\2</a>",$proto);
 	return $proto;
 }
 
@@ -759,7 +759,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$url   = charconvert($url  ,CHARSET_IN);
 	$ptime = charconvert($ptime,CHARSET_IN);
 
-	foreach($badstring as $value){if(preg_match("/$value/",$com)||preg_match("/$value/",$sub)||preg_match("/$value/",$name)||preg_match("/$value/",$email)){error(MSG032,$dest);};}
+	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
 	if($REQUEST_METHOD != "POST") error(MSG006,$dest);
 
 	// フォーム内容をチェック
@@ -1321,7 +1321,7 @@ function admindel($pass){
 		// 画像があるときはリンク
 		if($ext && @is_file($path.$time.$ext)){
 			$img_flag = TRUE;
-			$clip = "<a href=\"".IMG_DIR.$time.$ext."\" target=_blank>".$time.$ext."</a><br>";
+			$clip = "<a href=\"".IMG_DIR.$time.$ext."\" target=\"_blank\" rel=\"noopener\">".$time.$ext."</a><br>";
 			$size = filesize($path.$time.$ext);
 			$all += $size;	//合計計算
 			$chk= substr($chk,0,10);
@@ -1812,7 +1812,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$email = charconvert($email,CHARSET_IN);
 	$url   = charconvert($url  ,CHARSET_IN);
 
-	foreach($badstring as $value){if(preg_match("/$value/",$com)||preg_match("/$value/",$sub)||preg_match("/$value/",$name)||preg_match("/$value/",$email)){error(MSG032,$dest);};}
+	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
 	if($REQUEST_METHOD != "POST") error(MSG006);
 
 	// フォーム内容をチェック

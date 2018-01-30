@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-                      POTI-board v1.32.11 lot.180124
+                      POTI-board v1.32.12 lot.180130
                  by SakaQ >> http://www.punyu.net/php
                   & sakots >> https://sakots.red/poti/
 
@@ -199,6 +199,12 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
+
+[2018/01/30] v1.32.12 lot.180130
+【仕様変更】
+　・オートリンクで相手のアクセスログにURLが残らないようにした
+　・拒絶する文字列の指定で大文字小文字の区別をしないように変更
+　・管理画面の画像へのリンクがおかしかったのを修正
 
 [2018/01/24] v1.32.11 lot.180124
 【仕様変更】
