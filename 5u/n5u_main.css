@@ -96,6 +96,7 @@ ul {
 	font-size: 85%;
 }
 figure {
+	display: inline-block;
 	float: left;
 	font-size: 85%;
 	margin: 0px;
@@ -106,6 +107,9 @@ figure {
 }
 h3 {
 	font-size: 100%;
+}
+.res > section {
+	display: table;
 }
 table {
 	font-size: 85%;
