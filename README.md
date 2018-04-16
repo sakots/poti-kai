@@ -16,7 +16,7 @@ potiboard.zip がスクリプト一式、5u.zip/5r.zip が拙作テンプレー�
 
 ## サンプル/サポート掲示板
 
-サンプルとして<a href="https://sakots.red/5u/">「5u」</a><a href="https://sakots.red/5r/">「5r」</a><a href="https://sakots.red/nee/">「nee」</a>をオープンしました。  
+サンプルとして<a href="https://sakots.red/nee/">「nee」</a><a href="https://sakots.red/5u/">「5u」</a><a href="https://sakots.red/5r/">「5r」</a>をオープンしました。  
 質問や動作確認にご利用ください。
 
 ## 履歴
@@ -61,6 +61,16 @@ potiboard.zip がスクリプト一式、5u.zip/5r.zip が拙作テンプレー�
 [2018/01/11] v1.32 lot.050602a  
 【仕様変更】  
 　・php7対応  
+
+## テンプレートneeの履歴
+
+[2018/04/16]  
+・コードの記述ミスを修正  
+  
+※アップデートはnee_main.html template_ini.php nee_paint.html 上書き  
+  
+[2018/04/11]  
+・公開  
 
 ## テンプレート5u/5rの履歴
 
