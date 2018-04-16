@@ -67,7 +67,7 @@ potiboard.zip がスクリプト一式、5u.zip/5r.zip が拙作テンプレー�
 [2018/04/16]  
 ・コードの記述ミスを修正  
   
-※アップデートはnee_main.html template_ini.php nee_paint.html 上書き  
+※アップデートはnee_main.html php nee_paint.html nee_main.css template_ini.上書き  
   
 [2018/04/11]  
 ・公開  
