@@ -1,0 +1,186 @@
+@charset "UTF-8";
+/*! =====このcssファイルはsassから生成されています。===== */
+
+//リセット
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+//色指定
+$うしろ: #222;
+$背景: #333;
+$文字: #FFF;
+$ボタン: #396;
+
+//全体的指定
+body {
+	background-color: $うしろ;
+	color: $文字;
+	font-family: sans-serif;
+}
+a:link, a:visited, a:active, a:hover {
+	color: $文字;
+}
+hr {
+	border-style: solid;
+	border-width: 1px;
+	border-color: $うしろ;
+	margin: 1ex auto;
+}
+
+//----------
+
+header, main, footer {
+	background-color: $背景;
+	border-radius: 8px;
+	padding: 8px;
+}
+header {
+	width: 300px;
+	position: fixed;
+	margin: 12px;
+	top: 0px;
+}
+main {
+	display: block;
+	margin: 12px 12px 12px 340px;
+}
+footer {
+	text-align: right;
+	margin: 12px 12px 12px 340px;
+}
+input, textarea, button {
+	border-style: none;
+	border-radius: 4px;
+	padding: 4px;
+}
+select {
+	@extend input;
+	padding: 2px;
+}
+input[name="picw"], input[name="pich"], input[name="del[]"], input[name="pwd"] {
+	width: 3em;
+}
+input[value="お絵かき"] {
+	background-color: $ボタン;
+	color: $文字;
+}
+em.thispage {
+	font-style: normal;
+	font-weight: bold;
+}
+figure {
+	float: left;
+	margin-right: 8px;
+}
+figcaption {
+	font-size: smaller;
+}
+ul {
+	list-style-type: none;
+	font-size: smaller
+}
+.res {
+	section {
+		display: table;
+	}
+	h3, h4 {
+		font-size: 100%;
+		margin-bottom: 1ex;
+	}
+}
+.thfoot {
+	clear: left;
+	text-align: right;
+}
+.button {
+	@extend button;
+	@extend input[value="お絵かき"];
+	padding-left: 1ex;
+	padding-right: 1ex;
+	a {
+		text-decoration: none;
+	}
+}
+.oyano, .oyaresno {
+	@extend button;
+	background-color: $うしろ;
+}
+.oekaki {
+	font-size: smaller;
+}
+#appstage {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.palette {
+	width: 180px;
+	fieldset {
+		text-align: center;
+	}
+}
+.c {
+	text-align: center;
+}
+#catalog {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+.delfo {
+	font-size: smaller;
+	th, td {
+		border: 1px solid $うしろ;
+	}
+}
+
+//----------
+//以下レスポンシブ対応
+
+@media screen and (max-width: 768px) {
+	.res {
+		clear: left;
+	}
+	#paintmode {
+		header {
+			width: 300px;
+			position: relative;
+			margin: 12px;
+		}
+		main {
+			display: block;
+			margin: 12px;
+		}
+		footer {
+			text-align: right;
+			margin: 12px;
+		}
+	}
+}
+
+//----------
+
+@media screen and (max-width: 450px) {
+	header {
+		width: auto;
+		position: relative;
+		margin: 12px;
+	}
+	main {
+		display: block;
+		margin: 12px;
+	}
+	footer {
+		text-align: right;
+		margin: 12px;
+	}
+	.res {
+		clear: left;
+	}
+	#appstage {
+		display: block;
+	}
+}

@@ -82,7 +82,7 @@ NEO readmeより
 [2018/04/16]
 ・コードの記述ミスを修正
 
-※アップデートはnee_main.html template_ini.php nee_paint.html 上書き
+※アップデートは nee_main.html nee_paint.html nee_main.css template_ini.php 上書き
 
 [2018/04/11]
 ・公開
