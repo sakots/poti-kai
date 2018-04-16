@@ -451,13 +451,13 @@
 								<option>{$dynp}</option>
 								<!--{/each}--><!--{/def}--><?php echo "\n"; ?>
 							</select>
-							<input class="button" type="button" value="一時保存" OnClick="PaletteSave()"><br>
-							<input class="button" type="button" value="作成" OnClick="PaletteNew()">
-							<input class="button" type="button" value="変更" OnClick="PaletteRenew()">
-							<input class="button" type="button" value="削除" OnClick="PaletteDel()"><br>
-							<input class="button" type="button" value="明＋" OnClick="P_Effect(10)">
-							<input class="button" type="button" value="明－" OnClick="P_Effect(-10)">
-							<input class="button" type="button" value="反転" OnClick="P_Effect(255)">
+							<input class="button" type="button" value="一時保存" onclick="PaletteSave()"><br>
+							<input class="button" type="button" value="作成" onclick="PaletteNew()">
+							<input class="button" type="button" value="変更" onclick="PaletteRenew()">
+							<input class="button" type="button" value="削除" onclick="PaletteDel()"><br>
+							<input class="button" type="button" value="明＋" onclick="P_Effect(10)">
+							<input class="button" type="button" value="明－" onclick="P_Effect(-10)">
+							<input class="button" type="button" value="反転" onclick="P_Effect(255)">
 						</fieldset>
 						<fieldset>
 							<legend>MATRIX</legend>
@@ -466,16 +466,16 @@
 								<option value="1">現在</option>
 								<option value="2">追加</option>
 							</select>
-							<input type="button" class="button" name="m_g" value="GET" OnClick="PaletteMatrixGet()">
-							<input type="button" class="button" name="m_h" value="SET" OnClick="PalleteMatrixSet()">
-							<input type="button" class="button" name="1" value=" ? " OnClick="PalleteMatrixHelp()"><br>
+							<input type="button" class="button" name="m_g" value="GET" onclick="PaletteMatrixGet()">
+							<input type="button" class="button" name="m_h" value="SET" onclick="PalleteMatrixSet()">
+							<input type="button" class="button" name="1" value=" ? " onclick="PalleteMatrixHelp()"><br>
 							<textarea class="form" name="setr" rows="1" cols="13" onmouseover="this.select()"></textarea>
 						</fieldset>
 						<fieldset>
 							<legend>GRADATION</legend>
-							<input type="checkbox" name="view" OnClick="showHideLayer()">
-							<input type="button" class="button" value=" OK " OnClick="ChengeGrad()"><br>
-							<select class="form" name="p_st" onChange="GetPalette()">
+							<input type="checkbox" name="view" onclick="showHideLayer()">
+							<input type="button" class="button" value=" OK " onclick="ChengeGrad()"><br>
+							<select class="form" name="p_st" onchange="GetPalette()">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
@@ -491,8 +491,8 @@
 								<option>13</option>
 								<option>14</option>
 							</select>
-							<input class="form "type="text" name="pst" size="8" onKeyPress="Chenge_()" onChange="Chenge_()"><br>
-							<select class="form" name="p_ed" onChange="GetPalette()">
+							<input class="form "type="text" name="pst" size="8" onkeypress="Chenge_()" onchange="Chenge_()"><br>
+							<select class="form" name="p_ed" onchange="GetPalette()">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
@@ -508,7 +508,7 @@
 								<option>13</option>
 								<option>14</option>
 							</select>
-							<input class="form" type="text" name="ped" size="8" onKeyPress="Chenge_()" onChange="Chenge_()"><div id="psft" style="position:absolute;width:100px;height:30px;z-index:1;left:5px;top:10px;"></div>
+							<input class="form" type="text" name="ped" size="8" onkeypress="Chenge_()" onchange="Chenge_()"><div id="psft" style="position:absolute;width:100px;height:30px;z-index:1;left:5px;top:10px;"></div>
 						</fieldset>
 						<p class="c"><a href="http://wondercatstudio.com/" target="_blank" title="WonderCatStudio">DynamicPalette &copy;NoraNeko</a></p>
 					</form>

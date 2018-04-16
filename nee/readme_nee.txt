@@ -79,6 +79,11 @@ NEO readmeより
 
 ■変更履歴
 
+[2018/04/16]
+・コードの記述ミスを修正
+
+※アップデートはnee_main.html template_ini.php nee_paint.html 上書き
+
 [2018/04/11]
 ・公開
 

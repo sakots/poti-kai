@@ -16,7 +16,7 @@
 			<hr>
 			<section>
 				<p class="menu">
-					<!--{def resno}--><?php echo "\n"; ?></i>
+					<!--{def resno}--><?php echo "\n"; ?>
 					<a href="{$self2}"><i class="fas fa-star fa-fw fa-lg" title="トップ"></i></a>
 					<!--{/def}--><?php echo "\n"; ?>
 					<a href="{$home}" target="_top"><i class="fas fa-home fa-fw fa-lg" title="ホーム"></i></a>
@@ -151,7 +151,7 @@
 						<!--{def oya/src}--><?php echo "\n"; ?>
 						<figure>
 							<figcaption><a href="{$oya/src}" target="_blank">{$oya/srcname}</a> ({$oya/size} B) <!--{def oya/thumb}-->- サムネイル表示中 -<!--{/def}--><br><!--{def oya/painttime}-->PaintTime : {$oya/painttime}<!--{/def}--><!--{def oya/continue}-->  <a href="{$self}?mode=continue&amp;no={$oya/continue}">続きを描く</a><!--{/def}--></figcaption>
-							<a href="{$oya/src}" target="_blank" tabindex={$oya/tab}><img src="{$oya/imgsrc}" alt="{$oya/srcname}"></a>
+							<a href="{$oya/src}" target="_blank" tabindex="{$oya/tab}"><img src="{$oya/imgsrc}" alt="{$oya/srcname}"></a>
 						</figure>
 						<!--{/def}--><?php echo "\n"; ?>
 						<div class="res">
@@ -203,7 +203,7 @@
 								<input type="hidden" name="textonly" value="on">
 								<label>おなまえ{$usename} <input class="form" type="text" name="name" size="20" value=""></label>
 								<label>題名{$usesub} <input class="form" type="text" name="sub" size="18" value="{$oya/resub}"></label><br>
-								<label>URL <input class="form "type="text" name="url" size="20"></label>
+								<label>URL <input class="form" type="text" name="url" size="20"></label>
 								<label>sage <input class="form" type="text" name="email" size="8"></label>
 								<label>Pass <input class="form" type="password" name="pwd" size="8" value=""></label>
 								<input class="button" type="submit" value="返信">
@@ -221,7 +221,7 @@
 			<script type="text/javascript"><!--
 			l(); //LoadCookie
 			//--></script>
-			<!--著作権表示 削除しないでください-->
+			<!-- 著作権表示 削除しないでください -->
 			<!-- GazouBBS v3.0 --><!-- ふたば改0.8 --><!-- POTI-board -->
 			<section>
 				<p>
