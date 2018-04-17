@@ -64,6 +64,11 @@ potiboard.zip がスクリプト一式、5u.zip/5r.zip が拙作テンプレー�
 
 ## テンプレートneeの履歴
 
+[2008/04/18]  
+・お絵かきレス時の表示幅を変更  
+  
+※アップデートは nee_main.html nee_paint.html nee_main.css template_ini.php 上書き  
+
 [2018/04/16]  
 ・コードの記述ミスを修正  
   
