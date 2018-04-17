@@ -23,10 +23,10 @@ nee_paint.html    お絵かき テンプレート
 nee_catalog.html  カタログ テンプレート
 nee.css           カスタマイズ用スタイルシート
 nee_main.css      テンプレ
-nee_main.scss     参考資料（↑のcssを生成するためのファイル）
 siihelp.php       専用しぃHELP
 palette.txt       専用パレットデータ
 meta.php          head内追加メタファイル
+sassフォルダ       参考資料（sassファイル）
 (PaingBBS.js)     neo本体
 (PaintBBS.css)    neo本体
 
@@ -79,10 +79,15 @@ NEO readmeより
 
 ■変更履歴
 
+[2018/04/17]
+・お絵かきレス時の表示幅を変更
+
+※アップデートは nee_main.html nee_paint.html nee_main.css template_ini.php 上書き
+
 [2018/04/16]
 ・コードの記述ミスを修正
 
-※アップデートは nee_main.html nee_paint.html nee_main.css template_ini.php 上書き
+※アップデートは nee_main.html nee_paint.html template_ini.php 上書き
 
 [2018/04/11]
 ・公開

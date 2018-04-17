@@ -92,6 +92,10 @@ ul {
 	margin-bottom: 1ex;
 }
 
+.res figure {
+	float: none;
+}
+
 .thfoot {
 	clear: left;
 	text-align: right;
@@ -147,9 +151,21 @@ ul {
 	border: 1px solid #222;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
 	.res {
 		clear: left;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	header {
+		width: auto;
+		position: relative;
+		margin: 12px;
+	}
+	main {
+		display: block;
+		margin: 12px;
 	}
 	#paintmode header {
 		width: 300px;
@@ -167,21 +183,9 @@ ul {
 }
 
 @media screen and (max-width: 450px) {
-	header {
-		width: auto;
-		position: relative;
-		margin: 12px;
-	}
-	main {
-		display: block;
-		margin: 12px;
-	}
 	footer {
 		text-align: right;
 		margin: 12px;
-	}
-	.res {
-		clear: left;
 	}
 	#appstage {
 		display: block;

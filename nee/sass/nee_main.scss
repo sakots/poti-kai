@@ -89,6 +89,9 @@ ul {
 		font-size: 100%;
 		margin-bottom: 1ex;
 	}
+	figure {
+		float: none;
+	}
 }
 .thfoot {
 	clear: left;
@@ -140,9 +143,21 @@ ul {
 //----------
 //以下レスポンシブ対応
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
 	.res {
 		clear: left;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	header {
+		width: auto;
+		position: relative;
+		margin: 12px;
+	}
+	main {
+		display: block;
+		margin: 12px;
 	}
 	#paintmode {
 		header {
@@ -161,24 +176,10 @@ ul {
 	}
 }
 
-//----------
-
 @media screen and (max-width: 450px) {
-	header {
-		width: auto;
-		position: relative;
-		margin: 12px;
-	}
-	main {
-		display: block;
-		margin: 12px;
-	}
 	footer {
 		text-align: right;
 		margin: 12px;
-	}
-	.res {
-		clear: left;
 	}
 	#appstage {
 		display: block;
