@@ -68,7 +68,7 @@ define('USE_MB' , '1');
 
 //バージョン
 define('POTI_VER' , '改 v1.40');
-define('POTI_VERLOT' , 'v1.40 lot.180130');
+define('POTI_VERLOT' , '改 v1.40 lot.180130');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');

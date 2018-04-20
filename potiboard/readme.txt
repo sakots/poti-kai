@@ -145,8 +145,8 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 ＝＝＝NEOを使用する場合以下をfunigeさんのところから入手してください＝＝＝＝
   ｜           <https://github.com/funige/neo/>
   ｜
-  ｜neo.js      ※最新版をリネーム（バージョンのところを消す）
-  ｜neo.css     ※最新版をリネーム（バージョンのところを消す）
+  ｜neo.js
+  ｜neo.css
   ｜
 
 ※メール通知機能を使用する場合、下記を追加
