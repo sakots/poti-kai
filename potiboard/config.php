@@ -1,11 +1,16 @@
 <?php
 /*
-  * POTI-board v1.32.10 lot.180122  by SakaQ  >> http://www.punyu.net/php/
+  * POTI-board v1.32.20 lot.180420  by SakaQ  >> http://www.punyu.net/php/
   * & sakots >> https://sakots.red/poti/
   *
   * POTI-boardの設定ファイルです。
   *
 */
+
+/* ---------- ADD:2018/04/20 ---------- */
+
+//本文へのURLの書き込みを禁止する する:1 しない:0
+define(DENY_COMMENTS_URL, 1);
 
 /* ---------- ADD:2005/06/02 ---------- */
 // 連続・二重投稿対象セキュリティレベル

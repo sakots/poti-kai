@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-                      POTI-board v1.32.12 lot.180130
+                      POTI-board v1.32.20 lot.180420
                  by SakaQ >> http://www.punyu.net/php
                   & sakots >> https://sakots.red/poti/
 
@@ -84,11 +84,11 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 　詳しくは設置手順書( http://www.punyu.net/php/readme.php?txt=potisetup )
 を御覧下さい。
 
-※以下、5uを例に簡易説明
+※以下、neeを例に簡易説明
 
 　所望のディレクトリのパーミッションを777にします。(さくらでは変更の必要なし)
-　srcディレクトリとthumbディレクトリを作り、パーミッションを777にします。
-　お絵かき機能を使用する場合は同様にtmpディレクトリも作ります。
+　srcディレクトリとthumbディレクトリを作り、パーミッションを777にします。(さくらでは自動で作成されます)
+　お絵かき機能を使用する場合は同様にtmpディレクトリも作ります。(さくらでは自動で作成されます)
 
 　設定は、config.phpを書き換えて行います。
 　各ファイルを置いたらpotiboard.phpをブラウザから呼出します(必要なファイ
@@ -106,19 +106,28 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
   ｜※repng2jpeg版 を使用する場合、以下も必要
   ｜repng2jpeg バイナリ
   ｜
-  ｜※テンプレート「5u」（別ファイル）
+  ｜※NEO本体
+  ｜neo.js
+  ｜neo.css
+  ｜
+  ｜※テンプレート「nee」（別ファイル）
   ｜template_ini.php
-  ｜n5u_catalog.html
-  ｜n5u_main.html
-  ｜n5u_other.html
-  ｜n5u_paint.html
-  ｜n5u.css
-  ｜n5u_main.css
+  ｜nee_catalog.html
+  ｜nee_main.html
+  ｜nee_other.html
+  ｜nee_paint.html
+  ｜nee.css
+  ｜nee_main.css
   ｜siihelp.php
   ｜meta.php
+  ＋--./css/      ディレクトリ
+  ｜    ｜*.css (フォルダ内のcss全部)
+  ｜    ｜nee_main.css.map
   ｜
-  ＋--./src/   (777) ディレクトリ
-  ＋--./thumb/ (777) ディレクトリ
+  ＋--./src/       (777) ディレクトリ
+  ＋--./thumb/     (777) ディレクトリ
+
+※sassフォルダは無くても大丈夫です
 
 ※お絵かき機能を使用する場合、下記を追加
 ./-- 同ルート
@@ -137,8 +146,8 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 ＝＝＝NEOを使用する場合以下をfunigeさんのところから入手してください＝＝＝＝
   ｜           <https://github.com/funige/neo/>
   ｜
-  ｜PaintBBS.js      ※最新版をリネーム（バージョンのところを消す）
-  ｜PaintBBS.css     ※最新版をリネーム（バージョンのところを消す）
+  ｜neo.js      ※最新版をリネーム（バージョンのところを消す）
+  ｜neo.css     ※最新版をリネーム（バージョンのところを消す）
   ｜
 
 ※メール通知機能を使用する場合、下記を追加
@@ -199,6 +208,11 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
+
+[2018/04/20] v1.32.20 lot.180420
+【仕様変更】
+　・本文にURLを書き込めなくする設定を追加 (by さとぴあ)
+　・readme.txtを整理
 
 [2018/01/30] v1.32.12 lot.180130
 【仕様変更】

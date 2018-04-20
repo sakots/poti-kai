@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board v1.32.12 lot.180130
+  * POTI-board v1.32.20 lot.180420
   *   (C)SakaQ >> http://www.punyu.net/php/
   *   & sakots >> https://sakots.red/poti/
   *
@@ -787,6 +787,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	//本文に日本語がなければ拒絶
 	if(USE_COM&&strlen($com) == mb_strlen($com,'utf8')) error(MSG035,$dest);
+	
+	//本文へのURLの書き込みを禁止
+	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua/i', $com) > '0' ) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
@@ -1828,6 +1831,9 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(strlen($name) > MAX_NAME) error(MSG012);
 	if(strlen($email) > MAX_EMAIL) error(MSG013);
 	if(strlen($sub) > MAX_SUB) error(MSG014);
+	
+	//本文へのURLの書き込みを禁止
+	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua/i', $com) > '0' ) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
