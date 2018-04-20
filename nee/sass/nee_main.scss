@@ -6,13 +6,14 @@
 	margin: 0px;
 	padding: 0px;
 }
-
-//色指定
+//色指定とか
 $うしろ: #222;
 $背景: #333;
 $文字: #FFF;
+$レスの文字: #666;
 $ボタン: #396;
 
+$カタログのイメージサイズ: 150px;
 //全体的指定
 body {
 	background-color: $うしろ;
@@ -28,9 +29,7 @@ hr {
 	border-color: $うしろ;
 	margin: 1ex auto;
 }
-
 //----------
-
 header, main, footer {
 	background-color: $背景;
 	border-radius: 8px;
@@ -67,12 +66,23 @@ input[value="お絵かき"] {
 	color: $文字;
 }
 em.thispage {
+	@extend input;
+	background-color: $うしろ;
 	font-style: normal;
 	font-weight: bold;
+}
+.se {
+	@extend input;
+	background-color: $うしろ;
+	font-style: normal;
+}
+.pn {
+	
 }
 figure {
 	float: left;
 	margin-right: 8px;
+	margin-bottom: 1ex;
 }
 figcaption {
 	font-size: smaller;
@@ -93,6 +103,9 @@ ul {
 		float: none;
 	}
 }
+.resma {
+	color: $レスの文字;
+}
 .thfoot {
 	clear: left;
 	text-align: right;
@@ -109,6 +122,9 @@ ul {
 .oyano, .oyaresno {
 	@extend button;
 	background-color: $うしろ;
+	display: inline-block;
+	text-align: center;
+	min-width: 2em;
 }
 .oekaki {
 	font-size: smaller;
@@ -131,7 +147,11 @@ ul {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: space-between;
+	//justify-content: space-between;
+	img {
+		width: $カタログのイメージサイズ;
+		height: $カタログのイメージサイズ;
+	}
 }
 .delfo {
 	font-size: smaller;
@@ -140,15 +160,12 @@ ul {
 	}
 }
 
-//----------
 //以下レスポンシブ対応
-
 @media screen and (max-width: 1024px) {
 	.res {
 		clear: left;
 	}
 }
-
 @media screen and (max-width: 768px) {
 	header {
 		width: auto;
@@ -175,7 +192,6 @@ ul {
 		}
 	}
 }
-
 @media screen and (max-width: 450px) {
 	footer {
 		text-align: right;

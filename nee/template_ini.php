@@ -1,13 +1,13 @@
 <?php
 /*
-  * Template - nee - lot.180411  by sakots  >> https://sakots.red/poti/
+  * Template - nee - lot.180420  by sakots  >> https://sakots.red/poti/
   *
   * potiboard.php(v1.30～)のTemplate設定ファイルです。
   *
 */
 
 //テンプレートのバージョン
-define('TEMPLATE_VER', "lot.180418");
+define('TEMPLATE_VER', "lot.180420");
 
 
 /* ---------- ADD:2004/06/22 ---------- */
@@ -87,11 +87,11 @@ define('PTIME_S', '秒');
 //※RE_STARTとRE_ENDで囲むのでそれを考慮して
 //cssで設定するの推奨
 define('RE_START', '<span class="resma">');
-define('RE_END', '</dpan>');
+define('RE_END', '</span>');
 
 //現在のページの書式
 //※<PAGE> にページ数が入ります
-define('NOW_PAGE', '<em class="thispage">[<PAGE>]</em>');
+define('NOW_PAGE', '<em class="thispage"><PAGE></em>');
 
 //他のページの書式
 //※<PAGE> にページ数が入ります
@@ -121,7 +121,7 @@ define('CATALOGFILE', "nee_catalog.html");
 define('CATALOG_X', '3');
 define('CATALOG_Y', '4');
 
-//カタログの画像幅　使わない
+//カタログの画像幅　これはcssで指定します
 define('CATALOG_W', '200');
 
 //編集したときの目印

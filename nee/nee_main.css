@@ -1,193 +1,163 @@
 @charset "UTF-8";
 /*! =====このcssファイルはsassから生成されています。===== */
 * {
-	margin: 0px;
-	padding: 0px;
-}
+  margin: 0px;
+  padding: 0px; }
 
 body {
-	background-color: #222;
-	color: #FFF;
-	font-family: sans-serif;
-}
+  background-color: #222;
+  color: #FFF;
+  font-family: sans-serif; }
 
 a:link, a:visited, a:active, a:hover {
-	color: #FFF;
-}
+  color: #FFF; }
 
 hr {
-	border-style: solid;
-	border-width: 1px;
-	border-color: #222;
-	margin: 1ex auto;
-}
+  border-style: solid;
+  border-width: 1px;
+  border-color: #222;
+  margin: 1ex auto; }
 
 header, main, footer {
-	background-color: #333;
-	border-radius: 8px;
-	padding: 8px;
-}
+  background-color: #333;
+  border-radius: 8px;
+  padding: 8px; }
 
 header {
-	width: 300px;
-	position: fixed;
-	margin: 12px;
-	top: 0px;
-}
+  width: 300px;
+  position: fixed;
+  margin: 12px;
+  top: 0px; }
 
 main {
-	display: block;
-	margin: 12px 12px 12px 340px;
-}
+  display: block;
+  margin: 12px 12px 12px 340px; }
 
 footer {
-	text-align: right;
-	margin: 12px 12px 12px 340px;
-}
+  text-align: right;
+  margin: 12px 12px 12px 340px; }
 
-input, select, textarea, button, .button, .oyano, .oyaresno {
-	border-style: none;
-	border-radius: 4px;
-	padding: 4px;
-}
+input, select, em.thispage, .se, textarea, button, .button, .oyano, .oyaresno {
+  border-style: none;
+  border-radius: 4px;
+  padding: 4px; }
 
 select {
-	padding: 2px;
-}
+  padding: 2px; }
 
-input[name="picw"], select[name="picw"], input[name="pich"], select[name="pich"], input[name="del[]"], select[name="del[]"], input[name="pwd"], select[name="pwd"] {
-	width: 3em;
-}
+input[name="picw"], select[name="picw"], em[name="picw"].thispage, [name="picw"].se, input[name="pich"], select[name="pich"], em[name="pich"].thispage, [name="pich"].se, input[name="del[]"], select[name="del[]"], em[name="del[]"].thispage, [name="del[]"].se, input[name="pwd"], select[name="pwd"], em[name="pwd"].thispage, [name="pwd"].se {
+  width: 3em; }
 
-input[value="お絵かき"], select[value="お絵かき"], .button {
-	background-color: #396;
-	color: #FFF;
-}
+input[value="お絵かき"], select[value="お絵かき"], em[value="お絵かき"].thispage, [value="お絵かき"].se, .button {
+  background-color: #396;
+  color: #FFF; }
 
 em.thispage {
-	font-style: normal;
-	font-weight: bold;
-}
+  background-color: #222;
+  font-style: normal;
+  font-weight: bold; }
+
+.se {
+  background-color: #222;
+  font-style: normal; }
 
 figure {
-	float: left;
-	margin-right: 8px;
-}
+  float: left;
+  margin-right: 8px;
+  margin-bottom: 1ex; }
 
 figcaption {
-	font-size: smaller;
-}
+  font-size: smaller; }
 
 ul {
-	list-style-type: none;
-	font-size: smaller;
-}
+  list-style-type: none;
+  font-size: smaller; }
 
 .res section {
-	display: table;
-}
-
+  display: table; }
 .res h3, .res h4 {
-	font-size: 100%;
-	margin-bottom: 1ex;
-}
-
+  font-size: 100%;
+  margin-bottom: 1ex; }
 .res figure {
-	clear: left;
-}
+  float: none; }
+
+.resma {
+  color: #666; }
 
 .thfoot {
-	clear: left;
-	text-align: right;
-}
+  clear: left;
+  text-align: right; }
 
 .button {
-	padding-left: 1ex;
-	padding-right: 1ex;
-}
-
-.button a {
-	text-decoration: none;
-}
+  padding-left: 1ex;
+  padding-right: 1ex; }
+  .button a {
+    text-decoration: none; }
 
 .oyano, .oyaresno {
-	background-color: #222;
-}
+  background-color: #222;
+  display: inline-block;
+  text-align: center;
+  min-width: 2em; }
 
 .oekaki {
-	font-size: smaller;
-}
+  font-size: smaller; }
 
 #appstage {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
+  display: flex;
+  justify-content: center;
+  align-items: center; }
 
 .palette {
-	width: 180px;
-}
-
-.palette fieldset {
-	text-align: center;
-}
+  width: 180px; }
+  .palette fieldset {
+    text-align: center; }
 
 .c {
-	text-align: center;
-}
+  text-align: center; }
 
 #catalog {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: space-between;
-}
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; }
+  #catalog img {
+    width: 150px;
+    height: 150px; }
 
 .delfo {
-	font-size: smaller;
-}
-
-.delfo th, .delfo td {
-	border: 1px solid #222;
-}
+  font-size: smaller; }
+  .delfo th, .delfo td {
+    border: 1px solid #222; }
 
 @media screen and (max-width: 1024px) {
-	.res {
-		clear: left;
-	}
-}
-
+  .res {
+    clear: left; } }
 @media screen and (max-width: 768px) {
-	header {
-		width: auto;
-		position: relative;
-		margin: 12px;
-	}
-	main {
-		display: block;
-		margin: 12px;
-	}
-	#paintmode header {
-		width: 300px;
-		position: relative;
-		margin: 12px;
-	}
-	#paintmode main {
-		display: block;
-		margin: 12px;
-	}
-	#paintmode footer {
-		text-align: right;
-		margin: 12px;
-	}
-}
+  header {
+    width: auto;
+    position: relative;
+    margin: 12px; }
 
+  main {
+    display: block;
+    margin: 12px; }
+
+  #paintmode header {
+    width: 300px;
+    position: relative;
+    margin: 12px; }
+  #paintmode main {
+    display: block;
+    margin: 12px; }
+  #paintmode footer {
+    text-align: right;
+    margin: 12px; } }
 @media screen and (max-width: 450px) {
-	footer {
-		text-align: right;
-		margin: 12px;
-	}
-	#appstage {
-		display: block;
-	}
-}
+  footer {
+    text-align: right;
+    margin: 12px; }
+
+  #appstage {
+    display: block; } }
+
+/*# sourceMappingURL=nee_main.css.map */
