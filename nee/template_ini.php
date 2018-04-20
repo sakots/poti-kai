@@ -12,7 +12,7 @@ define('TEMPLATE_VER', "lot.180420");
 /* ---------- ADD:2018/04/20 ---------- */
 
 //エラーメッセージ
-define('MSG036', "本文にそのURLを書く事はできません。[This URL can not be used.]");
+define('MSG036', "本文にそのURLを書く事はできません。[This URL can not be used in text.]");
 
 /* ---------- ADD:2004/06/22 ---------- */
 
