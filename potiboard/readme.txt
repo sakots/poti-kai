@@ -1,21 +1,20 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-                      POTI-board v1.32.20 lot.180420
-                 by SakaQ >> http://www.punyu.net/php
-                  & sakots >> https://sakots.red/poti/
+  POTI-board改 v1.40 lot.180420
+  by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 　このスクリプトは「レッツPHP!」<http://php.s3.to/>の gazou.php を改造
 した、「ふたば★ちゃんねる」<http://www.2chan.net/>の futaba.php を、
 さらにお絵かきもできるようにして、HTMLテンプレートでデザイン変更できる
-ように改造したものを、さらにphp7に対応させて改造したものです。
+ように改造した「ぷにゅねっと」<http://www.punyu.net/php/>の POTI-board v1.32 を、さらにphp7に対応させて改造したものです。
 
 　「HTMLテンプレートクラス」<http://hoover.ktplan.ne.jp/kaihatsu/php/>
 のおかげで、自由にデザインできるようになってます。
 
 　ちなみに、名前は　Punyu.net　Oekaki　Template　Image　の頭文字を取っ
-て「POTI」です（笑
+て「POTI」らしいです。
 
 
 ■ご注意
@@ -208,6 +207,10 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
+
+[2018/04/20] 改 v1.40 lot.180420
+【仕様変更】
+　・本家1.33bを超えた気がするので満を持してバージョンアップ
 
 [2018/04/20] v1.32.20 lot.180420
 【仕様変更】

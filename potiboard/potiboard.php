@@ -1,12 +1,13 @@
 <?php
 /*
   *
-  * POTI-board v1.32.20 lot.180420
-  *   (C)SakaQ >> http://www.punyu.net/php/
-  *   & sakots >> https://sakots.red/poti/
+  * POTI-board改 v1.40 lot.180420
+  *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
-  * ORIGINAL SCRIPT :
+  * ORIGINAL SCRIPT 
+  *   POTI-board v1.32
+  *     (C)SakaQ >> http://www.punyu.net/php/
   *   futaba.php v0.8 lot.031015 (gazou.php v3.0 CUSTOM)
   *     (C)futaba >> http://www.2chan.net/ ((C)ToR >> http://php.s3.to/)
   *
@@ -66,8 +67,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , 'v1.32.12');
-define('POTI_VERLOT' , 'v1.32.12 lot.180130');
+define('POTI_VER' , '改 v1.40');
+define('POTI_VERLOT' , 'v1.40 lot.180130');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');

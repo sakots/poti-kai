@@ -1,9 +1,9 @@
 <?php
 /*
-  * POTI-board v1.32.20 lot.180420  by SakaQ  >> http://www.punyu.net/php/
-  * & sakots >> https://sakots.red/poti/
+  * POTI-board改 v1.40 lot.180420
+  * by sakots >> https://sakots.red/poti/
   *
-  * POTI-boardの設定ファイルです。
+  * POTI-board改の設定ファイルです。
   *
 */
 

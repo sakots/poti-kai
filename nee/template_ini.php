@@ -2,13 +2,17 @@
 /*
   * Template - nee - lot.180420  by sakots  >> https://sakots.red/poti/
   *
-  * potiboard.php(v1.30～)のTemplate設定ファイルです。
+  * potiboard.php(v1.40～)のTemplate設定ファイルです。
   *
 */
 
 //テンプレートのバージョン
 define('TEMPLATE_VER', "lot.180420");
 
+/* ---------- ADD:2018/04/20 ---------- */
+
+//エラーメッセージ
+define('MSG036', "本文にそのURLを書く事はできません。[This URL can not be used.]");
 
 /* ---------- ADD:2004/06/22 ---------- */
 
@@ -48,7 +52,6 @@ define('MSG032', "拒絶されました[was rejected.]<br>不正な文字列が�
 define('MSG033', "削除に失敗しました[failed in deletion.]<br>ユーザーに削除権限がありません[user doesn't have deletion authority.]");
 define('MSG034', "アップロードに失敗しました[It failed in up-loading.]<br>規定の画像容量をオーバーしています[size over is picture file.]");
 define('MSG035', "予備");
-define('MSG036', "本文にそのURLを書く事はできません。[This URL can not be written.]");
 define('MSG037', "予備");
 define('MSG038', "予備");
 define('MSG039', "予備");
