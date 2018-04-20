@@ -2,7 +2,7 @@
 POTI-board用テンプレート「nee」 lot.180421
 by sakots >> https://sakots.red/
 
-このファイル一式はPOTI-board v1.30 lot.050114以降用に作成されたデザインテンプレートです。
+このファイル一式はPOTI-board v1.40 lot.180420以降用に作成されたデザインテンプレートです。
 標準でHTML5、レスポンシブ対応。PaintBBSNEOを組み込ませていただきました。
 
 ■追記
@@ -28,8 +28,8 @@ palette.txt       専用パレットデータ
 meta.php          head内追加メタファイル
 cssフォルダ        cssとアイコン
 sassフォルダ       参考資料（sassファイル）
-neo.js    　  　    neo本体
-neo.css    　　     neo本体
+neo.js            neo本体
+neo.css           neo本体
 
 ■設定
 
@@ -79,6 +79,11 @@ NEO readmeより
 独自タグ非対応、文字色変えも非対応。
 
 ■変更履歴
+
+[2018/04/21]
+・URLボタンなどが途中で改行される不具合修正
+
+※アップデートは ./css/nee_main.css template_ini.php 上書き
 
 [2018/04/20]
 ・デフォルトスタイルをよりかっこよく

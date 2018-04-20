@@ -90,7 +90,8 @@ ul {
 
 .button {
   padding-left: 1ex;
-  padding-right: 1ex; }
+  padding-right: 1ex;
+  display: inline-block; }
   .button a {
     text-decoration: none; }
 
@@ -107,30 +108,31 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center; }
-  #appstage .NEO .color_bk {
-    color: #333; }
-  #appstage .NEO .color_bk2 {
-    color: #222; }
-  #appstage .NEO .color_tool_icon {
-    color: #396; }
-  #appstage .NEO .color_icon {
-    color: #396; }
-  #appstage .NEO .color_iconselect {
-    color: #063; }
-  #appstage .NEO .color_text {
-    color: #FFF; }
-  #appstage .NEO .color_bar {
-    color: #222; }
-  #appstage .NEO .tool_color_button {
-    color: #369; }
-  #appstage .NEO .tool_color_button2 {
-    color: #036; }
-  #appstage .NEO .tool_color_text {
-    color: #FFF; }
-  #appstage .NEO .tool_color_bar {
-    color: #222; }
-  #appstage .NEO .tool_color_frame {
-    color: #333; }
+
+.NEO .color_bk {
+  color: #333; }
+.NEO .color_bk2 {
+  color: #222; }
+.NEO .color_tool_icon {
+  color: #396; }
+.NEO .color_icon {
+  color: #396; }
+.NEO .color_iconselect {
+  color: #063; }
+.NEO .color_text {
+  color: #FFF; }
+.NEO .color_bar {
+  color: #222; }
+.NEO .tool_color_button {
+  color: #369; }
+.NEO .tool_color_button2 {
+  color: #036; }
+.NEO .tool_color_text {
+  color: #FFF; }
+.NEO .tool_color_bar {
+  color: #222; }
+.NEO .tool_color_frame {
+  color: #333; }
 
 .palette {
   width: 180px; }

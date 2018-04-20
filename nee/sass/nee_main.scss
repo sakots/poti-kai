@@ -130,6 +130,7 @@ ul {
 	@extend input[value="お絵かき"];
 	padding-left: 1ex;
 	padding-right: 1ex;
+	display: inline-block;
 	a {
 		text-decoration: none;
 	}
@@ -148,20 +149,20 @@ ul {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	.NEO {
-		.color_bk { color: $bk; }
-		.color_bk2 { color: $bk2; }
-		.color_tool_icon { color: $tool_icon; }
-		.color_icon { color: $icon; }
-		.color_iconselect { color: $iconselect; }
-		.color_text { color: $text; }
-		.color_bar { color: $bar; }
-		.tool_color_button { color: $tool_button; }
-		.tool_color_button2 { color: $tool_button2; }
-		.tool_color_text { color: $tool_text; }
-		.tool_color_bar { color: $tool_bar; }
-		.tool_color_frame { color: $tool_frame; }
-	}
+}
+.NEO {
+	.color_bk { color: $bk; }
+	.color_bk2 { color: $bk2; }
+	.color_tool_icon { color: $tool_icon; }
+	.color_icon { color: $icon; }
+	.color_iconselect { color: $iconselect; }
+	.color_text { color: $text; }
+	.color_bar { color: $bar; }
+	.tool_color_button { color: $tool_button; }
+	.tool_color_button2 { color: $tool_button2; }
+	.tool_color_text { color: $tool_text; }
+	.tool_color_bar { color: $tool_bar; }
+	.tool_color_frame { color: $tool_frame; }
 }
 .palette {
 	width: 180px;
