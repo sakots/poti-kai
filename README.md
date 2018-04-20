@@ -64,6 +64,13 @@ potiboard.zip がスクリプト一式、5u.zip/5r.zip が拙作テンプレー�
 
 ## テンプレートneeの履歴
 
+[2018/04/20]  
+・デフォルトスタイルをよりかっこよく  
+・カタログモードの画像サイズをcssで指定できるように変更  
+  
+※アップデートは nee_main.html nee_paint.html nee_main.css template_ini.php 上書き  
+　PaintBBS.css PaintBBS.js を neo.css neo.js にリネーム
+
 [2008/04/18]  
 ・お絵かきレス時の表示幅を変更  
   
