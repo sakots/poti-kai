@@ -1,5 +1,4 @@
 <h1>POTI-board改</h1>
-<hr>
 <p>
 	phpお絵かき掲示板スクリプトPOTI-boardを改良していくプロジェクトです。<br>
 	Punyu NetのSakaQさん承諾のもと進めております。
