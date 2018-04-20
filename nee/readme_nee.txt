@@ -1,5 +1,5 @@
 
-POTI-board用テンプレート「nee」 lot.180420
+POTI-board用テンプレート「nee」 lot.180421
 by sakots >> https://sakots.red/
 
 このファイル一式はPOTI-board v1.30 lot.050114以降用に作成されたデザインテンプレートです。
@@ -9,7 +9,8 @@ by sakots >> https://sakots.red/
 
 PaintBBSNEOの組み込みを許可していただきました。figuneさんありがとうございます。
 https://github.com/funige/neo/
-NEOのバージョンアップは、最新版のneo.jsファイルとneo.cssファイルをそれぞれ上書きしてください。
+NEOのバージョンアップは、最新版の.jsファイルと.cssファイルを
+それぞれPaingBBS.jsとPaintBBS.cssに名前を変えて上書きしてください。
 NEO専用ですのでアプレットのjarファイル要りません。
 
 
@@ -25,9 +26,10 @@ nee_main.css      テンプレ
 siihelp.php       専用しぃHELP
 palette.txt       専用パレットデータ
 meta.php          head内追加メタファイル
+cssフォルダ        cssとアイコン
 sassフォルダ       参考資料（sassファイル）
-(neo.js)          neo本体
-(neo.css)         neo本体
+neo.js    　  　    neo本体
+neo.css    　　     neo本体
 
 ■設定
 
@@ -83,7 +85,8 @@ NEO readmeより
 ・カタログモードの画像サイズをcssで指定できるように変更
 
 ※アップデートは nee_main.html nee_paint.html nee_main.css template_ini.php 上書き
-　PaintBBS.css PaintBBS.js を neo.css neo.js にリネーム
+　cssフォルダ sassフォルダをアップロード
+　PaintBBS.css PaintBBS.js を neo.css neo.js にリネームor上書き
 
 [2018/04/17]
 ・お絵かきレス時の表示幅を変更

@@ -1,37 +1,52 @@
 @charset "UTF-8";
 /*! =====このcssファイルはsassから生成されています。===== */
 
+//色指定とか
+$ushiro: #222;		//うしろ
+$haikei: #333;		//背景
+$moji: #FFF;		//文字
+$resmoji: #666;		//レスの文字
+$button: #396;		//返信とかのボタン
+//NEO色指定
+$bk: #333;			//アプレット背景
+$bk2: #222;			//アプレット背景の網状のあれ
+$tool_icon: #396;	//ペンとか
+$icon: #396;		//「窓」とか
+$iconselect: #063;	//選択してるアイコン
+$text: #FFF;		//文字
+$bar: #222;			//バー
+$tool_button: #369;	//ツールボタン
+$tool_button2: #036;//ツールボタン2 よくわかってない
+$tool_text: #FFF;	//ツールボタンの文字
+$tool_bar: #222;	//ツールバーの色
+$tool_frame: #333;	//フレームの色
+//--------
+$カタログのイメージサイズ: 150px;
+
 //リセット
 * {
 	margin: 0px;
 	padding: 0px;
 }
-//色指定とか
-$うしろ: #222;
-$背景: #333;
-$文字: #FFF;
-$レスの文字: #666;
-$ボタン: #396;
 
-$カタログのイメージサイズ: 150px;
 //全体的指定
 body {
-	background-color: $うしろ;
-	color: $文字;
+	background-color: $ushiro;
+	color: $moji;
 	font-family: sans-serif;
 }
 a:link, a:visited, a:active, a:hover {
-	color: $文字;
+	color: $moji;
 }
 hr {
 	border-style: solid;
 	border-width: 1px;
-	border-color: $うしろ;
+	border-color: $ushiro;
 	margin: 1ex auto;
 }
 //----------
 header, main, footer {
-	background-color: $背景;
+	background-color: $haikei;
 	border-radius: 8px;
 	padding: 8px;
 }
@@ -62,18 +77,18 @@ input[name="picw"], input[name="pich"], input[name="del[]"], input[name="pwd"] {
 	width: 3em;
 }
 input[value="お絵かき"] {
-	background-color: $ボタン;
-	color: $文字;
+	background-color: $button;
+	color: $moji;
 }
 em.thispage {
 	@extend input;
-	background-color: $うしろ;
+	background-color: $ushiro;
 	font-style: normal;
 	font-weight: bold;
 }
 .se {
 	@extend input;
-	background-color: $うしろ;
+	background-color: $ushiro;
 	font-style: normal;
 }
 .pn {
@@ -104,7 +119,7 @@ ul {
 	}
 }
 .resma {
-	color: $レスの文字;
+	color: $resmoji;
 }
 .thfoot {
 	clear: left;
@@ -121,7 +136,7 @@ ul {
 }
 .oyano, .oyaresno {
 	@extend button;
-	background-color: $うしろ;
+	background-color: $ushiro;
 	display: inline-block;
 	text-align: center;
 	min-width: 2em;
@@ -133,6 +148,20 @@ ul {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	.NEO {
+		.color_bk { color: $bk; }
+		.color_bk2 { color: $bk2; }
+		.color_tool_icon { color: $tool_icon; }
+		.color_icon { color: $icon; }
+		.color_iconselect { color: $iconselect; }
+		.color_text { color: $text; }
+		.color_bar { color: $bar; }
+		.tool_color_button { color: $tool_button; }
+		.tool_color_button2 { color: $tool_button2; }
+		.tool_color_text { color: $tool_text; }
+		.tool_color_bar { color: $tool_bar; }
+		.tool_color_frame { color: $tool_frame; }
+	}
 }
 .palette {
 	width: 180px;
@@ -147,7 +176,14 @@ ul {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	//justify-content: space-between;
+	div {
+		width: $カタログのイメージサイズ + 16px;
+		text-align: center;
+		overflow: hidden;
+	}
+	p {
+		margin: 0.5ex auto;
+	}
 	img {
 		width: $カタログのイメージサイズ;
 		height: $カタログのイメージサイズ;
@@ -156,7 +192,7 @@ ul {
 .delfo {
 	font-size: smaller;
 	th, td {
-		border: 1px solid $うしろ;
+		border: 1px solid $ushiro;
 	}
 }
 
