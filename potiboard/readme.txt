@@ -117,16 +117,14 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
   ｜nee_paint.html
   ｜nee.css
   ｜nee_main.css
+  ｜nee_main.css.map
+  ｜nee_main.scss
   ｜siihelp.php
   ｜meta.php
-  ＋--./css/      ディレクトリ
-  ｜    ｜*.css (フォルダ内のcss全部)
-  ｜    ｜nee_main.css.map
   ｜
   ＋--./src/       (777) ディレクトリ
   ＋--./thumb/     (777) ディレクトリ
 
-※sassフォルダは無くても大丈夫です
 
 ※お絵かき機能を使用する場合、下記を追加
 ./-- 同ルート
