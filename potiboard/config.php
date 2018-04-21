@@ -278,7 +278,8 @@ define('RES_FORM', '0');
 $addinfo='';
 
 //拒絶する文字列
-$badstring = array("irc.s16.xrea.com","著作権の侵害","未承諾広告");
+//正規表現を使うことができます
+$badstring = array("\[\/url\]","\[\/URL\]","irc.s16.xrea.com","未承諾広告");
 
 //拒絶するファイルのmd5
 $badfile = array("dummy","dummy2");

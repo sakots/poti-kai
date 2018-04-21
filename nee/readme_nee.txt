@@ -1,5 +1,5 @@
 
-POTI-board用テンプレート「nee」 lot.180421
+POTI-board用テンプレート「nee」v0.99 lot.180422
 by sakots >> https://sakots.red/
 
 このファイル一式はPOTI-board v1.30 lot.050114以降用に作成されたデザインテンプレートです。
@@ -24,6 +24,7 @@ nee.css           カスタマイズ用スタイルシート
 nee_main.css      テンプレ
 nee_main.css.map  デバック用
 nee_main.scss     編集用sassファイル 使える人は使ってみて
+_nee_conf.scss    sassの色とかの設定ファイル ここで指定してsassをコンパイルするとすごく便利
 siihelp.php       専用しぃHELP
 palette.txt       専用パレットデータ
 meta.php          head内追加メタファイル
@@ -78,6 +79,13 @@ NEO readmeより
 独自タグ非対応、文字色変えも非対応。
 
 ■変更履歴
+
+[2018/04/22] v0.99b1 lot.180422
+・バージョン表記を追加
+・色指定scssファイルを分割
+
+※アップデートは nee_main.css nee_main.scss nee_main.css.map template_ini.php 上書き
+　_nee_conf.scss 追加
 
 [2018/04/21]
 ・cssファイルとsassファイルで設定できる項目を追加

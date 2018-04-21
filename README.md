@@ -80,9 +80,9 @@
 </dl>
 <h2>テンプレートneeの履歴</h2>
 <dl>
-	<!-- <dt class="ver"></dt>
-	<dd></dd>
-	<dd></dd> -->
+	<dt class="ver">[2018/04/22] v0.99b1 lot.180422</dt>
+	<dd>バージョン表記を追加</dd>
+	<dd>色指定scssファイルを分割</dd>
 	<dt class="ver">[2018/04/21]</dt>
 	<dd>URLボタンなどが途中で改行される不具合修正</dd>
 	<dd>アイコンをFontAwesomeへ直接リンクを貼る方法に変更</dd>

@@ -1,32 +1,8 @@
 @charset "UTF-8";
 /*! =====このcssファイルはsassから生成されています。===== */
 
-//色指定とか
-$ushiro: #222;			//うしろ
-$haikei: #333;			//背景
-$moji: #FFF;			//文字
-$link: #FFF;			//リンクの文字
-$link_visited: #666;	//訪問済みリンク
-$link_active: #FFF;		//アクティブなリンク
-$link_hover: #FFF;		//マウスカーソルが上に載ってる時のリンク
-$resmoji: #666;			//レスの文字
-$button: #396;			//返信とかのボタン
-$button_moji: #FFF;		//ボタンの文字色
-//NEO色指定
-$bk: #333;				//アプレット背景
-$bk2: #222;				//アプレット背景の網状のあれ
-$tool_icon: #396;		//「窓」とか
-$icon: #063;			//
-$iconselect: #063;		//選択してるアイコン
-$text: #FFF;			//文字
-$bar: #333;				//バー
-$tool_button: #369;		//ツールボタン「鉛筆」とか
-$tool_button2: #036;	//選択中ツールボタン
-$tool_text: #FFF;		//ツールボタンの文字
-$tool_bar: #333;		//ツールバーの色
-$tool_frame: #222;		//フレームの色
-//--------
-$カタログのイメージサイズ: 150px;
+//設定ファイルの読み込み
+@import "nee_conf";
 
 //リセット
 * {
@@ -51,6 +27,9 @@ a:active {
 }
 a:hover {
 	color: $link_hover;
+}
+a i {
+	color: $moji;
 }
 hr {
 	border-style: solid;
@@ -147,6 +126,10 @@ ul {
 	display: inline-block;
 	a {
 		text-decoration: none;
+		color: $button_moji;
+		i {
+			color: $button_moji;
+		}
 	}
 }
 .oyano, .oyaresno {
@@ -163,6 +146,9 @@ ul {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	.app {
+		margin: 0px 4px;
+	}
 }
 .NEO {
 	.color_bk { color: $bk; }
@@ -192,7 +178,7 @@ ul {
 	flex-direction: row;
 	flex-wrap: wrap;
 	div {
-		width: $カタログのイメージサイズ + 16px;
+		width: $cat_img_size + 16px;
 		text-align: center;
 		overflow: hidden;
 	}
@@ -200,8 +186,8 @@ ul {
 		margin: 0.5ex auto;
 	}
 	img {
-		width: $カタログのイメージサイズ;
-		height: $カタログのイメージサイズ;
+		width: $cat_img_size;
+		height: $cat_img_size;
 	}
 }
 .delfo {
