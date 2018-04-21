@@ -9,8 +9,7 @@ by sakots >> https://sakots.red/
 
 PaintBBSNEOの組み込みを許可していただきました。figuneさんありがとうございます。
 https://github.com/funige/neo/
-NEOのバージョンアップは、最新版の.jsファイルと.cssファイルを
-それぞれPaingBBS.jsとPaintBBS.cssに名前を変えて上書きしてください。
+NEOのバージョンアップは、最新版のneo.jsファイルとneo.cssファイルを上書きしてください。
 NEO専用ですのでアプレットのjarファイル要りません。
 
 
@@ -79,6 +78,11 @@ NEO readmeより
 独自タグ非対応、文字色変えも非対応。
 
 ■変更履歴
+
+[2018/04/21]
+・cssファイルとsassファイルで設定できる項目を追加
+
+※アップデートは nee_main.css nee_main.scss nee_main.css.map 上書き
 
 [2018/04/21]
 ・アイコンをFontAwesomeへ直接リンクを貼る方法に変更

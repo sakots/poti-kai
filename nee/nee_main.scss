@@ -2,24 +2,29 @@
 /*! =====このcssファイルはsassから生成されています。===== */
 
 //色指定とか
-$ushiro: #222;		//うしろ
-$haikei: #333;		//背景
-$moji: #FFF;		//文字
-$resmoji: #666;		//レスの文字
-$button: #396;		//返信とかのボタン
+$ushiro: #222;			//うしろ
+$haikei: #333;			//背景
+$moji: #FFF;			//文字
+$link: #FFF;			//リンクの文字
+$link_visited: #666;	//訪問済みリンク
+$link_active: #FFF;		//アクティブなリンク
+$link_hover: #FFF;		//マウスカーソルが上に載ってる時のリンク
+$resmoji: #666;			//レスの文字
+$button: #396;			//返信とかのボタン
+$button_moji: #FFF;		//ボタンの文字色
 //NEO色指定
-$bk: #333;			//アプレット背景
-$bk2: #222;			//アプレット背景の網状のあれ
-$tool_icon: #396;	//ペンとか
-$icon: #396;		//「窓」とか
-$iconselect: #063;	//選択してるアイコン
-$text: #FFF;		//文字
-$bar: #333;			//バー
-$tool_button: #369;	//ツールボタン「鉛筆」とか
-$tool_button2: #036;//選択中ツールボタン
-$tool_text: #FFF;	//ツールボタンの文字
-$tool_bar: #333;	//ツールバーの色
-$tool_frame: #222;	//フレームの色
+$bk: #333;				//アプレット背景
+$bk2: #222;				//アプレット背景の網状のあれ
+$tool_icon: #396;		//「窓」とか
+$icon: #063;			//
+$iconselect: #063;		//選択してるアイコン
+$text: #FFF;			//文字
+$bar: #333;				//バー
+$tool_button: #369;		//ツールボタン「鉛筆」とか
+$tool_button2: #036;	//選択中ツールボタン
+$tool_text: #FFF;		//ツールボタンの文字
+$tool_bar: #333;		//ツールバーの色
+$tool_frame: #222;		//フレームの色
 //--------
 $カタログのイメージサイズ: 150px;
 
@@ -35,8 +40,17 @@ body {
 	color: $moji;
 	font-family: sans-serif;
 }
-a:link, a:visited, a:active, a:hover {
-	color: $moji;
+a:link {
+	color: $link;
+}
+a:visited {
+	color: $link_visited;
+}
+a:active {
+	color: $link_active;
+}
+a:hover {
+	color: $link_hover;
 }
 hr {
 	border-style: solid;
@@ -61,8 +75,8 @@ main {
 	margin: 12px 12px 12px 340px;
 }
 footer {
+	@extend main;
 	text-align: right;
-	margin: 12px 12px 12px 340px;
 }
 input, textarea, button {
 	border-style: none;
@@ -78,7 +92,7 @@ input[name="picw"], input[name="pich"], input[name="del[]"], input[name="pwd"] {
 }
 input[value="お絵かき"] {
 	background-color: $button;
-	color: $moji;
+	color: $button_moji;
 }
 em.thispage {
 	@extend input;

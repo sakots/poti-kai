@@ -9,7 +9,16 @@ body {
   color: #FFF;
   font-family: sans-serif; }
 
-a:link, a:visited, a:active, a:hover {
+a:link {
+  color: #FFF; }
+
+a:visited {
+  color: #666; }
+
+a:active {
+  color: #FFF; }
+
+a:hover {
   color: #FFF; }
 
 hr {
@@ -18,7 +27,7 @@ hr {
   border-color: #222;
   margin: 1ex auto; }
 
-header, main, footer {
+header, main, footer, footer {
   background-color: #333;
   border-radius: 8px;
   padding: 8px; }
@@ -29,13 +38,12 @@ header {
   margin: 12px;
   top: 0px; }
 
-main {
+main, footer {
   display: block;
   margin: 12px 12px 12px 340px; }
 
 footer {
-  text-align: right;
-  margin: 12px 12px 12px 340px; }
+  text-align: right; }
 
 input, select, em.thispage, .se, textarea, button, .button, .oyano, .oyaresno {
   border-style: none;
@@ -116,7 +124,7 @@ ul {
 .NEO .color_tool_icon {
   color: #396; }
 .NEO .color_icon {
-  color: #396; }
+  color: #063; }
 .NEO .color_iconselect {
   color: #063; }
 .NEO .color_text {
@@ -170,7 +178,7 @@ ul {
     position: relative;
     margin: 12px; }
 
-  main {
+  main, footer {
     display: block;
     margin: 12px; }
 
@@ -178,7 +186,7 @@ ul {
     width: 300px;
     position: relative;
     margin: 12px; }
-  #paintmode main {
+  #paintmode main, #paintmode footer {
     display: block;
     margin: 12px; }
   #paintmode footer {
