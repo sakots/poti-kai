@@ -122,7 +122,7 @@ ul {
 .NEO .color_text {
   color: #FFF; }
 .NEO .color_bar {
-  color: #222; }
+  color: #333; }
 .NEO .tool_color_button {
   color: #369; }
 .NEO .tool_color_button2 {
@@ -130,9 +130,9 @@ ul {
 .NEO .tool_color_text {
   color: #FFF; }
 .NEO .tool_color_bar {
-  color: #222; }
-.NEO .tool_color_frame {
   color: #333; }
+.NEO .tool_color_frame {
+  color: #222; }
 
 .palette {
   width: 180px; }
