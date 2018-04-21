@@ -23,12 +23,11 @@ nee_paint.html    お絵かき テンプレート
 nee_catalog.html  カタログ テンプレート
 nee.css           カスタマイズ用スタイルシート
 nee_main.css      テンプレ
+nee_main.css.map  デバック用
+nee_main.scss     編集用sassファイル 使える人は使ってみて
 siihelp.php       専用しぃHELP
 palette.txt       専用パレットデータ
 meta.php          head内追加メタファイル
-cssフォルダ        cssを格納
-webfontsフォルダ   アイコンを格納
-sassフォルダ       参考資料（sassファイル）
 neo.js            neo本体
 neo.css           neo本体
 
