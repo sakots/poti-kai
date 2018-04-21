@@ -3,11 +3,25 @@
 	<head>
 		<meta charset="{$charset}">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<script src="neo.js" charset="UTF-8"></script>
 		<link rel="stylesheet" href="neo.css" type="text/css">
 		<link rel="stylesheet" href="nee.css" type="text/css">
-		<script src="neo.js" charset="UTF-8"></script>
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+		<link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 		<title>{$title}</title>
+		<style>
+			.NEO .color_bk { color: #333; }
+			.NEO .color_bk2 { color: #222; }
+			.NEO .color_tool_icon { color: #396; }
+			.NEO .color_icon { color: #396; }
+			.NEO .color_iconselect { color: #063; }
+			.NEO .color_text { color: #FFF; }
+			.NEO .color_bar { color: #333; }
+			.NEO .tool_color_button { color: #369; }
+			.NEO .tool_color_button2 { color: #036; }
+			.NEO .tool_color_text { color: #FFF; }
+			.NEO .tool_color_bar { color: #333; }
+			.NEO .tool_color_frame { color: #222; }
+		</style>
 	</head>
 	<body id="paintmode">
 		<header>
@@ -408,14 +422,6 @@
 						<param name="compress_level" value="{$compress_level}">
 						<param name="undo" value="{$undo}">
 						<param name="undo_in_mg" value="{$undo_in_mg}">
-						<!-- param name="image_bkcolor" value="#FFFFFF">
-						<param name="color_text" value="#FFFFFF">
-						<param name="color_bk" value="#333333">
-						<param name="color_bk2" value="#222222">
-						<param name="color_icon" value="#339966">
-						<param name="color_iconselect" value="#CCFFCC">
-						<param name="color_bar" value="#555555">
-						<param name="color_frame" value="#333333" -->
 						<param name="url_save" value="picpost.php">
 						<param name="url_exit" value="{$self}?mode={$mode}&amp;stime={$stime}">
 						<!--{def imgfile}--><param name="image_canvas" value="{$imgfile}"><!--{/def}--><?php echo "\n"; ?>
@@ -425,11 +431,6 @@
 						<param name="thumbnail_width" value="100%">
 						<param name="thumbnail_height" value="100%">
 						<param name="tool_advance" value="true">
-						<!-- param name="tool_color_button" value="#CCFFCC">
-						<param name="tool_color_button2" value="#CCFFCC">
-						<param name="tool_color_text" value="#555555">
-						<param name="tool_color_bar" value="#CCFFCC">
-						<param name="tool_color_frame" value="#555555" -->
 						<!--{def cpal}--><!--{each cpal}--><?php echo "\n"; ?>
 						<param name="color_{$cpal/no}" value="#{$cpal/pal}">
 						<!--{/each}--><!--{/def}--><?php echo "\n"; ?>
