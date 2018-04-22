@@ -793,7 +793,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua/i', $com) > '0' ) error(MSG036,$dest);
 	
 	//指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) || preg_match("/$value/i",$sub) && preg_match('/\:\/\//i', $com) > '0'){error(MSG032,$dest);};
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) || preg_match("/$value/i",$sub) && preg_match('/\:\/\//i', $com) > '0')error(MSG032,$dest);};
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
