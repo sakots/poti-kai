@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.40 lot.180420
+  * POTI-board改 v1.41 lot.180423
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
   *   PaintBBS   (test by v2.22_8)
   *   ShiPainter (test by v1.071all)
   *   PCHViewer  (test by v1.12)
-  *     (C)shi-chan >> http://shichan.jp/
+  *     (C)shi-chan >> http://hp.vector.co.jp/authors/VA016309/
   *
   * USE FUNCTION :
   *   HTML template         (C)H.Ayukawa >> http://hoover.ktplan.ne.jp/kaihatsu/php/
@@ -67,8 +67,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.40');
-define('POTI_VERLOT' , '改 v1.40 lot.180130');
+define('POTI_VER' , '改 v1.41');
+define('POTI_VERLOT' , '改 v1.41 lot.180423');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -791,6 +791,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	
 	//本文へのURLの書き込みを禁止
 	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua/i', $com) > '0' ) error(MSG036,$dest);
+	
+	//指定文字列+本文へのURL書き込みで拒絶
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) || preg_match("/$value/i",$sub) && preg_match('/\:\/\//i', $com) > '0'){error(MSG032,$dest);};
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));

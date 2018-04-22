@@ -1,16 +1,21 @@
 <?php
 /*
-  * POTI-board改 v1.40 lot.180420
+  * POTI-board改 v1.41 lot.180423
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。
   *
 */
 
+/* ---------- ADD:2018/04/23 ---------- */
+
+//指定文字列+本文へのURLの書き込みで拒絶（正規表現）
+$badstring_and_url = array("ブランド","偽物","財布","\[\/URL\]");
+
 /* ---------- ADD:2018/04/20 ---------- */
 
 //本文へのURLの書き込みを禁止する する:1 しない:0
-define(DENY_COMMENTS_URL, 1);
+define(DENY_COMMENTS_URL, 0);
 
 /* ---------- ADD:2005/06/02 ---------- */
 // 連続・二重投稿対象セキュリティレベル
@@ -279,7 +284,7 @@ $addinfo='';
 
 //拒絶する文字列
 //正規表現を使うことができます
-$badstring = array("\[\/url\]","\[\/URL\]","irc.s16.xrea.com","未承諾広告");
+$badstring = array("irc.s16.xrea.com","未承諾広告");
 
 //拒絶するファイルのmd5
 $badfile = array("dummy","dummy2");

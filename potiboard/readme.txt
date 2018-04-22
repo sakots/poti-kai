@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  POTI-board改 v1.40 lot.180420
+  POTI-board改 v1.41 lot.180423
   by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -133,8 +133,8 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
   ｜
   ＋--./tmp/ (777) ディレクトリ
   ｜
-＝＝＝以下のファイルは「しぃ堂」より入手してください＝＝＝＝
-  ｜            <http://shichan.jp/>
+＝＝＝以下のファイルはしぃちゃんのホームページ（Vector）より入手してください＝＝＝＝
+  ｜            <http://hp.vector.co.jp/authors/VA016309/>
   ｜
   ｜PaintBBS.jar     バイナリ ※PaintBBSを使用する場合
   ｜spainter_all.jar バイナリ ※しぃペインターを使用する場合
@@ -205,6 +205,10 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
+
+[2018/04/23] 改 v1.41 lot.180423
+【機能追加】
+　・「指定文字列+本文へのURLの書き込みで拒絶」の設定を追加
 
 [2018/04/20] 改 v1.40 lot.180420
 【仕様変更】

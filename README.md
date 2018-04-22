@@ -35,6 +35,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/04/23] 改 v1.41 lot.180423</dt>
+	<dd class="con">【機能追加】</dd>
+	<dd>「指定文字列+本文へのURLの書き込みで拒絶」の設定を追加</dd>
 	<dt class="ver">[2018/04/20] 改 v1.40 lot.180420</dt>
 	<dd class="con">【仕様変更】</dd>
 	<dd>本家1.33bを超えた気がするので満を持してバージョンアップ</dd>
