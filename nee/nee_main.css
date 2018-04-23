@@ -13,7 +13,7 @@ a:link {
   color: #FFF; }
 
 a:visited {
-  color: #666; }
+  color: #999; }
 
 a:active {
   color: #FFF; }
@@ -93,7 +93,7 @@ ul {
   float: none; }
 
 .resma {
-  color: #666; }
+  color: #999; }
 
 .thfoot {
   clear: left;

@@ -2,3 +2,17 @@
 @import "nee_main.css";
 
 /* CSSのカスタマイズはここ以下をいじると便利だぞ */
+
+/* NEOの色設定 */
+.NEO .color_bk { color: #333; }
+.NEO .color_bk2 { color: #222; }
+.NEO .color_tool_icon { color: #396; }
+.NEO .color_icon { color: #6C9; }
+.NEO .color_iconselect { color: #630; }
+.NEO .color_text { color: #FFF; }
+.NEO .color_bar { color: #333; }
+.NEO .tool_color_button { color: #369; }
+.NEO .tool_color_button2 { color: #036; }
+.NEO .tool_color_text { color: #FFF; }
+.NEO .tool_color_bar { color: #333; }
+.NEO .tool_color_frame { color: #063; }
