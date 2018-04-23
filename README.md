@@ -35,7 +35,7 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
-	<dt class="ver">[2018/04/23] 改 v1.41 lot.180423</dt>
+	<dt class="ver">[2018/04/23] 改 v1.41.1 lot.180423</dt>
 	<dd class="con">【機能追加】</dd>
 	<dd>「指定文字列+本文へのURLの書き込みで拒絶」の設定を追加</dd>
 	<dt class="ver">[2018/04/20] 改 v1.40 lot.180420</dt>

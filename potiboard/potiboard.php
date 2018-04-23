@@ -25,14 +25,15 @@
 
 このスクリプトは「レッツPHP!」<http://php.s3.to/>のgazou.phpを改造した、
 「ふたば★ちゃんねる」<http://www.2chan.net/>のfutaba.phpを
-さらにお絵かきもできるようにして、HTMLテンプレートでデザイン変更できるように改造したものを、
+さらにお絵かきもできるようにして、HTMLテンプレートでデザイン変更できるように改造した
+「ぷにゅねっと」<http://www.punyu.net/php/>のPOTI-boardを、
 さらにphp7で動くように改造したものです。
 
 配布条件はレッツPHP!に準じます。改造、再配布は自由にどうぞ。
 
 このスクリプトの改造部分に関する質問は「レッツPHP!」,
-「ふたば★ちゃんねる」に問い合わせないでください。
-ご質問は、<http://www.punyu.net/bbs/ibbs/ibbs.php>までどうぞ。
+「ふたば★ちゃんねる」「ぷにゅねっと」に問い合わせないでください。
+ご質問は、<https://sakots.red/nee/>までどうぞ。
 */
 if(phpversion()>="4.1.0"){
 	extract($_POST);
@@ -67,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.41');
-define('POTI_VERLOT' , '改 v1.41 lot.180423');
+define('POTI_VER' , '改 v1.41.1');
+define('POTI_VERLOT' , '改 v1.41.1 lot.180423');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -683,7 +684,7 @@ function similar_str($str1,$str2){
 
 /* 記事書き込み */
 function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile){
-	global $path,$badstring,$badfile,$badip,$pwdc,$textonly;
+	global $path,$badstring,$badstring_and_url,$badfile,$badip,$pwdc,$textonly;
 	global $REQUEST_METHOD,$temppath,$ptime;
 	global $fcolor,$usercode;
 
@@ -763,6 +764,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
 	if($REQUEST_METHOD != "POST") error(MSG006,$dest);
 
+//指定文字列+本文へのURL書き込みで拒絶
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com) > '0'){error(MSG032,$dest);};}
+
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
@@ -787,14 +791,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(strlen($resto) > 10) error(MSG015,$dest);
 
 	//本文に日本語がなければ拒絶
-	if(USE_COM&&strlen($com) == mb_strlen($com,'utf8')) error(MSG035,$dest);
-	
+	if(USE_COM&&strlen($com) == mb_strlen($com,'utf8')) error(MSG035,$dest);	
 	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua/i', $com) > '0' ) error(MSG036,$dest);
+	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);
 	
-	//指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) || preg_match("/$value/i",$sub) && preg_match('/\:\/\//i', $com) > '0')error(MSG032,$dest);};
-
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
 
@@ -1806,7 +1806,7 @@ function editform($del,$pwd){
 
 /* 記事上書き */
 function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
-	global $badstring,$badip;
+	global $badstring,$badstring_and_url,$badip;
 	global $REQUEST_METHOD;
 	global $fcolor;
 
@@ -1821,6 +1821,9 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
 	if($REQUEST_METHOD != "POST") error(MSG006);
+
+//指定文字列+本文へのURL書き込みで拒絶
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com) > '0'){error(MSG032,$dest);};}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
@@ -1837,7 +1840,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(strlen($sub) > MAX_SUB) error(MSG014);
 	
 	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua/i', $com) > '0' ) error(MSG036,$dest);
+	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
