@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  POTI-board改 v1.41 lot.180423
+  POTI-board改 v1.41.1 lot.180423
   by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

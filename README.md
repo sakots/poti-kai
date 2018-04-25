@@ -83,6 +83,8 @@
 </dl>
 <h2>テンプレートneeの履歴</h2>
 <dl>
+	<dt class="ver">[2018/04/25] v1.00 lot.180425</dt>
+	<dd>nee_cssを廃止して、直接nee_main.cssを読み込むようにして色指定を対処</dd>
 	<dt class="ver">[2018/04/23] v0.99b2 lot.180423</dt>
 	<dd>nee.cssでNEOの色指定をするように変更</dd>
 	<dd>テンプレートの著作権表示を整理</dd>

@@ -20,8 +20,7 @@ nee_main.html     メイン＆レス テンプレート
 nee_other.html    その他 テンプレート
 nee_paint.html    お絵かき テンプレート
 nee_catalog.html  カタログ テンプレート
-nee.css           カスタマイズ用スタイルシート NEOの色指定はここで
-nee_main.css      テンプレ
+nee_main.css      デザインスタイルシート
 nee_main.css.map  デバック用
 nee_main.scss     編集用sassファイル 使える人は使ってみて
 _nee_conf.scss    sassの色とかの設定ファイル ここで指定してsassをコンパイルするとすごく便利
@@ -79,6 +78,12 @@ NEO readmeより
 独自タグ非対応、文字色変えも非対応。
 
 ■変更履歴
+
+[2018/04/25] v1.00 lot.180425
+・nee_cssを廃止して、直接nee_main.cssを読み込むようにして色指定を対処
+
+※アップデートは nee_main.html nee_catalog.html nee_paint.html nee_other.html
+　nee_main.css nee_main.scss nee_main.css.map template_ini.php 上書き
 
 [2018/04/23] v0.99b2 lot.180423
 ・nee.cssでNEOの色指定をするように変更
