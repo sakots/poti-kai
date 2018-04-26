@@ -1,5 +1,5 @@
 
-POTI-board用テンプレート「nee」v0.99b2 lot.180423
+POTI-board用テンプレート「nee」v1.01 lot.180427
 by sakots >> https://sakots.red/
 
 このファイル一式はPOTI-board改 v1.40 以降用に作成されたデザインテンプレートです。
@@ -78,6 +78,12 @@ NEO readmeより
 独自タグ非対応、文字色変えも非対応。
 
 ■変更履歴
+
+[2018/04/26] v1.01 lot.180427
+・色設定できる場所を追加（テキスト入力欄など）
+・要らなそうなオートコンプリートの解除
+
+※アップデートは nee_main.html nee_main.css nee_main.scss nee_main.css.map template_ini.php 上書き
 
 [2018/04/25] v1.00 lot.180425
 ・nee_cssを廃止して、直接nee_main.cssを読み込むようにして色指定を対処

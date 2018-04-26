@@ -51,7 +51,9 @@ footer {
 input, select, em.thispage, .se, textarea, button, .button, .oyano, .oyaresno {
   border-style: none;
   border-radius: 4px;
-  padding: 4px; }
+  padding: 4px;
+  color: #000;
+  background-color: #FFF; }
 
 select {
   padding: 2px; }
@@ -63,13 +65,18 @@ input[value="お絵かき"], select[value="お絵かき"], em[value="お絵か�
   background-color: #396;
   color: #FFF; }
 
+input[name="upfile"], select[name="upfile"], em[name="upfile"].thispage, [name="upfile"].se {
+  width: 10em; }
+
 em.thispage {
   background-color: #222;
+  color: #FFF;
   font-style: normal;
   font-weight: bold; }
 
 .se {
   background-color: #222;
+  color: #FFF;
   font-style: normal; }
 
 figure {
@@ -111,6 +118,7 @@ ul {
 
 .oyano, .oyaresno {
   background-color: #222;
+  color: #FFF;
   display: inline-block;
   text-align: center;
   min-width: 2em; }

@@ -65,15 +65,15 @@
 						<table summary="投稿フォーム">
 							<tr>
 								<td>name{$usename}</td>
-								<td><input class="form" type="text" name="name" size="28" value=""></td>
+								<td><input class="form" type="text" name="name" size="28" value="" autocomplete="nickname"></td>
 							</tr>
 							<tr>
 								<td>URL</td>
-								<td><input class="form" type="text" name="url" size="28"></td>
+								<td><input class="form" type="text" name="url" size="28" autocomplete="url"></td>
 							</tr>
 							<tr>
 								<td>sage</td>
-								<td><input class="form" type="text" name="email" size="28" value=""></td>
+								<td><input class="form" type="text" name="email" size="28" value="" autocomplete="email"></td>
 							</tr>
 							<tr>
 								<td>sub{$usesub}</td>
@@ -90,7 +90,7 @@
 							<tr>
 								<td>UpFile</td>
 								<td>
-									<input class="form" type="file" name="upfile" size="28">
+									<input class="form" type="file" name="upfile" size="20">
 									[<label><input type="checkbox" name="textonly" value="on"<!--{def resno}--> checked<!--{/def}-->>No File</label>]
 								</td>
 							</tr>
@@ -118,7 +118,7 @@
 			<section>
 				<form class="delf" action="{$self}" method="post">
 					<p>
-						No <input class="form" type="text" name="del[]" value="">
+						No <input class="form" type="text" name="del[]" value="" autocomplete="section-no">
 						Pass <input class="form" type="password" name="pwd" value="">
 						<select class="form" name="mode" tabindex="1">
 							<option value="edit" selected>編集</option>
@@ -200,10 +200,10 @@
 								<input type="hidden" name="mode" value="regist">
 								<input type="hidden" name="resto" value="{$oya/no}">
 								<input type="hidden" name="textonly" value="on">
-								<label>おなまえ{$usename} <input class="form" type="text" name="name" size="20" value=""></label>
-								<label>題名{$usesub} <input class="form" type="text" name="sub" size="18" value="{$oya/resub}"></label><br>
-								<label>URL <input class="form" type="text" name="url" size="20"></label>
-								<label>sage <input class="form" type="text" name="email" size="8"></label>
+								<label>name{$usename} <input class="form" type="text" name="name" size="20" value="" autocomplete="nickname"></label>
+								<label>sub{$usesub} <input class="form" type="text" name="sub" size="18" value="{$oya/resub}"></label><br>
+								<label>URL <input class="form" type="text" name="url" size="20" autocomplete="url"></label>
+								<label>sage <input class="form" type="text" name="email" size="8" autocomplete="email"></label>
 								<label>Pass <input class="form" type="password" name="pwd" size="8" value=""></label>
 								<input class="button" type="submit" value="返信">
 								<textarea class="form" name="com" cols="56" rows="3" wrap="soft"></textarea>
