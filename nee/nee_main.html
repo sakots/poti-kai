@@ -78,7 +78,7 @@
 							<tr>
 								<td>sub{$usesub}</td>
 								<td>
-									<input class="form" type="text" name="sub" size="20" value="{$resub}">
+									<input class="form" type="text" name="sub" size="20" value="{$resub}" autocomplete="section-sub">
 									<input class="button" type="submit" value="WRITE">
 								</td>
 							</tr>
@@ -97,7 +97,7 @@
 							<!--{/def}--><?php echo "\n"; ?>
 							<tr>
 								<td>Pass</td>
-								<td><input class="form" type="password" name="pwd" size="8" value=""><small>記事の削除に必要</small></td>
+								<td><input class="form" type="password" name="pwd" size="8" value="" autocomplete="current-password"><small>記事の削除に必要</small></td>
 							</tr>
 						</table>
 						<ul>
@@ -119,7 +119,7 @@
 				<form class="delf" action="{$self}" method="post">
 					<p>
 						No <input class="form" type="text" name="del[]" value="" autocomplete="section-no">
-						Pass <input class="form" type="password" name="pwd" value="">
+						Pass <input class="form" type="password" name="pwd" value="" autocomplete="new-password">
 						<select class="form" name="mode" tabindex="1">
 							<option value="edit" selected>編集</option>
 							<!--{def userdel}--><?php echo "\n"; ?>
@@ -201,10 +201,10 @@
 								<input type="hidden" name="resto" value="{$oya/no}">
 								<input type="hidden" name="textonly" value="on">
 								<label>name{$usename} <input class="form" type="text" name="name" size="20" value="" autocomplete="nickname"></label>
-								<label>sub{$usesub} <input class="form" type="text" name="sub" size="18" value="{$oya/resub}"></label><br>
+								<label>sub{$usesub} <input class="form" type="text" name="sub" size="18" value="{$oya/resub}" autocomplete="section-sub"></label><br>
 								<label>URL <input class="form" type="text" name="url" size="20" autocomplete="url"></label>
 								<label>sage <input class="form" type="text" name="email" size="8" autocomplete="email"></label>
-								<label>Pass <input class="form" type="password" name="pwd" size="8" value=""></label>
+								<label>Pass <input class="form" type="password" name="pwd" size="8" value="" autocomplete="current-password"></label>
 								<input class="button" type="submit" value="返信">
 								<textarea class="form" name="com" cols="56" rows="3" wrap="soft"></textarea>
 							</form>

@@ -57,16 +57,16 @@
 						<table>
 							<tr>
 								<td>name{$usename}</td>
-								<td><input class="form" type="text" name="name" size="28"<!--{def name}--> value="{$name}"<!--{/def}-->></td>
+								<td><input class="form" type="text" name="name" size="28" autocomplete="nickname"<!--{def name}--> value="{$name}"<!--{/def}-->></td>
 							</tr>
 							<tr>
 								<td>URL</td><td>
-									<input class="form" type="text" name="url" size="28"<!--{def url}--> value="{$url}"<!--{/def}-->></td>
+									<input class="form" type="text" name="url" size="28" autocomplete="url"<!--{def url}--> value="{$url}"<!--{/def}-->></td>
 							</tr>
 							<tr>
 								<td>sub{$usesub}</td>
 								<td>
-									<input class="form" type="text" name="sub" size="35"<!--{def sub}--> value="{$sub}"<!--{/def}-->>
+									<input class="form" type="text" name="sub" size="35" autocomplete="section-sub"<!--{def sub}--> value="{$sub}"<!--{/def}-->>
 									<input class="button" type="submit" value="書き込む">
 									<!--{def regist}--><?php echo "\n"; ?>
 									<input type="hidden" name="mode" value="regist">
@@ -113,7 +113,7 @@
 							<!--{def regist}--><?php echo "\n"; ?>
 							<tr>
 								<td>Pass</td>
-								<td><input class="form" type="password" name="pwd" size="8" value=""><small>(投稿の削除に使います)</small></td>
+								<td><input class="form" type="password" name="pwd" size="8" value="" autocomplete="current-password"><small>(投稿の削除に使います)</small></td>
 							</tr>
 							<!--{/def}--><?php echo "\n"; ?>
 						</table>
