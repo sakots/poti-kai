@@ -129,16 +129,13 @@ table {
 .page span[id] {
 	display: none;
 }
-.page span[class] {
-	display: inline;
-}
-.page span[id]:nth-child(5n+1) {
+.page span:nth-child(5n+2) {
 	display: inline;
 }
 .page span[id="n0"], .page span[id="n1"], .page span[id="n2"], .page span[id="n3"] {
 	display: inline;
 }
-.page span[id]:last-child {
+.page span:last-child {
 	display: inline;
 }
 

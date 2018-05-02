@@ -79,6 +79,12 @@ NEO readmeより
 
 ■変更履歴
 
+[2018/05/03]
+・ページリンク調整
+
+※アップデートは n5u_main.html n5u_catalog.html n5u_paint.html n5n5u_other.html
+　n5u_main.css template_ini.php 上書き
+
 [2018/05/02]
 ・ページリンク調整
 ・オートコンプリートの修正

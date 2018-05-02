@@ -7,7 +7,7 @@
 */
 
 //テンプレートのバージョン
-define('TEMPLATE_VER', "lot.180502");
+define('TEMPLATE_VER', "lot.180503");
 
 
 /* ---------- ADD:2004/06/22 ---------- */
@@ -91,7 +91,7 @@ define('RE_END', '</dpan>');
 
 //現在のページの書式
 //※<PAGE> にページ数が入ります
-define('NOW_PAGE', '<span class="" id="n<PAGE>"><em class="thispage">[<PAGE>]</em></span>');
+define('NOW_PAGE', '<em class="thispage" id="n<PAGE>">[<PAGE>]</em>');
 
 //他のページの書式
 //※<PAGE> にページ数が入ります

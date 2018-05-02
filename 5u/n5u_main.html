@@ -22,7 +22,7 @@
 					[<a href="{$self}?mode=admin">管理</a>]
 					[<a href="{$self}?mode=catalog">カタログ</a>]
 					[<a href="{$self}?mode=piccom<!--{def resno}-->&amp;resto={$resno}<!--{/def}-->">投稿途中の絵</a>]
-				</p>
+				</p>:
 				<!--{def resno}--><?php echo "\n"; ?>
 				<p class="resm">レス送信モード</p>
 				<!--{/def}--><?php echo "\n"; ?>
@@ -75,7 +75,7 @@
 							<tr>
 								<td>sage</td>
 								<td><input class="form" type="text" name="email" size="28" value="" autocomplete="email"></td>
-							</tr>
+							</tr>:
 							<tr>
 								<td>題名{$usesub}</td>
 								<td>
@@ -182,7 +182,7 @@
 				<form class="delf" action="{$self}" method="post">
 					<p>
 						No <input class="form" type="text" name="del[]" size="4" value="">
-						Pass <input class="form" type="password" name="pwd" size="6" value="" autocomplete="new-password">
+						Pass <input class="form" type="password" name="pwd" size="6" value="" autocomplete="current-password">
 						<select class="form" name="mode" tabindex="1">
 							<option value="edit" selected>編集</option>
 							<!--{def userdel}--><?php echo "\n"; ?>
@@ -194,10 +194,9 @@
 				</form>
 				<!--{def notres}--><?php echo "\n"; ?>
 				<p class="page">
-					<!--{ndef prev}-->[START]<!--{/ndef}--><!--{def prev}-->[<a href="{$prev}">BACK</a>]<!--{/def}--><?php echo "\n"; ?>
+					<!--{ndef prev}--><span>[START]</span><!--{/ndef}--><!--{def prev}--><span>[<a href="{$prev}">BACK</a>]</span><!--{/def}--><?php echo "\n"; ?>
 					{$paging}
-					<!--{def next}-->[<a href="{$next}">NEXT</a>]<!--{/def}--><!--{ndef next}-->[END]<!--{/ndef}--><?php echo "\n"; ?>
-
+					<!--{def next}--><span>[<a href="{$next}">NEXT</a>]</span><!--{/def}--><!--{ndef next}-->[END]</span><!--{/ndef}--><?php echo "\n"; ?>
 				</p>
 				<!--{/def}--><?php echo "\n"; ?>
 			</section>
