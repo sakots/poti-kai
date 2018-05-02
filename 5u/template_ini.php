@@ -1,13 +1,13 @@
 <?php
 /*
-  * Template - 5u - lot.180130  by sakots  >> https://sakots.red/poti/
+  * Template - 5u - lot.180502  by sakots  >> https://sakots.red/poti/
   *
   * potiboard.php(v1.30～)のTemplate設定ファイルです。
   *
 */
 
 //テンプレートのバージョン
-define('TEMPLATE_VER', "lot.180130");
+define('TEMPLATE_VER', "lot.180502");
 
 
 /* ---------- ADD:2004/06/22 ---------- */
@@ -91,12 +91,12 @@ define('RE_END', '</dpan>');
 
 //現在のページの書式
 //※<PAGE> にページ数が入ります
-define('NOW_PAGE', '<em class="thispage">[<PAGE>]</em>');
+define('NOW_PAGE', '<span class="" id="n<PAGE>"><em class="thispage">[<PAGE>]</em></span>');
 
 //他のページの書式
 //※<PAGE> にページ数が入ります
 //※<PURL> にURLが入ります
-define('OTHER_PAGE', '[<a href="<PURL>"><PAGE></a>]');
+define('OTHER_PAGE', '<span id="n<PAGE>">[<a href="<PURL>"><PAGE></a>]</span>');
 
 
 /* -------------------- */

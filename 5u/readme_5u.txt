@@ -1,5 +1,5 @@
 
-POTI-board用テンプレート「5u」 lot.180130
+POTI-board用テンプレート「5u」 lot.180502
 by sakots >> https://sakots.red/
 
 このファイル一式はPOTI-board v1.30 lot.050114以降用に作成されたデザインテンプレートです。
@@ -26,8 +26,8 @@ n5u_main.css      テンプレ
 siihelp.php       専用しぃHELP
 palette.txt       専用パレットデータ
 meta.php          head内追加メタファイル
-(PaingBBS.js)     neo本体
-(PaintBBS.css)    neo本体
+(neo.js)          neo本体
+(neo.css)         neo本体
 
 ■設定
 
@@ -79,10 +79,12 @@ NEO readmeより
 
 ■変更履歴
 
-[2018/01/30]
-・レスが長いときでも変な位置で改行されないように修正
+[2018/05/02]
+・ページリンク調整
+・オートコンプリートの修正
 
-※アップデートは n5u_main.css template_ini.php 上書き
+※アップデートは n5u_main.html n5u_catalog.html n5u_paint.html n5n5u_other.html
+　n5u_main.css template_ini.php 上書き
 
 [2018/01/24]
 ・外部メタファイル追加

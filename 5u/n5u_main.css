@@ -126,6 +126,22 @@ table {
 .page {
 	float: left;
 }
+.page span[id] {
+	display: none;
+}
+.page span[class] {
+	display: inline;
+}
+.page span[id]:nth-child(5n+1) {
+	display: inline;
+}
+.page span[id="n0"], .page span[id="n1"], .page span[id="n2"], .page span[id="n3"] {
+	display: inline;
+}
+.page span[id]:last-child {
+	display: inline;
+}
+
 em.thispage {
 	font-style: normal;
 	font-weight: bold;
