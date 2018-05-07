@@ -35,6 +35,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/05/07] 改 v1.42 lot.180507</dt>
+	<dd class="con">【仕様変更】</dd>
+	<dd>削除キーなしで続きを描く機能の仕様変更（by さとぴあ）</dd>
 	<dt class="ver">[2018/04/23] 改 v1.41.1 lot.180423</dt>
 	<dd class="con">【機能追加】</dd>
 	<dd>「指定文字列+本文へのURLの書き込みで拒絶」の設定を追加 (by さとぴあ)</dd>

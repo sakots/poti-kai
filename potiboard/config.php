@@ -1,6 +1,6 @@
 <?php
 /*
-  * POTI-board改 v1.41 lot.180423
+  * POTI-board改 v1.42 lot.180507
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。
@@ -15,7 +15,7 @@ $badstring_and_url = array("ブランド","偽物","財布","\[\/URL\]");
 /* ---------- ADD:2018/04/20 ---------- */
 
 //本文へのURLの書き込みを禁止する する:1 しない:0
-define(DENY_COMMENTS_URL, 0);
+define('DENY_COMMENTS_URL', '0');
 
 /* ---------- ADD:2005/06/02 ---------- */
 // 連続・二重投稿対象セキュリティレベル
@@ -369,7 +369,7 @@ define('IP_CHECK', '1');
 //コンティニューを使用する する:1 しない:0
 define('USE_CONTINUE', '1');
 
-//コンティニュー時、削除キーを必要とする 必要:1 不要:0
+//新規投稿でコンティニューする時にも削除キーが必要 必要:1 不要:0
 define('CONTINUE_PASS', '1');
 
 /* ---------- picpost.php用設定 ---------- */

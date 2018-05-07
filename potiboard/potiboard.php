@@ -1,11 +1,11 @@
 <?php
 /*
   *
-  * POTI-board改 v1.41 lot.180423
+  * POTI-board改 v1.42 lot.180507
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
-  * ORIGINAL SCRIPT 
+  * ORIGINAL SCRIPT
   *   POTI-board v1.32
   *     (C)SakaQ >> http://www.punyu.net/php/
   *   futaba.php v0.8 lot.031015 (gazou.php v3.0 CUSTOM)
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.41.1');
-define('POTI_VERLOT' , '改 v1.41.1 lot.180423');
+define('POTI_VER' , '改 v1.42');
+define('POTI_VERLOT' , '改 v1.42 lot.180507');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -791,10 +791,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(strlen($resto) > 10) error(MSG015,$dest);
 
 	//本文に日本語がなければ拒絶
-	if(USE_COM&&strlen($com) == mb_strlen($com,'utf8')) error(MSG035,$dest);	
+	if(USE_COM&&strlen($com) == mb_strlen($com,'utf8')) error(MSG035,$dest);
 	//本文へのURLの書き込みを禁止
 	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);
-	
+
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
 
@@ -1695,7 +1695,11 @@ function incontinue($no){
 
 	$dat['continue_mode'] = true;
 	head($dat);
-	if(CONTINUE_PASS) $dat['passflag'] = true;
+//	if(CONTINUE_PASS) $dat['passflag'] = true;
+//コンティニュー時は削除キーを常に表示
+	$dat['passflag'] = true;
+//新規投稿で削除キー不要の時 true
+	if(! CONTINUE_PASS) $dat['newpost_nopassword'] = true;
 	$dat['picfile'] = IMG_DIR.$ctim.$cext;
 	$size = getimagesize($dat['picfile']);
 	$dat['picw'] = $size[0];
@@ -1838,7 +1842,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(strlen($name) > MAX_NAME) error(MSG012);
 	if(strlen($email) > MAX_EMAIL) error(MSG013);
 	if(strlen($sub) > MAX_SUB) error(MSG014);
-	
+
 	//本文へのURLの書き込みを禁止
 	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);
 
@@ -2442,7 +2446,9 @@ switch($mode){
 		incontinue($no);
 		break;
 	case 'contpaint':
-		if(CONTINUE_PASS) usrchk($no,$pwd);
+//		if(CONTINUE_PASS) usrchk($no,$pwd);
+//差し換えの時には削除キーが必要
+		if(CONTINUE_PASS||$type=='rep') usrchk($no,$pwd);
 		if(ADMIN_NEWPOST) $admin=$pwd;
 		paintform($picw,$pich,$palette,$anime,$pch);
 		break;
