@@ -543,10 +543,15 @@
 						<!--{def passflag}-->Pass<input class="form" type="password" name="pwd" size="8" value=""> <!--{/def}--><?php echo "\n"; ?>
 						<input class="button" type="submit" value="続きを描く">
 					</form>
-					<!--{def passflag}-->
+					<!--{def passflag}--><?php echo "\n"; ?>
 					<ul>
+						<!--{def newpost_nopassword}--><?php echo "\n"; ?>
+						<li>新規投稿なら削除キーがなくても続きを描く事ができます。</li>
+						<!--{/def}--><?php echo "\n"; ?>
+						<!--{ndef newpost_nopassword}--><?php echo "\n"; ?>
 						<li>続きを描くには描いたときの削除キーが必要です。</li>
-					</ul>
+						<!--{/ndef}--><?php echo "\n"; ?>
+						</ul>
 					<!--{/def}--><?php echo "\n"; ?>
 				</div>
 				<script type="text/javascript">

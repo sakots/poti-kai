@@ -15,6 +15,8 @@ body {
 	background-color: $ushiro;
 	color: $moji;
 	font-family: sans-serif;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
 a:link {
 	color: $link;
@@ -92,12 +94,15 @@ em.thispage {
 	font-style: normal;
 }
 .pn {
-	
+
 }
 figure {
 	float: left;
 	margin-right: 8px;
 	margin-bottom: 1ex;
+	img {
+		max-width: 100%;
+	}
 }
 figcaption {
 	font-size: smaller;
