@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 		<link rel="stylesheet" href="nee_main.css" type="text/css">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 		<script type="text/javascript" src="loadcookie.js"></script>
 		<?php echo "\n"; include('meta.php'); echo "\n"; ?>
 		<title>{$title}</title>
@@ -149,8 +150,8 @@
 					<section>
 						<!--{def oya/src}--><?php echo "\n"; ?>
 						<figure>
-							<figcaption><a href="{$oya/src}" target="_blank">{$oya/srcname}</a> ({$oya/size} B) <!--{def oya/thumb}-->- サムネイル表示中 -<!--{/def}--><br><!--{def oya/painttime}-->PaintTime : {$oya/painttime}<!--{/def}--><!--{def oya/continue}-->  <a href="{$self}?mode=continue&amp;no={$oya/continue}">続きを描く</a><!--{/def}--></figcaption>
-							<a href="{$oya/src}" target="_blank" tabindex="{$oya/tab}"><img src="{$oya/imgsrc}" alt="{$oya/srcname}"></a>
+							<figcaption><a href="{$oya/src}" data-lightbox="a{$oya/no}" data-title="{$oya/srcname}">{$oya/srcname}</a> ({$oya/size} B) <!--{def oya/thumb}-->- サムネイル表示中 -<!--{/def}--><br><!--{def oya/painttime}-->PaintTime : {$oya/painttime}<!--{/def}--><!--{def oya/continue}-->  <a href="{$self}?mode=continue&amp;no={$oya/continue}">続きを描く</a><!--{/def}--></figcaption>
+							<a href="{$oya/src}" data-lightbox="b{$oya/no}" tabindex="{$oya/tab}"  data-title="{$oya/srcname}"><img src="{$oya/imgsrc}" alt="{$oya/srcname}"></a>
 						</figure>
 						<!--{/def}--><?php echo "\n"; ?>
 						<div class="res">
@@ -171,8 +172,8 @@
 							<section>
 								<!--{def oya/res/src}--><?php echo "\n"; ?>
 								<figure>
-									<figcaption><a href="{$oya/res/src}" target="_blank">{$oya/res/srcname}</a> ({$oya/res/size} B)<!--{def oya/res/thumb}--> - サムネイル表示中 - <!--{/def}--><br><!--{def oya/res/painttime}--> PaintTime :{$oya/res/painttime}<!--{/def}--><!--{def oya/res/continue}--> <a href="{$self}?mode=continue&amp;no={$oya/res/continue}">続きを描く</a><!--{/def}--></figcaption>
-									<a href="{$oya/res/src}"><img src="{$oya/res/imgsrc}" alt="{$oya/res/srcname}"></a>
+									<figcaption><a href="{$oya/res/src}"   data-lightbox="a{$oya/res/no}" data-title="{$oya/res/srcname}">{$oya/res/srcname}</a> ({$oya/res/size} B)<!--{def oya/res/thumb}--> - サムネイル表示中 - <!--{/def}--><br><!--{def oya/res/painttime}--> PaintTime :{$oya/res/painttime}<!--{/def}--><!--{def oya/res/continue}--> <a href="{$self}?mode=continue&amp;no={$oya/res/continue}">続きを描く</a><!--{/def}--></figcaption>
+									<a href="{$oya/res/src}" data-lightbox="b{$oya/res/no}" data-title="{$oya/res/srcname}"><img src="{$oya/res/imgsrc}" alt="{$oya/res/srcname}"></a>
 								</figure>
 								<!--{/def}--><?php echo "\n"; ?>
 								<h4>
@@ -220,6 +221,8 @@
 			<script type="text/javascript"><!--
 			l(); //LoadCookie
 			//--></script>
+			<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"></script>
 			<!-- 著作権表示 削除しないでください -->
 			<!-- GazouBBS v3.0 --><!-- ふたば改0.8 --><!-- POTI-board -->
 			<p>
