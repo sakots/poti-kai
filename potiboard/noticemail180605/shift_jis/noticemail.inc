@@ -1,12 +1,13 @@
 <?php
 /*
-** メール通知クラス(Shift_JIS) lot.180115
+** メール通知クラス(Shift_JIS) lot.180605
 **
 ** http://www.punyu.net/php/
 ** by SakaQ
 ** https://sakots.red/poti/
 ** by sakots
 **
+** 2018/06/05 エラー対処
 ** 2018/01/15 php7対応改造
 ** 2007/03/01 件名(Subject)を日本語が含まれる場合にMIMEヘッダ変換するように変更
 ** 2005/01/14 jcode.php(v1.35～) 対応
@@ -29,40 +30,40 @@
 ・漢字変換ができない場合は送信できません(falseを返します)
 
 【設定データ項目】※例として $data で説明します
-  ・$data[to]
+  ・$data['to']
  - 通知先のメールアドレス。
 
-  ・$data[subject]
+  ・$data['subject']
  - 通知メールの題名。
 
-  ・$data[name]
+  ・$data['name']
  - 投稿者の名前。
 
-  ・$data[email]
+  ・$data['email']
  - 投稿者のメールアドレス。
    通常、Fromに使われますが日本語、'sage'、'http://:'のどれかが含まれているか未設定の場合
    代替わりがFromにセットされます。
 
  ★ここまでが必須です。以下は必要に応じてセットして下さい。
 
-  ・$data[option]
+  ・$data['option']
  - 追加投稿データ。複数セットできます。
-   セットするときは、[option][]="題名,内容" として下さい。
+   セットするときは、['option'][]="題名,内容" として下さい。
 
-  ・$data[comment]
+  ・$data['comment']
  - 投稿データの本文。
    本文は、<br>または<br />を \n に戻してからセットして下さい。
- ☆例: $data[comment] = preg_replace("/<br(( *)|( *)/)>/i","\n", $comment);
+ ☆例: $data['comment'] = preg_replace("/<br(( *)|( *)/)>/i","\n", $comment);
 
 【使用例】※実際には変数を使うが、判り易くする為に直接内容をセットしています
 
-$data[to] = 'me@hoge.net';
-$data[subject] = 'なんか投稿されてますよー';
-$data[name] = '名無しさん';
-$data[email] = 'hoge@hoge.com';
-$data[option][] = 'URL,http://hogehoge.com/';
-$data[option][] = 'お絵かき絵,http://hoge.net/poti/src/OB11111111.png';
-$data[comment] = 'お絵かきしたにゃ';
+$data['to'] = 'me@hoge.net';
+$data['subject'] = 'なんか投稿されてますよー';
+$data['name'] = '名無しさん';
+$data['email'] = 'hoge@hoge.com';
+$data['option'][] = 'URL,http://hogehoge.com/';
+$data['option'][] = 'お絵かき絵,http://hoge.net/poti/src/OB11111111.png';
+$data['comment'] = 'お絵かきしたにゃ';
 noticemail::send($data);
 
 【ご注意】
@@ -77,8 +78,8 @@ noticemail::send($data);
 class noticemail{
 
 	function send($data,$usemb="1"){
-		$name = $data[name];
-		$from = $data[email];
+		$name = $data['name'];
+		$from = $data['email'];
 		$line = "---------------------------------------------------------------------\n";
 
 		// ヘッダを指定
@@ -88,14 +89,14 @@ class noticemail{
 		$MailHeaders .= "X-Mailer: NoticeMail/PHP".phpversion()."\n";
 
 		// メール本文作成
-		$Message = "■".$data[subject]."\n";
+		$Message = "■".$data['subject']."\n";
 		$Message .= "Date: ".gmdate("Y/m/d H:i:s",time()+9*3600)."\n";
 		$Message .= "Host: ".@gethostbyaddr(getenv("REMOTE_ADDR"))."\n";
 		$Message .= "UserAgent: ".getenv("HTTP_USER_AGENT")."\n";
 		$Message .= $line;
 		$Message .= "Name: ".$name."\n";
-		$Message .= "e-Mail: ".$data[email]."\n";
-		$option = $data[option];
+		$Message .= "e-Mail: ".$data['email']."\n";
+		$option = $data['option'];
 		if(is_array($option)){
 			for($i = 0; $i < count($option); $i++){
 				list($optitle,$opvalue) = explode(",", rtrim($option[$i]));
@@ -103,8 +104,8 @@ class noticemail{
 			}
 		}
 		$Message .= $line;
-		if($data[comment]){
-			$com = str_replace("\r\n", "\n", $data[comment]);	// 改行文字の統一
+		if($data['comment']){
+			$com = str_replace("\r\n", "\n", $data['comment']);	// 改行文字の統一
 			$com = str_replace("\r", "\n", $com);
 			$com = preg_replace("/^(\n)+|(\n)+$/", "", $com);	// 連続改行を消す
 			$Message .= $com;
@@ -135,12 +136,12 @@ class noticemail{
 			// ヘッダにFrom追加
 			$MailHeaders .= "From: ".$name." <".$from.">\n";
 			// Subjectに日本語があればMIMEヘッド
-			if(preg_match("/[\x80-\xA0]/",$data[subject])){
-				$data[subject] = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($data[subject],"JIS","auto"))."?=";
+			if(preg_match("/[\x80-\xA0]/",$data['subject'])){
+				$data['subject'] = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($data['subject'],"JIS","auto"))."?=";
 			}
 			// メール送信
-			mail($data[to],
-				$data[subject],
+			mail($data['to'],
+				$data['subject'],
 				mb_convert_encoding($Message,"JIS","auto"), $MailHeaders);
 
 		}elseif(@file_exists("jcode.phps")||@file_exists("jcode.php")){
@@ -162,12 +163,12 @@ class noticemail{
 			// ヘッダにFrom追加
 			$MailHeaders .= "From: ".$name." <".$from.">\n";
 			// Subjectに日本語があればMIMEヘッド
-			if(preg_match("/[\x80-\xA0]/",$data[subject])){
-				$data[subject] = "=?iso-2022-jp?B?".base64_encode(JcodeConvert($data[subject],0,3))."?=";
+			if(preg_match("/[\x80-\xA0]/",$data['subject'])){
+				$data['subject'] = "=?iso-2022-jp?B?".base64_encode(JcodeConvert($data['subject'],0,3))."?=";
 			}
 			// メール送信
-			mail($data[to],
-				$data[subject],
+			mail($data['to'],
+				$data['subject'],
 				JcodeConvert($Message,0,3), $MailHeaders);
 
 		}else{ return false; }

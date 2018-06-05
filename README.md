@@ -35,6 +35,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/06/05] v1.42.1 lot.180605</dt>
+	<dd class="con">【障害対応】</dd>
+	<dd>軽微ななエラー対応（by さとぴあ）</dd>
 	<dt class="ver">[2018/05/07] 改 v1.42 lot.180507</dt>
 	<dd class="con">【仕様変更】</dd>
 	<dd>削除キーなしで続きを描く機能の仕様変更（by さとぴあ）</dd>

@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.42 lot.180507
+  * POTI-board改 v1.42.1 lot.180605
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.42');
-define('POTI_VERLOT' , '改 v1.42 lot.180507');
+define('POTI_VER' , '改 v1.42.1');
+define('POTI_VERLOT' , '改 v1.42.1 lot.180605');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1098,23 +1098,23 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	&& !(NOTICE_NOADMIN && $pwd == ADMIN_PASS)){//管理者の投稿の場合メール出さない
 		require_once(NOTICEMAIL_FILE);
 
-		$data[to] = TO_MAIL;
-		$data[name] = $name;
-		$data[email] = $email;
-		$data[option][] = 'URL,'.$url;
-		$data[option][] = '記事題名,'.$sub;
-		if(@file_exists($path.$tim.$ext)) $data[option][] = '投稿画像,'.ROOT_URL.IMG_DIR.$tim.$ext;
-		if(@file_exists(THUMB_DIR.$tim.'s.jpg')) $data[option][] = 'サムネイル画像,'.ROOT_URL.THUMB_DIR.$tim.'s.jpg';
-		if(@file_exists(PCH_DIR.$tim.'.pch')) $data[option][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.pch';
-		if(@file_exists(PCH_DIR.$tim.'.spch')) $data[option][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.spch';
+		$data['to'] = TO_MAIL;
+		$data['name'] = $name;
+		$data['email'] = $email;
+		$data['option'][] = 'URL,'.$url;
+		$data['option'][] = '記事題名,'.$sub;
+		if(@file_exists($path.$tim.$ext)) $data['option'][] = '投稿画像,'.ROOT_URL.IMG_DIR.$tim.$ext;
+		if(@file_exists(THUMB_DIR.$tim.'s.jpg')) $data['option'][] = 'サムネイル画像,'.ROOT_URL.THUMB_DIR.$tim.'s.jpg';
+		if(@file_exists(PCH_DIR.$tim.'.pch')) $data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.pch';
+		if(@file_exists(PCH_DIR.$tim.'.spch')) $data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.spch';
 		if($resto){
-			$data[subject] = '['.TITLE.'] No.'.$resto.'へのレスがありました';
-			$data[option][] = "\n記事URL,".ROOT_URL.PHP_SELF.'?res='.$resto;
+			$data['subject'] = '['.TITLE.'] No.'.$resto.'へのレスがありました';
+			$data['option'][] = "\n記事URL,".ROOT_URL.PHP_SELF.'?res='.$resto;
 		}else{
-			$data[subject] = '['.TITLE.'] 新規投稿がありました';
-			$data[option][] = "\n記事URL,".ROOT_URL.PHP_SELF.'?res='.$no;
+			$data['subject'] = '['.TITLE.'] 新規投稿がありました';
+			$data['option'][] = "\n記事URL,".ROOT_URL.PHP_SELF.'?res='.$no;
 		}
-		if(SEND_COM) $data[comment] = preg_replace("#<br(( *)|( *)/)>#i","\n", $com);
+		if(SEND_COM) $data['comment'] = preg_replace("#<br(( *)|( *)/)>#i","\n", $com);
 
 		noticemail::send($data,USE_MB);
 	}
