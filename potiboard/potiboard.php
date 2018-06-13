@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.42.1 lot.180605
+  * POTI-board改 v1.42.2 lot.180614
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.42.1');
-define('POTI_VERLOT' , '改 v1.42.1 lot.180605');
+define('POTI_VER' , '改 v1.42.2');
+define('POTI_VERLOT' , '改 v1.42.2 lot.180614');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -940,7 +940,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				$pchk=1;
 		}
 		if($pchk){
-			if(strlen($ltime)>10){$ltime=substr($ltime,0,-3);}
+//			if(strlen($ltime)>10){$ltime=substr($ltime,0,-3);}
+//KASIRAが入らない10桁のUNIX timeを取り出す
+			if(strlen($ltime)>10){$ltime=substr($ltime,-13,-3);}
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
 			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
 			if(isset($com)){

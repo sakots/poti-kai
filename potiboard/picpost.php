@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.180113  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.180614  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2018/06/14 軽微なエラー修正
 // 2018/01/12 php7対応
 // 2005/06/04 容量違反・画像サイズ違反・拒絶画像のチェックを追加
 // 2005/02/14 差し換え時の認識コードrepcodeを投稿者情報に追加
@@ -23,7 +24,7 @@
 //設定
 include("config.php");
 //容量違反チェックをする する:1 しない:0
-define(SIZE_CHECK, 1);
+define('SIZE_CHECK', '1');
 
 $time = time();
 $imgfile = $time.substr(microtime(),2,3);	//画像ファイル名
