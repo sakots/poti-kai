@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.180614  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.180713  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2018/07/13 動画が記録できなくなっていたのを修正
 // 2018/06/14 軽微なエラー修正
 // 2018/01/12 php7対応
 // 2005/06/04 容量違反・画像サイズ違反・拒絶画像のチェックを追加
@@ -139,23 +140,23 @@ $pchLength = substr($buffer, 1 + 8 + $headerLength + 8 + 2 + $imgLength, 8);
 // ヘッダーを獲得
 $h = substr($buffer, 0, 1);
 // 拡張子設定
-/*
+
 if($h=='S'){
-	if(!strstr($u_agent,'Shi-Painter/')){
-		unlink($full_imgfile);
-		error("UA error。画像は保存されません。");
-		exit;
-	}
+//	if(!strstr($u_agent,'Shi-Painter/')){
+//		unlink($full_imgfile);
+//		error("UA error。画像は保存されません。");
+//		exit;
+//	}
 	$ext = '.spch';
 }else{
-	if(!strstr($u_agent,'PaintBBS/')){
-		unlink($full_imgfile);
-		error("UA error。画像は保存されません。");
-		exit;
-	}
+//	if(!strstr($u_agent,'PaintBBS/')){
+//		unlink($full_imgfile);
+//		error("UA error。画像は保存されません。");
+//		exit;
+//	}
 	$ext = '.pch';
 }
-*/
+
 if($pchLength!=0){
 	// PCHイメージを取り出す
 	$PCHdata = substr($buffer, 1 + 8 + $headerLength + 8 + 2 + $imgLength + 8, $pchLength);
