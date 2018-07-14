@@ -47,7 +47,7 @@ define('MSG031', "記事Noが未入力です[Please input No.]");
 define('MSG032', "拒絶されました[was rejected.]<br>不正な文字列があります[illegal character string.]");
 define('MSG033', "削除に失敗しました[failed in deletion.]<br>ユーザーに削除権限がありません[user doesn't have deletion authority.]");
 define('MSG034', "アップロードに失敗しました[It failed in up-loading.]<br>規定の画像容量をオーバーしています[size over is picture file.]");
-define('MSG035', "予備");
+define('MSG035', "何か日本語で書いてください[Comment should have at least some Japanese characters.]");
 define('MSG036', "予備");
 define('MSG037', "予備");
 define('MSG038', "予備");

@@ -35,6 +35,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/07/14] v1.44 lot.180714</dt>
+	<dd class="con">【機能追加】</dd>
+	<dd>「本文中に日本語がなければ拒絶」の改善（by さとぴあ,funige）</dd>
 	<dt class="ver">[2018/06/05] v1.42.1 lot.180605</dt>
 	<dd class="con">【障害対応】</dd>
 	<dd>軽微ななエラー対応（by さとぴあ）</dd>

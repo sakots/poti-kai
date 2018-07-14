@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.43 lot.180713
+  * POTI-board改 v1.44 lot.180714
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.43');
-define('POTI_VERLOT' , '改 v1.43 lot.180713');
+define('POTI_VER' , '改 v1.44');
+define('POTI_VERLOT' , '改 v1.44 lot.180714');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -791,7 +791,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(strlen($resto) > 10) error(MSG015,$dest);
 
 	//本文に日本語がなければ拒絶
-	if(strlen($com) > 0 && strlen($com) == mb_strlen($com,'utf8')) error(MSG035,$dest);
+        if (USE_JAPANESEFILTER) {
+                mb_regex_encoding("UTF-8");
+                if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
+        }
 
 	//本文へのURLの書き込みを禁止
 	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);
@@ -1855,9 +1858,6 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	if(strlen($name) > MAX_NAME) error(MSG012);
 	if(strlen($email) > MAX_EMAIL) error(MSG013);
 	if(strlen($sub) > MAX_SUB) error(MSG014);
-
-	//本文に日本語がなければ拒絶
-	if(strlen($com) > 0 && strlen($com) == mb_strlen($com,'utf8')) error(MSG035,$dest);
 
 	//本文へのURLの書き込みを禁止
 	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);

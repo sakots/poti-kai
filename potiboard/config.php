@@ -1,11 +1,16 @@
 <?php
 /*
-  * POTI-board改 v1.42 lot.180507
+  * POTI-board改 v1.44 lot.180714
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。
   *
 */
+
+/* ---------- ADD:2018/07/14 ---------- */
+
+//本文に日本語がなければ拒絶
+define('USE_JAPANESEFILTER', '1');
 
 /* ---------- ADD:2018/04/23 ---------- */
 
