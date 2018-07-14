@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.43 lot.180713
+  * POTI-board改 v1.44 lot.180714
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.43');
-define('POTI_VERLOT' , '改 v1.43 lot.180713');
+define('POTI_VER' , '改 v1.44');
+define('POTI_VERLOT' , '改 v1.44 lot.180714');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
