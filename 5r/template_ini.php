@@ -1,6 +1,6 @@
 <?php
 /*
-  * Template - 5u - lot.180124  by sakots  >> https://sakots.red/poti/
+  * Template - 5r - lot.180124  by sakots  >> https://sakots.red/poti/
   *
   * potiboard.php(v1.30～)のTemplate設定ファイルです。
   *
