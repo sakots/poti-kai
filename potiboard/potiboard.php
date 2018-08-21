@@ -84,7 +84,6 @@ define('SIIHELP_FILE' , 'siihelp.php');
 //	default : $charset=CHARSET_OUT;
 //}
 define('CHARSET_HTML', "UTF-8");
-define('CHARSET_IN', '4');
 
 //----------htmltemplateタグ定義
 //{$hoge}
