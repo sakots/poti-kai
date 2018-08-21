@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  POTI-board改 v1.42.1 lot.180605
+  POTI-board改 v1.44.1 lot.180822
   by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -205,6 +205,10 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
+
+[2018/08/22] v1.44.1 lot.180822
+【障害対応】
+　・軽微ななエラー対応（by さとぴあ）
 
 [2018/06/05] v1.42.1 lot.180605
 【障害対応】

@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.44 lot.180714
+  * POTI-board改 v1.44.1 lot.180822
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.44');
-define('POTI_VERLOT' , '改 v1.44 lot.180714');
+define('POTI_VER' , '改 v1.44.1');
+define('POTI_VERLOT' , '改 v1.44.1 lot.180822');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -765,7 +765,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if($REQUEST_METHOD != "POST") error(MSG006,$dest);
 
 //指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com) > '0'){error(MSG032,$dest);};}
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);};}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
@@ -791,13 +791,13 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(strlen($resto) > 10) error(MSG015,$dest);
 
 	//本文に日本語がなければ拒絶
-        if (USE_JAPANESEFILTER) {
-                mb_regex_encoding("UTF-8");
-                if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
-        }
+	if (USE_JAPANESEFILTER) {
+			mb_regex_encoding("UTF-8");
+			if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
+	}
 
 	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);
+	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
@@ -1843,7 +1843,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	if($REQUEST_METHOD != "POST") error(MSG006);
 
 //指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com) > '0'){error(MSG032,$dest);};}
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);};}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
@@ -1859,8 +1859,14 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	if(strlen($email) > MAX_EMAIL) error(MSG013);
 	if(strlen($sub) > MAX_SUB) error(MSG014);
 
+	//本文に日本語がなければ拒絶
+	if (USE_JAPANESEFILTER) {
+			mb_regex_encoding("UTF-8");
+			if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
+	}
+
 	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com) > '0' ) error(MSG036,$dest);
+	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));

@@ -16,12 +16,14 @@
 	を応援するためにphp7に対応させ、改良を進めています。
 </p>
 <p>
-	potiboard.zip がスクリプト一式、
-	nee.zip/5u.zip/5r.zip が拙作テンプレート一式です。
-	(neeがおすすめ)<br>
+	potiboard.zip がスクリプト一式です。<br>
 	ディレクトリ内に未圧縮ソースが入っています。
 	掲示板設置法等は中のテキストファイルを読んで下さい。
 </p>
+<h2>スキンについて</h2>
+	このスクリプトはスキン機能に対応しています。
+	<a href="https://github.com/sakots/poti-kai-skins">「poti-kai-skins」</a>
+	でスキンを用意しておりますのでご参照ください。
 <h2>サンプル/サポート掲示板</h2>
 <p>
 	サンプルとして<a href="https://sakots.red/nee/">「nee」</a>
@@ -35,6 +37,11 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/08/22] v1.44.1 lot.180822</dt>
+	<dd class="con">【障害対応】</dd>
+	<dd>軽微ななエラー対応（by さとぴあ）</dd>
+	<dd class="con">【仕様変更】</dd>
+	<dd>スキンのプロジェクトを分離</dd>
 	<dt class="ver">[2018/07/14] v1.44 lot.180714</dt>
 	<dd class="con">【機能追加】</dd>
 	<dd>「本文中に日本語がなければ拒絶」の改善（by さとぴあ,funige）</dd>
@@ -90,40 +97,3 @@
 	<dd class="con"></dd>
 	<dd></dd> -->
 </dl>
-<h2>テンプレートneeの履歴</h2>
-<dl>
-	<dt class="ver">[2018/05/21] v1.10 lot.180521</dt>
-	<dd>画像を同じウィンドウでプレビューするように</dd>
-	<dt class="ver">[2018/05/14] v1.02 lot.180514</dt>
-	<dd>POTI改1.42対応</dd>
-	<dd>狭いブラウザで画像がはみ出ないように修正</dd>
-	<dt class="ver">[2018/04/28] v1.01.2 lot.180428</dt>
-	<dd>オートコンプリートをさらに最適化</dd>
-	<dt class="ver">[2018/04/26] v1.01 lot.180427</dt>
-	<dd>色設定できる場所を追加（テキスト入力欄など）</dd>
-	<dd>要らなそうなオートコンプリートの解除</dd>
-	<dt class="ver">[2018/04/25] v1.00 lot.180425</dt>
-	<dd>nee_cssを廃止して、直接nee_main.cssを読み込むようにして色指定を対処</dd>
-	<dt class="ver">[2018/04/23] v0.99b2 lot.180423</dt>
-	<dd>nee.cssでNEOの色指定をするように変更</dd>
-	<dd>テンプレートの著作権表示を整理</dd>
-	<dt class="ver">[2018/04/22] v0.99b1 lot.180422</dt>
-	<dd>バージョン表記を追加</dd>
-	<dd>色指定scssファイルを分割</dd>
-	<dt class="ver">[2018/04/21]</dt>
-	<dd>URLボタンなどが途中で改行される不具合修正</dd>
-	<dd>アイコンをFontAwesomeへ直接リンクを貼る方法に変更</dd>
-	<dd>cssファイルとsassファイルで設定できる項目を追加</dd>
-	<dt class="ver">[2018/04/20]</dt>
-	<dd>デフォルトスタイルをよりかっこよく</dd>
-	<dd>カタログモードの画像サイズをcssで指定できるように変更</dd>
-	<dt class="ver">[2008/04/18]</dt>
-	<dd>お絵かきレス時の表示幅を変更</dd>
-	<dt class="ver">[2018/04/16]</dt>
-	<dd>コードの記述ミスを修正</dd>
-	<dt class="ver">[2018/04/11]</dt>
-	<dd>公開</dd>
-</dl>
-<p>
-	アップデート方法等は各readme.txt参照。
-</p>
