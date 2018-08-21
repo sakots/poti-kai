@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  POTI-board改 v1.44.1 lot.180822
+  POTI-board改 v1.44.2 lot.180822
   by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -205,6 +205,9 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
+[2018/08/22] v1.44.2 lot.180822
+【仕様変更】
+　・文字コードをUTF-8に固定
 
 [2018/08/22] v1.44.1 lot.180822
 【障害対応】

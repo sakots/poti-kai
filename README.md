@@ -37,10 +37,11 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
-	<dt class="ver">[2018/08/22] v1.44.1 lot.180822</dt>
+	<dt class="ver">[2018/08/22] v1.44.2 lot.180822</dt>
 	<dd class="con">【障害対応】</dd>
 	<dd>軽微ななエラー対応（by さとぴあ）</dd>
 	<dd class="con">【仕様変更】</dd>
+	<dd>文字コードをUTF-8に固定</dd>
 	<dd>スキンのプロジェクトを分離</dd>
 	<dt class="ver">[2018/07/14] v1.44 lot.180714</dt>
 	<dd class="con">【機能追加】</dd>

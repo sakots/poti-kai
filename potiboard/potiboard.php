@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.44.1 lot.180822
+  * POTI-board改 v1.44.2 lot.180822
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,22 +68,23 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.44.1');
-define('POTI_VERLOT' , '改 v1.44.1 lot.180822');
+define('POTI_VER' , '改 v1.44.2');
+define('POTI_VERLOT' , '改 v1.44.2 lot.180822');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
 //アプレットヘルプのファイル名
 define('SIIHELP_FILE' , 'siihelp.php');
 
-switch(CHARSET_OUT){
-	case 1 : $charset="EUC-JP";break;
-	case 2 : $charset="Shift_JIS";break;
-	case 3 : $charset="ISO-2022-JP";break;
-	case 4 : $charset="UTF-8";break;
-	default : $charset=CHARSET_OUT;
-}
-define('CHARSET_HTML', $charset);
+//switch(CHARSET_OUT){
+//	case 1 : $charset="EUC-JP";break;
+//	case 2 : $charset="Shift_JIS";break;
+//	case 3 : $charset="ISO-2022-JP";break;
+//	case 4 : $charset="UTF-8";break;
+//	default : $charset=CHARSET_OUT;
+//}
+define('CHARSET_HTML', "UTF-8");
+define('CHARSET_IN', '4');
 
 //----------htmltemplateタグ定義
 //{$hoge}
