@@ -205,7 +205,7 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
-[2018/08/22] v1.44.2 lot.180822
+[2018/08/22] v1.44.3 lot.180822
 【仕様変更】
 　・文字コードをUTF-8に固定
 
