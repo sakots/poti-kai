@@ -1,6 +1,6 @@
 <?php
 /*
-  * POTI-board改 v1.44.3 lot.180822
+  * POTI-board改 v1.44.4 lot.180825
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。
@@ -58,16 +58,16 @@ define('LANG', 'Japanese');
 // 出力文字コード指定 1:EUC-JP, 2:Shift_JIS, 3:ISO-2022-JP(JIS), 4:UTF-8
 //※1～4に該当しない場合は、直接文字コード名を入れて下さい
 //★1.44.1以降で無効　強制的にUTF-8
-define('CHARSET_OUT', '4');
+//define('CHARSET_OUT', '4');
 
 // 文字コード変換対象指定 0:出力HTMLとログも含むすべて, 1:クッキーとメールのみ
 //★1.44.1以降で無効　強制的にすべて
-define('CHARSET_CONVERT', '0');
+//define('CHARSET_CONVERT', '0');
 
 // 内部文字コード指定 1:EUC-JP, 2:Shift_JIS, 3:ISO-2022-JP(JIS), 4:UTF-8
 //※1～4に該当しない場合は、直接文字コード名を入れて下さい
 //★1.44.1以降で無効　強制的にUTF-8
-define('CHARSET_IN', '4');
+//define('CHARSET_IN', '4');
 
 
 /* ---------- ADD:2004/06/22 ---------- */

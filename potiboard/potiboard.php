@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.44.3 lot.180822
+  * POTI-board改 v1.44.4 lot.180825
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,20 +68,20 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.44.3');
-define('POTI_VERLOT' , '改 v1.44.3 lot.180822');
+define('POTI_VER' , '改 v1.44.4');
+define('POTI_VERLOT' , '改 v1.44.4 lot.180825');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
 //アプレットヘルプのファイル名
 define('SIIHELP_FILE' , 'siihelp.php');
 
-//switch(CHARSET_OUT){
+//switch(4){
 //	case 1 : $charset="EUC-JP";break;
 //	case 2 : $charset="Shift_JIS";break;
 //	case 3 : $charset="ISO-2022-JP";break;
 //	case 4 : $charset="UTF-8";break;
-//	default : $charset=CHARSET_OUT;
+//	default : $charset=4;
 //}
 define('CHARSET_HTML', "UTF-8");
 
@@ -397,7 +397,7 @@ function updatelog($resno=0){
 			$j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
 			if($line[$j]=="") continue;   //$jが範囲外なら次の行
 			list($no,$now,$name,$email,$sub,$com,$url,
-				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j],CHARSET_IN)));
+				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j],4)));
 			// URLとメールにリンク
 			//if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 			if(AUTOLINK) $com = auto_link($com);
@@ -510,7 +510,7 @@ function updatelog($resno=0){
 				$j=$lineindex[$disptree] - 1;
 				if($line[$j]=="") continue;
 				list($no,$now,$name,$email,$sub,$com,$url,
-						 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j],CHARSET_IN)));
+						 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j],4)));
 				// URLとメールにリンク
 				//if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 				if(AUTOLINK) $com = auto_link($com);
@@ -754,12 +754,12 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$mes = "画像 $upfile_name のアップロードが成功しました<br><br>";
 	}
 
-	$name  = charconvert($name ,CHARSET_IN);
-	$sub   = charconvert($sub  ,CHARSET_IN);
-	$com   = charconvert($com  ,CHARSET_IN);
-	$email = charconvert($email,CHARSET_IN);
-	$url   = charconvert($url  ,CHARSET_IN);
-	$ptime = charconvert($ptime,CHARSET_IN);
+	$name  = charconvert($name ,4);
+	$sub   = charconvert($sub  ,4);
+	$com   = charconvert($com  ,4);
+	$email = charconvert($email,4);
+	$url   = charconvert($url  ,4);
+	$ptime = charconvert($ptime,4);
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
 	if($REQUEST_METHOD != "POST") error(MSG006,$dest);
@@ -898,7 +898,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	rewind($fp);
 	$buf=fread($fp,1000000);
 	if($buf==''){error(MSG019,$dest);}
-	$buf = charconvert($buf,CHARSET_IN);
+	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; $i++){
@@ -1001,7 +1001,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	ftruncate($fp,0);
 	set_file_buffer($fp, 0);
 	rewind($fp);
-	fputs($fp, charconvert($newline,CHARSET_OUT));
+	fputs($fp, charconvert($newline,4));
 
 	//ツリー更新
 	$find = false;
@@ -1130,7 +1130,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 //	$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	$str.= "<body>$mes 画面を切り替えます</body></html>";
-	echo charconvert($str,CHARSET_OUT);
+	echo charconvert($str,4);
 }
 
 //ファイルmd5計算 php4.2.0未満用
@@ -1221,7 +1221,7 @@ function usrdel($del,$pwd){
 		rewind($fp);
 		$buf=fread($fp,1000000);
 		if($buf==''){error(MSG027);}
-		$buf = charconvert($buf,CHARSET_IN);
+		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
 		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
@@ -1250,7 +1250,7 @@ function usrdel($del,$pwd){
 			set_file_buffer($fp, 0);
 			rewind($fp);
 			$newline = implode('', $line);
-			fputs($fp, charconvert($newline,CHARSET_OUT));
+			fputs($fp, charconvert($newline,4));
 		}
 		fclose($fp);
 	}
@@ -1281,7 +1281,7 @@ function admindel($pass){
 		rewind($fp);
 		$buf=fread($fp,1000000);
 		if($buf==''){error(MSG030);}
-		$buf = charconvert($buf,CHARSET_IN);
+		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
 		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
@@ -1306,7 +1306,7 @@ function admindel($pass){
 			set_file_buffer($fp, 0);
 			rewind($fp);
 			$newline = implode('', $line);
-			fputs($fp, charconvert($newline,CHARSET_OUT));
+			fputs($fp, charconvert($newline,4));
 		}
 		fclose($fp);
 	}
@@ -1319,7 +1319,7 @@ function admindel($pass){
 	for($j = 0; $j < count($line); $j++){
 		$img_flag = FALSE;
 		list($no,$now,$name,$email,$sub,$com,$url,
-			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($line[$j],CHARSET_IN));
+			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($line[$j],4));
 		// フォーマット
 		//$now=preg_replace('#.{2}/(.*)$#','\1',$now);
 		//$now=preg_replace('/\(.*\)/',' ',$now);
@@ -1365,7 +1365,7 @@ function init(){
 			$now = now_date(time());//日付取得
 			if(DISP_ID) $now .= " ID:???";
 			$testmes="1,".$now.",".DEF_NAME.",,".DEF_SUB.",".DEF_COM.",,\n";
-			if($value==LOGFILE)fputs($fp,charconvert($testmes,CHARSET_OUT));
+			if($value==LOGFILE)fputs($fp,charconvert($testmes,4));
 			if($value==TREEFILE)fputs($fp,"1\n");
 			fclose($fp);
 			if(@file_exists(realpath($value)))@chmod($value,0666);
@@ -1561,7 +1561,7 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 	echo $buf1;
 	if(@file_exists(SIIHELP_FILE)){
 		$help = implode('', file(SIIHELP_FILE));
-		echo charconvert($help,CHARSET_OUT);
+		echo charconvert($help,4);
 	}
 	echo $buf2;
 }
@@ -1574,7 +1574,7 @@ function paintcom($resto=''){
 		$lines = file(LOGFILE);
 		$flag = FALSE;
 		foreach($lines as $line){
-			list($cno,,,,$sub,,,,,,,,,,) = explode(",", charconvert($line,CHARSET_IN));
+			list($cno,,,,$sub,,,,,,,,,,) = explode(",", charconvert($line,4));
 			if($cno == $resto){
 				$dat['sub'] = 'Re: '.$sub;
 				$flag = TRUE;
@@ -1701,7 +1701,7 @@ function incontinue($no){
 //	$countline=count($line);
 	$flag = FALSE;
 	foreach($lines as $line){
-		list($cno,,,,,,,,,$cext,$picw,$pich,$ctim,,$cptime,) = explode(",", rtrim(charconvert($line,CHARSET_IN)));
+		list($cno,,,,,,,,,$cext,$picw,$pich,$ctim,,$cptime,) = explode(",", rtrim(charconvert($line,4)));
 		if($cno == $no){
 			$flag = TRUE;
 			break;
@@ -1757,7 +1757,7 @@ function usrchk($no,$pwd){
 //	$countline=count($line);
 	$flag = FALSE;
 	foreach($lines as $line){
-		list($cno,,,,,,,,$cpwd,) = explode(",", charconvert($line,CHARSET_IN));
+		list($cno,,,,,,,,$cpwd,) = explode(",", charconvert($line,4));
 		if($cno == $no && substr(md5($pwd),2,8) == $cpwd){
 			$flag = TRUE;
 			break;
@@ -1781,7 +1781,7 @@ function editform($del,$pwd){
 		$buf=fread($fp,1000000);
 		fclose($fp);
 		if($buf==''){error(MSG019);}
-		$buf = charconvert($buf,CHARSET_IN);
+		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
 		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
@@ -1833,11 +1833,11 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	// 時間
 	$time = time();
 
-	$name  = charconvert($name ,CHARSET_IN);
-	$sub   = charconvert($sub  ,CHARSET_IN);
-	$com   = charconvert($com  ,CHARSET_IN);
-	$email = charconvert($email,CHARSET_IN);
-	$url   = charconvert($url  ,CHARSET_IN);
+	$name  = charconvert($name ,4);
+	$sub   = charconvert($sub  ,4);
+	$com   = charconvert($com  ,4);
+	$email = charconvert($email,4);
+	$url   = charconvert($url  ,4);
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
 	if($REQUEST_METHOD != "POST") error(MSG006);
@@ -1952,7 +1952,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	rewind($fp);
 	$buf=fread($fp,1000000);
 	if($buf==''){error(MSG019);}
-	$buf = charconvert($buf,CHARSET_IN);
+	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
@@ -1981,7 +1981,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fputs($fp, charconvert($newline,CHARSET_OUT));
+	fputs($fp, charconvert($newline,4));
 	fclose($fp);
 
 	updatelog();
@@ -1991,7 +1991,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	//	$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	$str.= "<body>$mes 画面を切り替えます</body></html>";
-	echo charconvert($str,CHARSET_OUT);
+	echo charconvert($str,4);
 }
 
 /* 画像差し換え */
@@ -2054,7 +2054,7 @@ function replace($no,$pwd,$stime){
 	//$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	$str.= '<body>画像が見当たりません。数秒待ってリロードしてください。<BR><BR>リロードしてもこの画面がでるなら投稿に失敗している可能性があります。<BR>※諦める前に「<A href="'.PHP_SELF.'?mode=piccom">アップロード途中の画像</A>」を見ましょう。もしかしたら画像が見つかるかもしれません。</body></html>';
-		echo charconvert($str,CHARSET_OUT);
+		echo charconvert($str,4);
 		exit;
 	}
 
@@ -2095,7 +2095,7 @@ function replace($no,$pwd,$stime){
 	rewind($fp);
 	$buf=fread($fp,1000000);
 	if($buf==''){error(MSG019);}
-	$buf = charconvert($buf,CHARSET_IN);
+	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
@@ -2173,7 +2173,7 @@ function replace($no,$pwd,$stime){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fputs($fp, charconvert($newline,CHARSET_OUT));
+	fputs($fp, charconvert($newline,4));
 	fclose($fp);
 
 	updatelog();
@@ -2183,7 +2183,7 @@ function replace($no,$pwd,$stime){
 	//$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	$str.= "<body>$mes 画面を切り替えます</body></html>";
-	echo charconvert($str,CHARSET_OUT);
+	echo charconvert($str,4);
 }
 
 /* カタログ */
@@ -2213,7 +2213,7 @@ function catalog(){
 			$disptree = $treeline[0];
 			$j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
 			if($line[$j]=="") continue; //$jが範囲外なら次の行
-			list($no,$now,$name,,$sub,,,,,$ext,$w,$h,$time,,) = explode(",", rtrim(charconvert($line[$j],CHARSET_IN)));
+			list($no,$now,$name,,$sub,,,,,$ext,$w,$h,$time,,) = explode(",", rtrim(charconvert($line[$j],4)));
 			// 画像ファイル名
 			$img = $path.$time.$ext;
 			// 画像系変数セット
@@ -2372,14 +2372,16 @@ function potitagview(){
 
 /* 文字コード変換 */
 function charconvert($str,$charset){
-	if(CHARSET_CONVERT) return $str;
-	switch($charset){
-		case 1 : $charset_mb="EUC-JP";break;
-		case 2 : $charset_mb="SJIS";break;
-		case 3 : $charset_mb="ISO-2022-JP";break;
-		case 4 : $charset_mb="UTF-8";break;
-		default : $charset_mb=$charset;
-	}
+//$charsetは4。
+//	if(CHARSET_CONVERT) return $str;
+//	switch($charset){
+//		case 1 : $charset_mb="EUC-JP";break;
+//		case 2 : $charset_mb="SJIS";break;
+//		case 3 : $charset_mb="ISO-2022-JP";break;
+//		case 4 : $charset_mb="UTF-8";break;
+//		default : $charset_mb=$charset;
+//	}
+	$charset_mb="UTF-8";
 	if(function_exists("mb_convert_encoding")&&function_exists("mb_language")&&USE_MB){
 		mb_language(LANG);
 		return mb_convert_encoding($str, $charset_mb, "auto");
@@ -2406,7 +2408,7 @@ function charconvert($str,$charset){
 
 /* HTML出力 */
 function htmloutput($template,$dat,$buf_flag=''){
-	$buf = charconvert(HtmlTemplate::t_buffer($template,$dat), CHARSET_OUT);
+	$buf = charconvert(HtmlTemplate::t_buffer($template,$dat), 4);
 	if($buf_flag){
 		return $buf;
 	}else{

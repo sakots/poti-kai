@@ -37,6 +37,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/08/25] v1.44.4 lot.180825</dt>
+	<dd class="con">【仕様整理】</dd>
+	<dd>ソース整理（by さとぴあ）</dd>
 	<dt class="ver">[2018/08/22] v1.44.3 lot.180822</dt>
 	<dd class="con">【障害対応】</dd>
 	<dd>軽微ななエラー対応（by さとぴあ）</dd>
