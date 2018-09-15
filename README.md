@@ -24,6 +24,7 @@
 	このスクリプトはスキン機能に対応しています。
 	<a href="https://github.com/sakots/poti-kai-skins">「poti-kai-skins」</a>
 	でスキンを用意しておりますのでご参照ください。
+	デフォルトでneewhiteスキンを同梱しております。
 <h2>サンプル/サポート掲示板</h2>
 <p>
 	サンプルとして<a href="https://sakots.red/nee/">「nee」</a>
@@ -37,6 +38,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/09/15] v1.44.4 lot.180825</dt>
+	<dd class="con">【仕様整理】</dd>
+	<dd>デフォルトスキンを同梱した</dd>
 	<dt class="ver">[2018/08/25] v1.44.4 lot.180825</dt>
 	<dd class="con">【仕様整理】</dd>
 	<dd>ソース整理（by さとぴあ）</dd>

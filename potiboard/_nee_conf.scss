@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+//スタイル設定ファイル
+
+//色指定とか
+$ushiro: #9CF;			//うしろ
+$haikei: #FFF;			//背景
+$moji: #000;			//文字
+$link: #00C;			//リンクの文字
+$link_visited: #666;	//訪問済みリンク
+$link_active: #C00;		//アクティブなリンク
+$link_hover: #C00;		//マウスカーソルが上に載ってる時のリンク
+$resmoji: #666;			//レスの文字
+$button: #396;			//返信とかのボタン
+$button_moji: #FFF;		//ボタンの文字色
+$form_txt: #000;		//テキスト入力欄の文字色
+$form_txt_bk: #EEF;	//テキスト入力欄の背景色
+
+//NEO色指定
+$bk: #69C;				//アプレット背景
+$bk2: #9CF;				//アプレット背景の網状のあれ
+$tool_icon: #6C9;		//「窓」とか
+$icon: #9FC;			//
+$iconselect: #9FC;		//選択してるアイコン
+$text: #000;			//文字
+$bar: #333;				//バー
+$tool_button: #369;		//ツールボタン「鉛筆」とか
+$tool_button2: #036;	//選択中ツールボタン
+$tool_text: #FFF;		//ツールボタンの文字
+$tool_bar: #EEE;		//ツールバーの色
+$tool_frame: #000;		//フレームの色
+//--------
+$cat_img_size: 150px;	//カタログモードのイメージサイズ
