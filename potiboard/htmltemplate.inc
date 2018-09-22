@@ -1,7 +1,7 @@
-<?php
+﻿<?php
 /*
-Htmltemplate for PHP4
-Copyright (C) 2003 Hiroshi Ayukawa
+Htmltemplate for PHP4 > PHP7
+Copyright (C) 2003 Hiroshi Ayukawa and Satopia
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the Artistic License version 2.0,
@@ -267,7 +267,8 @@ var $closestring="<!--{/comment}-->";
 *   behave as previous htmltemplate
 */
 class StandardParser extends TemplateParser{
-	function StandardParser(){
+//	function StandardParser(){
+	function __construct(){
 		$this->add(new tag_val());
 		$this->add(new tag_rval());
 		$this->add(new tag_def());
@@ -288,62 +289,72 @@ class htmltemplate{
 	private $parser;
 
 	// the constructor
-	private function htmltemplate(){
+//	private function htmltemplate(){
+	private function __construct(){
 		$this->parser=new StandardParser();
 	}
 
 	// the static method to get the singleton instance
-	function &getInstance(){
+
+//ここから下のfunctionにpublic staticを追加しstatic宣言。
+//PHP7のE_DEPRECATEDの非推奨のエラーはでなくなったが
+//PHP4の文法でインスタンスを使用しているので
+//可能であれば修正したほうが良い。
+//PHP マニュアル
+//http://jp2.php.net/manual/ja/language.oop5.static.php
+//2018.09.22
+
+	public static function &getInstance(){
 		static $instance;
 		if(! $instance) $instance=new htmltemplate();
 		return $instance;
 	}
 
 	//  adds tag instance
-	function add($tag){
+	public static function add($tag){
 		// This method is obsolete.Use addTag() instead.
 		$inst=&htmltemplate::getInstance();
 		$inst->parser->add($tag);
 	}
 
 	// adds a tag class
-	function addTag($tagclassname){
+	public static function addTag($tagclassname){
 		$inst=&htmltemplate::getInstance();
 		$inst->parser->add(new $tagclassname());
 	}
 
 	// removes a tag class
-	function removeTag($tagclassname){
+	public static function removeTag($tagclassname){
 		$inst=&htmltemplate::getInstance();
 		$inst->parser->remove($tagclassname);
 	}
 
 	// remove all tags
-	function removeAllTag(){
+	public static function removeAllTag(){
 		$inst=&htmltemplate::getInstance();
 		$inst->parser->clear();
 	}
 
 	// sets a parser instance
-	function setParser($parser){
+	public static function setParser($parser){
 		$inst=&htmltemplate::getInstance();
 		$inst->parser=$parser;
 	}
 
 	// parses given template string
-	function parse($str){
+	public static function parse($str){
 		$inst=&htmltemplate::getInstance();
 		return $inst->parser->parse($str);
 	}
 
 	// parses a template file and displays it
-	function t_include($file,&$data){
+	public static function t_include($file,&$data){
 		$inst=&htmltemplate::getInstance();
 		print $inst->t_buffer($file,$data);
 	}
 
 	// parses a template file and gives it back
-	function t_buffer($file,&$data){
+	public static function t_buffer($file,&$data){
 		$val=&$data;
 		$inst=&htmltemplate::getInstance();
 		$handle=fopen($file,"rb");
@@ -359,7 +370,7 @@ class htmltemplate{
 		return $inst->buffer($all,$val);
 	}
 
-	function buffer($template_str,&$val){
+	public static function buffer($template_str,&$val){
 		$inst=&htmltemplate::getInstance();
 		$code=$inst->parse($template_str);
 		ob_start();

@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  POTI-board改 v1.44.4 lot.180825
+  POTI-board改 v1.45.0 lot.180922
   by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -205,7 +205,13 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
-[2018/08/22] v1.44.4 lot.180825
+[2018/09/22] v1.45.0 lot.180922
+【仕様変更】
+　・potiboard.phpに $dat['rooturl'] = ROOT_URL;//設置場所url を追加。
+　　templateで、設置urlを使えるようにした。（by さとぴあ）
+　・php7の非推奨のエラーがでないようにhtmltemplate.incを修正（by さとぴあ）
+
+[2018/08/25] v1.44.4 lot.180825
 【仕様整理】
 　・ソースの整理（by さとぴあ）
 

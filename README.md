@@ -38,6 +38,11 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/09/22] v1.45.0 lot.180922</dt>
+	<dd class="con">【仕様変更】</dd>
+	<dd>potiboard.phpに $dat['rooturl'] = ROOT_URL;//設置場所url を追加</dd>
+	<dd>templateで、設置urlを使えるようにした（by さとぴあ）</dd>
+	<dd>php7の非推奨のエラーがでないようにhtmltemplate.incを修正（by さとぴあ）</dd>
 	<dt class="ver">[2018/09/15] v1.44.4 lot.180825</dt>
 	<dd class="con">【仕様整理】</dd>
 	<dd>デフォルトスキンを同梱した</dd>
