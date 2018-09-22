@@ -1,11 +1,17 @@
 <?php
 /*
-  * POTI-board改 v1.44.4 lot.180825
+  * POTI-board改 v1.45.1 lot.180923
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。
   *
 */
+
+/* ---------- ADD:2018/09/22 ---------- */
+//シェアボタンを表示する する:1 しない:0
+//対応テンプレートが必要
+//設置場所のURL ROOT_URL で設定したurlをもとにリンクを作成
+define('SHARE_BUTTON', '0');
 
 /* ---------- ADD:2018/07/14 ---------- */
 

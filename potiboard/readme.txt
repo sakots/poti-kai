@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  POTI-board改 v1.45.0 lot.180922
+  POTI-board改 v1.45.1 lot.180923
   by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -205,6 +205,11 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 　
 ■変更履歴
+[2018/09/23] v1.45.1 lot.180923
+【仕様変更】
+　・config.phpでシェアボタンを表示する する:1 しない:0を選択できるようにした。
+　　対応skinが必要。（by さとぴあ）
+
 [2018/09/22] v1.45.0 lot.180922
 【仕様変更】
 　・potiboard.phpに $dat['rooturl'] = ROOT_URL;//設置場所url を追加。

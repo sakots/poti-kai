@@ -1,7 +1,7 @@
-﻿<?php
+<?php
 /*
-Htmltemplate for PHP4 > PHP7
-Copyright (C) 2003 Hiroshi Ayukawa and Satopia
+Htmltemplate for PHP5 > PHP7
+Copyright (C) 2003 Hiroshi Ayukawa and @satopian
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the Artistic License version 2.0,
