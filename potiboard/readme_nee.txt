@@ -40,12 +40,6 @@ neo.css           neo本体
 利用するアプレットは何を選んでもNEO一択です。
 　define(APPLET, 0);
 
-動画機能は使えません。
-　define(USE_ANIME, 0);
-　define(DEF_ANIME, 0);
-
-コンティニューは画像からできるようです。
-
 [ picpost.php ]
 NEO readmeより
 送信された画像のUser-Agentを見て不正な投稿かどうかチェックしているようです。
@@ -78,6 +72,12 @@ NEO readmeより
 独自タグ非対応、文字色変えも非対応。
 
 ■変更履歴
+
+[2018/10/17] v1.11 lot.181017
+・NEO1.4.5の動画記録対応
+
+※アップデートは nee_main.html nee_paint.html template_ini.php 上書き
+　config.php 再設定
 
 [2018/05/21] v1.10 lot.180521
 ・画像を同じウィンドウでプレビューするように

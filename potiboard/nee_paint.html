@@ -28,6 +28,9 @@
 			<!--{def continue_mode}--><?php echo "\n"; ?>
 			<h2 class="oekaki">CONTINUE MODE</h2>
 			<!--{/def}--><?php echo "\n"; ?>
+			<!--{def pch_mode}--><?php echo "\n"; ?>
+			<h2 class="oekaki">PCH MODE</h2>
+			<!--{/def}--><?php echo "\n"; ?>
 			<!--{def paint_mode}--><?php echo "\n"; ?>
 			<hr>
 			<div class="timeid">
@@ -410,6 +413,8 @@
 						<param name="undo_in_mg" value="{$undo_in_mg}">
 						<param name="url_save" value="picpost.php">
 						<param name="url_exit" value="{$self}?mode={$mode}&amp;stime={$stime}">
+						<!--{def anime}--><param name="thumbnail_type" value="animation"><!--{/def}--><?php echo "\n"; ?>
+						<!--{def pchfile}--><param name="pch_file" value="{$pchfile}"><!--{/def}--><?php echo "\n"; ?>
 						<!--{def imgfile}--><param name="image_canvas" value="{$imgfile}"><!--{/def}--><?php echo "\n"; ?>
 						<!--{def usercode}--><param name="send_header" value="usercode={$usercode}"><!--{/def}--><?php echo "\n"; ?>
 						<param name="poo" value="false">
@@ -515,6 +520,29 @@
 			</section>
 			<!--{/def}--><?php echo "\n"; ?>
 			<!--(========== PAINT MODE(お絵かきモード) end ==========)--><?php echo "\n"; ?>
+			<!--(========== 動画表示モード ==========)--><?php echo "\n"; ?>
+			<!--{def pch_mode}--><?php echo "\n"; ?>
+			<section id="appstage">
+				<div class="app">
+					<applet-dummy name="pch" code="pch.PCHViewer.class" archive="PCHViewer.jar,PaintBBS.jar" width="{$w}" height="{$h}" mayscript>
+						<param name="image_width" value="{$picw}">
+						<param name="image_height" value="{$pich}">
+						<param name="pch_file" value="{$pchfile}">
+						<param name="speed" value="{$speed}">
+						<param name="buffer_progress" value="false">
+						<param name="buffer_canvas" value="false">
+					</applet-dummy>
+					<p>
+						<a href="{$pchfile}" target="_blank">Download</a> - Datasize : {$datasize} byte
+					</p>
+					<p>
+						<a href="javascript:close()">閉じる</a>
+					</p>
+				</div>
+			</section>
+			<!--{/def}--><?php echo "\n"; ?>
+			<!--(========== 動画表示モード ここまで ==========)--><?php echo "\n"; ?>
+
 			<!--(========== CONTINUE MODE(コンティニューモード) start ==========)--><?php echo "\n"; ?>
 			<!--{def continue_mode}--><?php echo "\n"; ?>
 			<script type="text/javascript" src="loadcookie.js"></script>

@@ -52,6 +52,7 @@
 							<!--{/def}--><?php echo "\n"; ?>
 							<input type="hidden" name="mode" value="paint">
 							<input class="button" type="submit" value="お絵かき">
+							<!--{def anime}--><input type="checkbox" value="true" name="anime" title="動画記録"><!--{/def}--><?php echo "\n"; ?>
 						</p>
 					</form>
 				</section>
@@ -150,7 +151,7 @@
 					<section>
 						<!--{def oya/src}--><?php echo "\n"; ?>
 						<figure>
-							<figcaption><a href="{$oya/src}" data-lightbox="a{$oya/no}" data-title="{$oya/srcname}">{$oya/srcname}</a> ({$oya/size} B) <!--{def oya/thumb}-->- サムネイル表示中 -<!--{/def}--><br><!--{def oya/painttime}-->PaintTime : {$oya/painttime}<!--{/def}--><!--{def oya/continue}-->  <a href="{$self}?mode=continue&amp;no={$oya/continue}">続きを描く</a><!--{/def}--></figcaption>
+							<figcaption><a href="{$oya/src}" data-lightbox="a{$oya/no}" data-title="{$oya/srcname}">{$oya/srcname}</a> ({$oya/size} B) <!--{def oya/thumb}-->- サムネイル表示中 -<!--{/def}--><br><!--{def oya/painttime}-->PaintTime : {$oya/painttime}<!--{/def}--><!--{def oya/pch}--><a href="{$self}?mode=openpch&amp;pch={$oya/pch}" target="_blank">●動画</a><!--{/def}--><!--{def oya/continue}-->  <a href="{$self}?mode=continue&amp;no={$oya/continue}">続きを描く</a><!--{/def}--></figcaption>
 							<a href="{$oya/src}" data-lightbox="b{$oya/no}" tabindex="{$oya/tab}"  data-title="{$oya/srcname}"><img src="{$oya/imgsrc}" alt="{$oya/srcname}"></a>
 						</figure>
 						<!--{/def}--><?php echo "\n"; ?>
@@ -172,7 +173,7 @@
 							<section>
 								<!--{def oya/res/src}--><?php echo "\n"; ?>
 								<figure>
-									<figcaption><a href="{$oya/res/src}"   data-lightbox="a{$oya/res/no}" data-title="{$oya/res/srcname}">{$oya/res/srcname}</a> ({$oya/res/size} B)<!--{def oya/res/thumb}--> - サムネイル表示中 - <!--{/def}--><br><!--{def oya/res/painttime}--> PaintTime :{$oya/res/painttime}<!--{/def}--><!--{def oya/res/continue}--> <a href="{$self}?mode=continue&amp;no={$oya/res/continue}">続きを描く</a><!--{/def}--></figcaption>
+									<figcaption><a href="{$oya/res/src}"   data-lightbox="a{$oya/res/no}" data-title="{$oya/res/srcname}">{$oya/res/srcname}</a> ({$oya/res/size} B)<!--{def oya/res/thumb}--> - サムネイル表示中 - <!--{/def}--><br><!--{def oya/res/painttime}--> PaintTime :{$oya/res/painttime}<!--{/def}--><!--{def oya/res/pch}--><a href="{$self}?mode=openpch&amp;pch={$oya/res/pch}" target=_blank>●動画</a><!--{/def}--><!--{def oya/res/continue}--> <a href="{$self}?mode=continue&amp;no={$oya/res/continue}">続きを描く</a><!--{/def}--></figcaption>
 									<a href="{$oya/res/src}" data-lightbox="b{$oya/res/no}" data-title="{$oya/res/srcname}"><img src="{$oya/res/imgsrc}" alt="{$oya/res/srcname}"></a>
 								</figure>
 								<!--{/def}--><?php echo "\n"; ?>
@@ -218,9 +219,9 @@
 			</section>
 		</main>
 		<footer>
-			<script type="text/javascript"><!--
+			<script type="text/javascript">
 			l(); //LoadCookie
-			//--></script>
+			// --></script>
 			<script src="https://code.jquery.com/jquery-1.12.4.min.js" type="text/javascript"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"></script>
 			<!-- 著作権表示 削除しないでください -->
