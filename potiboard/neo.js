@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 var Neo = function() {};
 
-Neo.version = "1.4.5";
+Neo.version = "1.4.10";
 Neo.painter;
 Neo.fullScreen = false;
 Neo.uploaded = false;
@@ -63,13 +63,11 @@ Neo.init = function() {
             } else {
                 var pch = Neo.getPCH(function(pch) {
                     if (pch) {
-                        console.log('pch:', pch);
                         Neo.viewer = true;
                         Neo.createViewer(applet);
                         Neo.config.width = pch.width;
                         Neo.config.height = pch.height;
-
-                        Neo.initViewer();
+                        Neo.initViewer(pch);
                         
                         applet.parentNode.removeChild(applet)
                     }
@@ -215,7 +213,7 @@ Neo.initSkin = function() {
     var darkBorder = Neo.multColor(Neo.config.color_icon, 0.7);
     var lightBar = Neo.multColor(Neo.config.color_bar, 1.3);
     var darkBar = Neo.multColor(Neo.config.color_bar, 0.7);
-    var bgImage = Neo.backgroundImage();
+    var bgImage = Neo.painter ? Neo.backgroundImage() : "";
 
     Neo.addRule(".NEO #container", "background-image", "url(" + bgImage + ")");
     Neo.addRule(".NEO .colorSlider .label", "color", Neo.config.tool_color_text);
@@ -514,9 +512,10 @@ Neo.initButtons = function() {
 
 Neo.start = function(isApp) {
     if (!Neo.painter) return;
-    
+
     Neo.initSkin();
     Neo.initComponents();
+
     Neo.initButtons();
 
     Neo.isApp = isApp;
@@ -996,6 +995,19 @@ Neo.createViewer = function(applet) {
 </div>
 </div>
 
+
+<div id="viewerButtons" style="display:none;">
+<div id="viewerPlay" class="buttonOff"></div>
+<div id="viewerStop" class="buttonOff"></div>
+
+<div id="viewerRewind" class="buttonOff"></div>
+<div id="viewerSpeed" class="buttonOff" style="padding-left:2px;">既</div>
+<div id="viewerZoomPlus" class="buttonOff"></div>
+<div id="viewerZoomMinus" class="buttonOff"></div>
+<div id="viewerBar" class="buttonOff" style="display:inline-block;"></div>
+
+</div>
+
 </div>
 </div>
                                  */}).toString().match(/\/\*([^]*)\*\//)[1];
@@ -1021,7 +1033,7 @@ Neo.createViewer = function(applet) {
     }, 0);
 };
 
-Neo.initViewer = function() {
+Neo.initViewer = function(pch) {
     var pageview = document.getElementById("pageView");
     var pageWidth = Neo.config.applet_width;
     var pageHeight = Neo.config.applet_height;
@@ -1030,7 +1042,7 @@ Neo.initViewer = function() {
     
     Neo.canvas = document.getElementById("canvas");
     Neo.container = document.getElementById("container");
-//  Neo.container.style.backgroundColor = Neo.config.color_bk;
+    Neo.container.style.backgroundColor = Neo.config.color_back;
     Neo.container.style.border = "0";
 
     var dx = (pageWidth - Neo.config.width) / 2;
@@ -1044,7 +1056,12 @@ Neo.initViewer = function() {
     painter.style.bottom = (dy + 26) + "px";
     painter.style.left = (dx) + "px";
 
-
+    var viewerButtons = document.getElementById("viewerButtons");
+    viewerButtons.style.width = (pageWidth - 2) + "px";
+    
+    var viewerBar = document.getElementById("viewerBar");
+    viewerBar.style.width = (pageWidth - (24 * 6) - 6) + "px"; 
+    
     Neo.canvas.style.width = Neo.config.width + "px";
     Neo.canvas.style.height = Neo.config.height + "px";
     
@@ -1053,9 +1070,27 @@ Neo.initViewer = function() {
     
     Neo.container.oncontextmenu = function() {return false;};
 
-    if (Neo.config.pch_file) {
-        Neo.painter.loadAnimation(Neo.config.pch_file, 10)
-    }        
+    if (pch) {//Neo.config.pch_file) {
+        Neo.painter._actionMgr._items = pch.data;
+        Neo.painter._actionMgr.play(10);
+    }
+};
+
+Neo.startViewer = function() {
+    console.log("start viewer...");
+
+    new Neo.Button().init("viewerPlay").onmouseup = function() {
+        console.log("init viewerPlay");
+    };
+    new Neo.Button().init("viewerStop").onmouseup = function() {
+        console.log("init viewerStop");
+    };
+    new Neo.Button().init("viewerRewind").onmouseup = function() {
+        console.log("init viewerRewind");
+    };
+    new Neo.Button().init("viewerSpeed").onmouseup = function() {
+        console.log("init viewerSpeed");
+    };
 };
 
 Neo.getFilename = function() {
@@ -1081,10 +1116,11 @@ Neo.getPCH = function(callback) {
             var height = header[6] + header[7] * 0x100
             console.log('NEO animation:', width, 'x', height);
             if (callback) {
+                var items = Neo.fixPCH(JSON.parse(data))
                 callback({
                     width:width,
                     height:height,
-                    data:JSON.parse(data)
+                    data:items
                 });
             }
             
@@ -1093,6 +1129,23 @@ Neo.getPCH = function(callback) {
         }
     }
     request.send();
+};
+
+Neo.fixPCH = function(items) {
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+
+        var index = item.indexOf('eraseAll');
+        if (index > 0) {
+            var tmp = item.slice(index);
+            var tmp2 = item.slice(0, index);
+            console.log("fix eraseAll", tmp2, tmp);
+
+            items[i] = tmp2;
+            items.splice(i, 0, tmp)
+        }
+    }
+    return items;
 };
 
 'use strict';
@@ -1353,6 +1406,7 @@ Neo.Painter.LINETYPE_BRUSH = 3;
 Neo.Painter.LINETYPE_TONE = 4;
 Neo.Painter.LINETYPE_DODGE = 5;
 Neo.Painter.LINETYPE_BURN = 6;
+Neo.Painter.LINETYPE_BLUR = 7;
 
 Neo.Painter.MASKTYPE_NONE = 0;
 Neo.Painter.MASKTYPE_NORMAL = 1;
@@ -1533,26 +1587,28 @@ Neo.Painter.prototype._initCanvas = function(div, width, height) {
 
     var ref = this;
 
-    var container = document.getElementById("container");
+    if (!Neo.viewer) {
+        var container = document.getElementById("container");
 
-    container.onmousedown = function(e) {ref._mouseDownHandler(e)};
-    container.onmousemove = function(e) {ref._mouseMoveHandler(e)};
-    container.onmouseup = function(e) {ref._mouseUpHandler(e)};
-    container.onmouseover = function(e) {ref._rollOverHandler(e)};
-    container.onmouseout = function(e) {ref._rollOutHandler(e)};
-    container.addEventListener("touchstart", function(e) {
-        ref._mouseDownHandler(e);
-    }, false);
-    container.addEventListener("touchmove", function(e) {
-        ref._mouseMoveHandler(e);
-    }, false);
-    container.addEventListener("touchend", function(e) {
-        ref._mouseUpHandler(e);
-    }, false);
+        container.onmousedown = function(e) {ref._mouseDownHandler(e)};
+        container.onmousemove = function(e) {ref._mouseMoveHandler(e)};
+        container.onmouseup = function(e) {ref._mouseUpHandler(e)};
+        container.onmouseover = function(e) {ref._rollOverHandler(e)};
+        container.onmouseout = function(e) {ref._rollOutHandler(e)};
+        container.addEventListener("touchstart", function(e) {
+            ref._mouseDownHandler(e);
+        }, false);
+        container.addEventListener("touchmove", function(e) {
+            ref._mouseMoveHandler(e);
+        }, false);
+        container.addEventListener("touchend", function(e) {
+            ref._mouseUpHandler(e);
+        }, false);
 
-    document.onkeydown = function(e) {ref._keyDownHandler(e)};
-    document.onkeyup = function(e) {ref._keyUpHandler(e)};
-
+        document.onkeydown = function(e) {ref._keyDownHandler(e)};
+        document.onkeyup = function(e) {ref._keyUpHandler(e)};
+    }
+    
     this.updateDestCanvas(0, 0, this.canvasWidth, this.canvasHeight);
 };
 
@@ -2665,7 +2721,7 @@ Neo.Painter.prototype.setEraserPoint = function(buf8, width, x, y) {
     var shape = this._roundData[d];
     var shapeIndex = 0;
     var index = (y * width + x) * 4;
-    var a = Math.floor(this.alpha * 255);
+    var a = Math.floor(this._currentColor[3]); //this.alpha * 255);
 
     for (var i = 0; i < d; i++) {
         for (var j = 0; j < d; j++) {
@@ -2691,7 +2747,8 @@ Neo.Painter.prototype.setBlurPoint = function(buf8, width, x, y, x0, y0) {
     var height = buf8.length / (width * 4);
 
 //  var a1 = this.getAlpha(Neo.Painter.ALPHATYPE_BRUSH);
-    var a1 = this.alpha / 12;
+//  var a1 = this.alpha / 12;
+    var a1 = (this._currentColor[3] / 255.0) / 12;
     if (a1 == 0) return;
     var blur = a1;
 
@@ -2857,16 +2914,19 @@ Neo.Painter.prototype.getBezierPoint = function(t, x0, y0, x1, y1, x2, y2, x3, y
 
 var nmax = 1;
 
-Neo.Painter.prototype.drawBezier = function(ctx, x0, y0, x1, y1, x2, y2, x3, y3, type) {
+Neo.Painter.prototype.drawBezier = function(ctx, x0, y0, x1, y1, x2, y2, x3, y3, type, isReplay) {
     var xmax = Math.max(x0, x1, x2, x3);
     var xmin = Math.min(x0, x1, x2, x3);
     var ymax = Math.max(y0, y1, y2, y3);
     var ymin = Math.min(y0, y1, y2, y3);
     var n = Math.ceil(((xmax - xmin) + (ymax - ymin)) * 2.5);
 
-    if (n > nmax) {
-        n = (n < nmax * 2) ? n : nmax * 2;
-        nmax = n;
+    // 最初にベジェを使う時ここで処理落ちするため
+    if (!isReplay) {
+        if (n > nmax) {
+            n = (n < nmax * 2) ? n : nmax * 2;
+            nmax = n;
+        }
     }
 
     for (var i = 0; i < n; i++) {
@@ -3091,7 +3151,7 @@ Neo.Painter.prototype.eraseRect = function(layer, x, y, width, height) {
 
     var index = 0;
 
-    var a = 1.0 - this.alpha;
+    var a = 1.0 - (this._currentColor[3] / 255.0) //this.alpha;
     if (a != 0) {
         a = Math.ceil(2.0 / a);
     } else {
@@ -3228,7 +3288,7 @@ Neo.Painter.prototype.blurRect = function(layer, x, y, width, height) {
     for (var i = 0; i < buf8.length; i++) tmp[i] = buf8[i];
 
     var index = 0;
-    var a1 = this.alpha / 12;
+    var a1 = (this._currentColor[3] / 255.0) / 12; //this.alpha / 12;
     var blur = a1;
 
     for (var j = 0; j < height; j++) {
@@ -3638,10 +3698,6 @@ Neo.Painter.prototype.cancelTool = function(e) {
 };
 
 Neo.Painter.prototype.loadImage = function (filename) {
-    if (filename.slice(-3).toLowerCase == ".pch") {
-        return this.loadAnimation(filename);
-    }
-    
     console.log("loadImage " + filename);
     var img = new Image();
     img.src = filename;
@@ -3660,11 +3716,10 @@ Neo.Painter.prototype.loadAnimation = function (filename, wait) {
     request.onload = function() {
         var byteArray = new Uint8Array(request.response);
         var header = byteArray.slice(0, 12);
-        console.log('header..', header);
         var data = LZString.decompressFromUint8Array(byteArray.slice(12));
-        console.log('body...', data);
-        data = JSON.parse(data);
-        Neo.painter._actionMgr._items = data;
+
+        var items = JSON.parse(data);
+        Neo.painter._actionMgr._items = Neo.fixPCH(JSON.parse(data));
         Neo.painter._actionMgr.play(wait);
     };
     request.send();
@@ -4212,7 +4267,8 @@ Neo.DrawToolBase.prototype.bezierDownHandler = function(oe) {
 Neo.DrawToolBase.prototype.bezierUpHandler = function(oe) {
     if (this.isUpMove == false) {
         this.isUpMove = true;
-    }
+
+    } else return; // 枠外からベジェを開始したときdownを通らずにupが呼ばれてエラーになる
 
     this.step++;
     switch (this.step) {
@@ -4766,7 +4822,7 @@ Neo.EraseRectTool.prototype.doEffect = function(oe, x, y, width, height) {
 //  var ctx = oe.canvasCtx[oe.current];
 //  oe.eraseRect(ctx, x, y, width, height);
 //  oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
-    oe._actionMgr.eraseRect(x, y, width, height);
+    oe._actionMgr.eraseRect2(x, y, width, height);
 };
 
 /*
@@ -5319,7 +5375,9 @@ Neo.ActionManager.prototype.play = function(wait) {
                                   true);
         }
 
-        console.log("play", item[0], this._head, this._items.length);
+        if (Neo.viewer) {
+            console.log("play", item[0], this._head, this._items.length);
+        }
 
         if (item[0] != "restore") {
             // sync
@@ -5386,11 +5444,11 @@ Neo.ActionManager.prototype.eraseAll = function() {
     var oe = Neo.painter;
     var layer = oe.current;
     
-    if (typeof layer != "object") {
+    if (typeof arguments[0] != "object") {
         this.push('eraseAll', layer);
 
     } else {
-        var item = layer;
+        var item = arguments[0];
         layer = item[1];
     }
 
@@ -5501,11 +5559,13 @@ Neo.ActionManager.prototype.bezier = function(
 {
     var oe = Neo.painter;
     var layer = oe.current;
-
+    var isReplay = true;
+    
     if (arguments.length > 1) {
         this.push('bezier', layer)
         this.pushCurrent();
         this.push(lineType, x0, y0, x1, y1, x2, y2, x3, y3);
+        isReplay = false;
         
     } else {
         var item = arguments[0];
@@ -5522,7 +5582,7 @@ Neo.ActionManager.prototype.bezier = function(
         x3 = item[18];
         y3 = item[19];
     }
-    oe.drawBezier(oe.canvasCtx[layer], x0, y0, x1, y1, x2, y2, x3, y3, lineType);
+    oe.drawBezier(oe.canvasCtx[layer], x0, y0, x1, y1, x2, y2, x3, y3, lineType, isReplay);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
 }
 
@@ -5623,6 +5683,29 @@ Neo.ActionManager.prototype.blurRect = function(x, y, width, height) {
         height = item[5];
     }
     oe.blurRect(layer, x, y, width, height);
+    oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+}
+
+Neo.ActionManager.prototype.eraseRect2 = function(x, y, width, height) {
+    var oe = Neo.painter;
+    var layer = oe.current;
+
+    if (arguments.length > 1) {
+        this.push('eraseRect2', layer);
+        this.pushCurrent();
+        this.push(x, y, width, height);
+        
+    } else {
+        var item = arguments[0];
+        layer = item[1];
+        this.getCurrent(item);
+        
+        x = item[11];
+        y = item[12];
+        width = item[13];
+        height = item[14];
+    }
+    oe.eraseRect(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
 }
 
