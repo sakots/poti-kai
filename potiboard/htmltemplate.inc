@@ -76,11 +76,18 @@ class TagBasis{
 
 	function parse($str,$multilabels){
 		while(preg_match($this->matchregexp,$str,$match)){
+//未定義エラー対策
+			if(isset($match[1])){
 			$ind=$this->getIndex($match[1],$multilabels);
+			}
+			else{
+			$ind=$this->getIndex("",$multilabels);
+			}
 
 			$str=str_replace(
 				call_user_func_array("sprintf",array_merge(array($this->fromstring),array_slice($match,1))),
 				call_user_func_array("sprintf",array_merge(array($this->tostring),array($ind),array_slice($match,1))),
+
 			$str);
 		}
 		$str=$this->closeTag($str);

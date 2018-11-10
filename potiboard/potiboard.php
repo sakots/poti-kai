@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.45.1 lot.180923
+  * POTI-board改 v1.45.2 lot.181110
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.45.1');
-define('POTI_VERLOT' , '改 v1.45.1 lot.180923');
+define('POTI_VER' , '改 v1.45.2');
+define('POTI_VERLOT' , '改 v1.45.2 lot.181110');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -400,7 +400,10 @@ function updatelog($resno=0){
 			$st = $page;
 		}
 		for($i = $st; $i < $st+PAGE_DEF; $i++){
-			if($tree[$i]=="") continue;
+//			if($tree[$i]=="") continue;
+			if(isset($tree[$i])){//未定義エラー対策
+			}else{continue;} 
+
 			$treeline = explode(",", rtrim($tree[$i]));
 			$disptree = $treeline[0];
 			$j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
@@ -465,6 +468,7 @@ function updatelog($resno=0){
 						if($rext && @is_file($resimg)){ $imgline[]='img'; }else{ $imgline[]='0'; }
 					}
 					$resimgs = array_count_values($imgline);
+					if(isset($resimgs['img'])){//未定義エラー対策
 					while($resimgs['img'] > DSP_RESIMG){
 						while($imgline[0]='0'){ //画像付きレスが出るまでシフト
 							array_shift($imgline);
@@ -474,6 +478,7 @@ function updatelog($resno=0){
 						$s++;
 						$resimgs = array_count_values($imgline);
 					}
+				}
 					if($s>1) $skipres = $s - 1; //再計算
 				}
 			}else{
@@ -507,11 +512,14 @@ function updatelog($resno=0){
 			$com = preg_replace("{<br( *)/>}i","<br>",$com);
 			//独自タグ変換
 			if(USE_POTITAG) $com = potitag($com);
+	//メタタグに使うコメントから
+	//タグを除去
+	$descriptioncom=strip_tags($com);
 
 			// 親記事格納
-			$dat['oya'][$oya] = compact('src','srcname','size','painttime','pch','continue','thumb','imgsrc','w','h','no','sub','name','now','com','limit','skipres','resub','url','email','id','updatemark','trip','tab','fontcolor');
+			$dat['oya'][$oya] = compact('src','srcname','size','painttime','pch','continue','thumb','imgsrc','w','h','no','sub','name','now','com','descriptioncom','limit','skipres','resub','url','email','id','updatemark','trip','tab','fontcolor');
 			// 変数クリア
-			unset($src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h,$no,$sub,$name,$now,$com,$limit,$skipres,$resub,$url,$email);
+			unset($src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h,$no,$sub,$name,$now,$com,$descriptioncom,$limit,$skipres,$resub,$url,$email);
 
 			//レス作成
 			for($k = $s; $k < count($treeline); $k++){
@@ -592,7 +600,9 @@ function updatelog($resno=0){
 						,$src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h);
 			}
 			// レス記事一括格納
+			if(isset($rres)){//未定義エラー対策
 			$dat['oya'][$oya]['res'] = $rres[$oya];
+			}
 			unset($rres); //クリア
 			clearstatcache(); //ファイルのstatをクリア
 			$oya++;
@@ -956,6 +966,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 //			if(strlen($ltime)>10){$ltime=substr($ltime,0,-3);}
 //KASIRAが入らない10桁のUNIX timeを取り出す
 			if(strlen($ltime)>10){$ltime=substr($ltime,-13,-3);}
+//文字列を整数に
+			$ltime = (int)$ltime;
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
 			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
 			if(isset($com)){
@@ -994,6 +1006,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}
 	}
 	// アップロード処理
+	if(isset($dest)){//未定義エラー対策
 	if($dest&&@file_exists($dest)){
 		for($i=0;$i<200;$i++){ //画像重複チェック
 			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $line[$i]);
@@ -1002,9 +1015,12 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			}
 		}
 	}
+		}
 	list($lastno,) = explode(",", $line[0]);
 	$no = $lastno + 1;
-
+	if(!isset($dest)){
+	$dest=$ext=$W=$H=$chk="";
+	}
 	$newline = "$no,$now,$name,$email,$sub,$com,$url,$host,$pass,$ext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
 	$newline.= implode('', $line);
 	ftruncate($fp,0);
@@ -1138,6 +1154,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$str = "<!DOCTYPE html>\n<html><head><META HTTP-EQUIV=\"refresh\" content=\"1;URL=".PHP_SELF2."\">\n";
 //	$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
+	if(!isset($mes)){$mes="";}
 	$str.= "<body>$mes 画面を切り替えます</body></html>";
 	echo charconvert($str,4);
 }
@@ -1414,15 +1431,22 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 	if($pich < 100) $pich = 100;
 	if($picw > PMAX_W) $picw = PMAX_W;
 	if($pich > PMAX_H) $pich = PMAX_H;
-	$w = $picw + 150;
-	$h = $pich + 170;
+//	$w = $picw + 150;
+	if(!$useneo && $shi){
+	$w = $picw + 465;//しぃぺの時の幅
+	$h = $pich + 120;//しぃぺの時の高さ
+	}
+	else{
+	$w = $picw + 150;//PaintBBSの時の幅
+	$h = $pich + 170;//PaintBBSの時の高さ
+}
 	if($w < 400){$w = 400;}
 	if($h < 420){$h = 420;}
 //	if($w < 500 && $shi){$w = 500;}
 //	if($h < 500 && $shi==2){$h = 500;}
 //NEOを使う時はPaintBBSの設定
 	if($w < 500 && !$useneo && $shi){$w = 500;}
-	if($h < 500 && !$useneo && $shi==2){$h = 500;}
+	if($h < 520 && !$useneo && $shi){$h = 520;}
 
 	$dat['paint_mode'] = true;
 	head($dat);
@@ -1557,7 +1581,8 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 
 	//差し換え時の認識コード追加
 	if($type=='rep'){
-		$repcode = substr(crypt(md5($no.getenv("REMOTE_ADDR").$pwd.date("Ymd", time()))),-8);
+//		$repcode = substr(crypt(md5($no.getenv("REMOTE_ADDR").$pwd.date("Ymd", time()))),-8);
+		$repcode = substr(crypt(md5($no.getenv("REMOTE_ADDR").$pwd.date("Ymd", time())),time()),-8);
 		//念の為にエスケープ文字があればアルファベットに変換
 		$repcode = strtr($repcode,"!\"#$%&'()+,/:;<=>?@[\\]^`/{|}~","ABCDEFGHIJKLMNOabcdefghijklmn");
 		$dat['mode'] = 'picrep&amp;no='.$no.'&amp;pwd='.$pwd.'&amp;repcode='.$repcode;
@@ -2438,55 +2463,78 @@ if(!isset($usercode)){
 }
 setcookie("usercode", $usercode, time()+86400*365);//1年間
 
-if (isset($mode)){//未定義エラー対策
+//未定義エラー対策
+if (isset($mode)){
 switch($mode){
 	case 'regist':
 		if(ADMIN_NEWPOST && !$resto){
 			if($pwd != ADMIN_PASS){ error(MSG029);
 			}else{ $admin=$pwd; }
 		}
+//		regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
+//未定義エラー対策
+	if(isset($picfile)){//お絵かきの時
+	$upfile=$upfile_name="";
+		if(!isset($resto)){$resto="";}//レスではなかった時
+	}
+elseif(isset($upfile)){//画像アップロードの時
+	$pictmp=$picfile="";
+		if(!isset($resto)){$resto="";}
+	}
+else{//文字だけの時
+	$upfile=$upfile_name=$pictmp=$picfile="";
+		if(!isset($resto)){$resto="";}
 
-		regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
+	}
+	regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 		break;
 	case 'admin':
-		valid($pass);
+		if(!isset($pass)){$pass="";}
+		valid($pass); 
 		if($admin=="del") admindel($pass);
 		if($admin=="post"){
 			$dat['post_mode'] = true;
 			$dat['regist'] = true;
 			head($dat);
+		if(!isset($res)){$res="";}
 			form($dat,$res,1);
 			htmloutput(OTHERFILE,$dat);
 		}
 		if($admin=="update"){
 			updatelog();
-			echo "<META HTTP-EQUIV=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
+			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
 		}
 		break;
 	case 'usrdel':
 		if(USER_DEL){
 			usrdel($del,$pwd);
 			updatelog();
-			echo "<META HTTP-EQUIV=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
+			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
 		}else{error(MSG033);}
 		break;
 	case 'paint':
-		paintform($picw,$pich,$palette,$anime);
+		$palette = "";
+		if(!isset($resto)){$resto="";}
+paintform($picw,$pich,$palette,$anime);
 		break;
 	case 'piccom':
+		if(!isset($resto)){$resto="";}
 		paintcom($resto);
 		break;
 	case 'openpch':
+		if(!isset($sp)){$sp="";}
 		openpch($pch,$sp);
 		break;
 	case 'continue':
 		incontinue($no);
 		break;
 	case 'contpaint':
+//コンティニュー時のパスワード
 //		if(CONTINUE_PASS) usrchk($no,$pwd);
-//差し換えの時には削除キーが必要
+//パスワードが必要なのは差し換えの時だけ
 		if(CONTINUE_PASS||$type=='rep') usrchk($no,$pwd);
 		if(ADMIN_NEWPOST) $admin=$pwd;
+		$palette="";
 		paintform($picw,$pich,$palette,$anime,$pch);
 		break;
 	case 'newpost':
@@ -2515,7 +2563,7 @@ switch($mode){
 		if($res){
 			updatelog($res);
 		}else{
-			echo "<META HTTP-EQUIV=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
+			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
 		}
 }
 }
