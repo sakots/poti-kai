@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.45.2 lot.181122
+  * POTI-board改 v1.45.3 lot.181122
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -929,7 +929,11 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	// 連続・二重投稿チェック (v1.32:仕様変更)
-	for($i=0;$i<20;$i++){
+	if($countline >= 22){//存在する行数のみチェック
+		$linechk=20;
+	}
+	else{$linechk=$countline-2;}
+	for($i=0;$i<$linechk;$i++){
 		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $line[$i]);
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
