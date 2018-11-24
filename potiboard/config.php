@@ -1,11 +1,17 @@
 <?php
 /*
-  * POTI-board改 v1.45.1 lot.180923
+  * POTI-board改 v1.45.3 lot.181122
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。
   *
 */
+/* ---------- ADD:2018/11/22 ---------- */
+//urlパラメータを追加する する:1 しない:0
+//ブラウザのキャッシュが表示されて投稿しても反映されない時は1。
+//.htaccessでキャッシュの有効期限を過去にしている場合は設定不要。
+
+define('URL_PARAMETER', '0');
 
 /* ---------- ADD:2018/09/22 ---------- */
 //シェアボタンを表示する する:1 しない:0
@@ -173,6 +179,7 @@ define('NOTICE_NOADMIN', '1');
 //メール通知先
 define('TO_MAIL', 'root@xxx.xxx');
 
+//メール通知のほか、シェアボタンなどで使用
 //設置場所のURL。'/'まで
 define('ROOT_URL', 'http://www.xxx.com/poti/');
 

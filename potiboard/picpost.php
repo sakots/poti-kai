@@ -71,7 +71,7 @@ $u_agent = getenv("HTTP_USER_AGENT");
 $u_agent = str_replace("\t", "", $u_agent);
 
 //raw POST データ取得
-ini_set("always_populate_raw_post_data", "1");
+//ini_set("always_populate_raw_post_data", "1");
 //$buffer = $_REQUEST['HTTP_RAW_POST_DATA'];
 $buffer = file_get_contents('php://input');
 //if(!$buffer) $buffer = $HTTP_RAW_POST_DATA;
