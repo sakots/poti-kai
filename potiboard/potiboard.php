@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.45.2 lot.181110
+  * POTI-board改 v1.45.3 lot.181122
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.45.2');
-define('POTI_VERLOT' , '改 v1.45.2 lot.181110');
+define('POTI_VER' , '改 v1.45.3');
+define('POTI_VERLOT' , '改 v1.45.3 lot.181122');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -929,7 +929,14 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	// 連続・二重投稿チェック (v1.32:仕様変更)
-	for($i=0;$i<20;$i++){
+	if($countline >= 21){//存在する行数のみチェック
+		$chkline=20;
+	}
+	else{
+	$chkline=$countline-1;
+	}
+//	for($i=0;$i<20;$i++){ 
+	for($i=0;$i<$chkline;$i++){
 		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $line[$i]);
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
@@ -1007,15 +1014,23 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 	// アップロード処理
 	if(isset($dest)){//未定義エラー対策
+	$countline=(count($line));
+		if($countline >= 201){//存在する行数のみチェック
+		$chkline=200;
+	}
+	else{
+	$chkline=$countline-1;
+	}
 	if($dest&&@file_exists($dest)){
-		for($i=0;$i<200;$i++){ //画像重複チェック
+//		for($i=0;$i<200;$i++){ //画像重複チェック
+		for($i=0;$i<$chkline;$i++){ //画像重複チェック
 			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $line[$i]);
 			if($chkp==$chk&&@file_exists($path.$timep.$extp)){
 				error(MSG005,$dest);
 			}
 		}
 	}
-		}
+		}//ここまで
 	list($lastno,) = explode(",", $line[0]);
 	$no = $lastno + 1;
 	if(!isset($dest)){
@@ -1151,8 +1166,17 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	header("Content-type: text/html; charset=".CHARSET_HTML);
-	$str = "<!DOCTYPE html>\n<html><head><META HTTP-EQUIV=\"refresh\" content=\"1;URL=".PHP_SELF2."\">\n";
-//	$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
+if (defined('URL_PARAMETER')){
+if(URL_PARAMETER){
+		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
+	}else{
+		$urlparameter = "";
+}
+	}else{
+		$urlparameter = "";
+}
+	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2.$urlparameter."\">\n";
+	
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	if(!isset($mes)){$mes="";}
 	$str.= "<body>$mes 画面を切り替えます</body></html>";
@@ -1690,6 +1714,7 @@ function openpch($pch,$sp=""){
 		$dat['paintbbs'] = true;
 		$pchfile = PCH_DIR.$pch.'.pch';
 	}
+	if(file_exists($pchfile)){//動画が差し換えられていた時
 	$datasize = filesize($pchfile);
 	$size = getimagesize($picfile);
 	if(!$sp) $sp = PCH_SPEED;
@@ -1699,7 +1724,10 @@ function openpch($pch,$sp=""){
 	$h = $pich + 26;
 	if($w < 200){$w = 200;}
 	if($h < 226){$h = 226;}
-
+	}
+	else{
+	$w=$h=$picw=$pich=$datasize="";
+}
 	$dat['pch_mode'] = true;
 	head($dat);
 	$dat['w'] = $w;
@@ -1750,6 +1778,7 @@ function incontinue($no){
 	$dat['passflag'] = true;
 //新規投稿で削除キー不要の時 true
 	if(! CONTINUE_PASS) $dat['newpost_nopassword'] = true;
+	if(file_exists(IMG_DIR.$ctim.$cext)){//画像が無い時は処理しない
 	$dat['picfile'] = IMG_DIR.$ctim.$cext;
 	$size = getimagesize($dat['picfile']);
 	$dat['picw'] = $size[0];
@@ -1759,7 +1788,7 @@ function incontinue($no){
 	$dat['ext'] = $cext;
 	//描画時間
 	if(DSP_PAINTTIME) $dat['painttime'] = $cptime;
-
+	}
 	if(@file_exists(PCH_DIR.$ctim.'.pch')){
 		$dat['applet'] = false;
 		$dat['ctype_pch'] = true;
@@ -1859,7 +1888,7 @@ function editform($del,$pwd){
 }
 
 /* 記事上書き */
-function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
+function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	global $badstring,$badstring_and_url,$badip;
 	global $REQUEST_METHOD;
 	global $fcolor;
@@ -2021,9 +2050,19 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,&$admin =''){
 	updatelog();
 
 	header("Content-type: text/html; charset=".CHARSET_HTML);
-	$str = "<!DOCTYPE html>\n<html><head><META HTTP-EQUIV=\"refresh\" content=\"1;URL=".PHP_SELF2."\">\n";
-	//	$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
+if (defined('URL_PARAMETER')){
+if(URL_PARAMETER){
+		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
+	}else{
+		$urlparameter = "";
+}
+	}else{
+		$urlparameter = "";
+}
+	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2.$urlparameter."\">\n";
+	
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
+	if(!isset($mes)){$mes="";}
 	$str.= "<body>$mes 画面を切り替えます</body></html>";
 	echo charconvert($str,4);
 }
@@ -2213,9 +2252,19 @@ function replace($no,$pwd,$stime){
 	updatelog();
 
 	header("Content-type: text/html; charset=".CHARSET_HTML);
-	$str = "<!DOCTYPE html>\n<html><head><META HTTP-EQUIV=\"refresh\" content=\"1;URL=".PHP_SELF2."\">\n";
-	//$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
+if (defined('URL_PARAMETER')){
+if(URL_PARAMETER){
+		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
+	}else{
+		$urlparameter = "";
+}
+	}else{
+		$urlparameter = "";
+}
+	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2.$urlparameter."\">\n";
+	
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
+	if(!isset($mes)){$mes="";}
 	$str.= "<body>$mes 画面を切り替えます</body></html>";
 	echo charconvert($str,4);
 }
@@ -2240,7 +2289,9 @@ function catalog(){
 	form($dat,'');
 	if(!$page) $page=0;
 	for($i = $page; $i < $page+$pagedef; $i++){
-		if($tree[$i]==""){
+//		if($tree[$i]==""){
+//空文字ではなく未定義になっている
+		if(!isset($tree[$i])){
 			$dat['y'][$y]['x'][$x]['noimg'] = true;
 		}else{
 			$treeline = explode(",", rtrim($tree[$i]));
@@ -2473,13 +2524,19 @@ switch($mode){
 		}
 //		regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 //未定義エラー対策
+//空文字でも定義済みになるので二重チェック。
+
 	if(isset($picfile)){//お絵かきの時
-	$upfile=$upfile_name="";
+		if($picfile){
+		$upfile=$upfile_name="";
 		if(!isset($resto)){$resto="";}//レスではなかった時
 	}
-elseif(isset($upfile)){//画像アップロードの時
-	$pictmp=$picfile="";
+	}
+	elseif(isset($upfile_name)){//画像アップロードの時
+		if($upfile_name){
+		$pictmp=$picfile="";
 		if(!isset($resto)){$resto="";}
+	}
 	}
 else{//文字だけの時
 	$upfile=$upfile_name=$pictmp=$picfile="";
@@ -2487,7 +2544,11 @@ else{//文字だけの時
 
 	}
 	regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
+	//変数クリア
+	unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
+
 		break;
+
 	case 'admin':
 		if(!isset($pass)){$pass="";}
 		valid($pass); 
