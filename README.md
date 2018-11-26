@@ -40,6 +40,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/11/22] v1.45.3 lot.181122</dt>
+	<dd class="con">【仕様変更】</dd>
+	<dd>Notice、Warning対策。投稿直後にブラウザのキャッシュを表示しないようにurlパラメーターを追加。（by さとぴあ）</dd>
 	<dt class="ver">[2018/09/23] v1.45.1 lot.180923</dt>
 	<dd class="con">【仕様変更】</dd>
 	<dd>config.phpでシェアボタンを表示する する:1 しない:0を選択できるようにした。対応skinが必要。（by さとぴあ）</dd>
