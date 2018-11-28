@@ -3,14 +3,14 @@
 document.addEventListener("DOMContentLoaded", function() {
     Neo.init();
 
-    if (!navigator.userAgent.match("Electron") && !Neo.viewer) {
+    if (!navigator.userAgent.match("Electron")) {
         Neo.start();
     }
 });
 
 var Neo = function() {};
 
-Neo.version = "1.4.10";
+Neo.version = "1.5.0";
 Neo.painter;
 Neo.fullScreen = false;
 Neo.uploaded = false;
@@ -54,22 +54,24 @@ Neo.init = function() {
 
         if (name == "paintbbs" || name == "pch") {
             Neo.applet = applet;
-            Neo.initConfig(applet);
 
             if (name == "paintbbs") {
+                Neo.initConfig(applet);
                 Neo.createContainer(applet);
                 Neo.init2();
 
             } else {
-                var pch = Neo.getPCH(function(pch) {
+                Neo.viewer = true;
+                Neo.initConfig(applet);
+
+                var filename = Neo.getFilename();
+                var pch = Neo.getPCH(filename, function(pch) {
                     if (pch) {
-                        Neo.viewer = true;
                         Neo.createViewer(applet);
                         Neo.config.width = pch.width;
                         Neo.config.height = pch.height;
                         Neo.initViewer(pch);
-                        
-                        applet.parentNode.removeChild(applet)
+                        Neo.startViewer();
                     }
                 });
             }
@@ -150,6 +152,10 @@ Neo.initConfig = function(applet) {
         var emulationMode = Neo.config.neo_emulation_mode || "2.22_8x";
         Neo.config.neo_alt_translation = emulationMode.slice(-1).match(/x/i);
 
+        if (Neo.viewer && !Neo.config.color_bar) {
+            Neo.config.color_bar = "#eeeeff";
+        }
+
         Neo.readStyles();
         Neo.applyStyle("color_bk", "#ccccff");
         Neo.applyStyle("color_bk2", "#bbbbff");
@@ -164,6 +170,12 @@ Neo.initConfig = function(applet) {
         Neo.applyStyle("tool_color_bar", "#ddddff");
         Neo.applyStyle("tool_color_frame", "#000000");
 
+        // viewer用
+        if (Neo.viewer) {
+            Neo.applyStyle("color_back", "#ccccff");
+            Neo.applyStyle("color_bar_select", "#407675");
+        }
+        
         var e = document.getElementById("container");
         Neo.config.inherit_color = Neo.getInheritColor(e);
         if (!Neo.config.color_frame) Neo.config.color_frame = Neo.config.color_text;
@@ -199,16 +211,18 @@ Neo.fixConfig = function(value) {
     return value;
 };
 
-Neo.initSkin = function() {
+Neo.getStyleSheet = function() {
     var sheet = document.styleSheets[0];
     if (!sheet) {
         var style = document.createElement("style");
         document.head.appendChild(style); // must append before you can access sheet property
         sheet = style.sheet;
     }
+    return sheet;
+};
 
-    Neo.styleSheet = sheet;
-
+Neo.initSkin = function() {
+    Neo.styleSheet = Neo.getStyleSheet();
     var lightBorder = Neo.multColor(Neo.config.color_icon, 1.3);
     var darkBorder = Neo.multColor(Neo.config.color_icon, 0.7);
     var lightBar = Neo.multColor(Neo.config.color_bar, 1.3);
@@ -511,7 +525,7 @@ Neo.initButtons = function() {
 };
 
 Neo.start = function(isApp) {
-    if (!Neo.painter) return;
+    if (Neo.viewer) return;
 
     Neo.initSkin();
     Neo.initComponents();
@@ -669,6 +683,11 @@ Neo.resizeCanvas = function() {
     width = Math.floor(width / 2) * 2;
     height = Math.floor(height / 2) * 2;
 
+    if (Neo.viewer) {
+        width = canvasWidth;
+        height = canvasHeight;
+    }
+    
     Neo.painter.destWidth = width;
     Neo.painter.destHeight = height;
 
@@ -779,8 +798,10 @@ Neo.submit = function(board, blob, thumbnail, thumbnail2) {
     request.open("POST", url, true);
     
     request.onload = function(e) {
-        console.log(request.response);
-        Neo.uploaded = true;
+        console.log(request.response, 'status=', request.status);
+        if (request.status / 100 == 2) {
+            Neo.uploaded = true;
+        }
 
         var url = Neo.config.url_exit;
         if (url[0] == '/') {
@@ -974,179 +995,24 @@ Neo.createContainer = function(applet) {
     }, 0);
 };
 
-/*
-  -----------------------------------------------------------------------
-    動画表示モード
-  -----------------------------------------------------------------------
-*/
-
-Neo.createViewer = function(applet) {
-    var neo = document.createElement("div");
-    neo.className = "NEO";
-    neo.id = "NEO";
-    var html = (function() {/*
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-
-<div id="pageView" style="margin:auto;">
-<div id="container" style="visibility:visible;" class="o">
-
-<div id="painter" style="background-color:white;">
-<div id="canvas" style="background-color:white;">
-</div>
-</div>
-
-
-<div id="viewerButtons" style="display:none;">
-<div id="viewerPlay" class="buttonOff"></div>
-<div id="viewerStop" class="buttonOff"></div>
-
-<div id="viewerRewind" class="buttonOff"></div>
-<div id="viewerSpeed" class="buttonOff" style="padding-left:2px;">既</div>
-<div id="viewerZoomPlus" class="buttonOff"></div>
-<div id="viewerZoomMinus" class="buttonOff"></div>
-<div id="viewerBar" class="buttonOff" style="display:inline-block;"></div>
-
-</div>
-
-</div>
-</div>
-                                 */}).toString().match(/\/\*([^]*)\*\//)[1];
-
-    neo.innerHTML = html.replace(/\[(.*?)\]/g, function(match, str) {
-	return Neo.translate(str)
-    })
+Neo.tintImage = function(ctx, c) {
+    c = (Neo.painter.getColor(c) & 0xffffff);
     
-    var parent = applet.parentNode;
-    parent.appendChild(neo);
-    parent.insertBefore(neo, applet);
+    var imageData = ctx.getImageData(0, 0, 46, 18);
+    var buf32 = new Uint32Array(imageData.data.buffer);
+    var buf8 = new Uint8ClampedArray(imageData.data.buffer);
 
-    // applet.style.display = "none";
-
-    // NEOを組み込んだURLをアプリ版で開くとDOMツリーが2重にできて格好悪いので消しておく
-    setTimeout(function() {
-        var tmp = document.getElementsByClassName("NEO");
-        if (tmp.length > 1) {
-            for (var i = 1; i < tmp.length; i++) {
-                tmp[i].style.display = "none";
-            }
-        }
-    }, 0);
-};
-
-Neo.initViewer = function(pch) {
-    var pageview = document.getElementById("pageView");
-    var pageWidth = Neo.config.applet_width;
-    var pageHeight = Neo.config.applet_height;
-    pageview.style.width = pageWidth + "px";
-    pageview.style.height = pageHeight + "px";
-    
-    Neo.canvas = document.getElementById("canvas");
-    Neo.container = document.getElementById("container");
-    Neo.container.style.backgroundColor = Neo.config.color_back;
-    Neo.container.style.border = "0";
-
-    var dx = (pageWidth - Neo.config.width) / 2;
-    var dy = (pageHeight - Neo.config.height - 26) / 2;
-    
-    var painter = document.getElementById("painter");
-
-    painter.style.marginTop = "0";
-    painter.style.position = "absolute";
-    painter.style.padding = "0";
-    painter.style.bottom = (dy + 26) + "px";
-    painter.style.left = (dx) + "px";
-
-    var viewerButtons = document.getElementById("viewerButtons");
-    viewerButtons.style.width = (pageWidth - 2) + "px";
-    
-    var viewerBar = document.getElementById("viewerBar");
-    viewerBar.style.width = (pageWidth - (24 * 6) - 6) + "px"; 
-    
-    Neo.canvas.style.width = Neo.config.width + "px";
-    Neo.canvas.style.height = Neo.config.height + "px";
-    
-    Neo.painter = new Neo.Painter();
-    Neo.painter.build(Neo.canvas, Neo.config.width, Neo.config.height);
-    
-    Neo.container.oncontextmenu = function() {return false;};
-
-    if (pch) {//Neo.config.pch_file) {
-        Neo.painter._actionMgr._items = pch.data;
-        Neo.painter._actionMgr.play(10);
-    }
-};
-
-Neo.startViewer = function() {
-    console.log("start viewer...");
-
-    new Neo.Button().init("viewerPlay").onmouseup = function() {
-        console.log("init viewerPlay");
-    };
-    new Neo.Button().init("viewerStop").onmouseup = function() {
-        console.log("init viewerStop");
-    };
-    new Neo.Button().init("viewerRewind").onmouseup = function() {
-        console.log("init viewerRewind");
-    };
-    new Neo.Button().init("viewerSpeed").onmouseup = function() {
-        console.log("init viewerSpeed");
-    };
-};
-
-Neo.getFilename = function() {
-    return Neo.config.pch_file || Neo.config.image_canvas;
-};
-
-Neo.getPCH = function(callback) {
-    var filename = Neo.getFilename();
-    if (!filename || filename.slice(-4).toLowerCase() != ".pch") return null;
-    
-    var request = new XMLHttpRequest();
-    request.open("GET", filename, true);
-    request.responseType = "arraybuffer";
-    request.onload = function() {
-        var byteArray = new Uint8Array(request.response);
-        var data = LZString.decompressFromUint8Array(byteArray.slice(12));
-        var header = byteArray.slice(0, 12);
-
-        if ((header[0] == "N".charCodeAt(0)) &&
-            (header[1] == "E".charCodeAt(0)) &&
-            (header[2] == "O".charCodeAt(0))) {
-            var width = header[4] + header[5] * 0x100
-            var height = header[6] + header[7] * 0x100
-            console.log('NEO animation:', width, 'x', height);
-            if (callback) {
-                var items = Neo.fixPCH(JSON.parse(data))
-                callback({
-                    width:width,
-                    height:height,
-                    data:items
-                });
-            }
-            
-        } else {
-            console.log('not a NEO animation:');
+    for (var i = 0; i < buf32.length; i++) {
+        var a = buf32[i] & 0xff000000;
+        if (a) {
+            buf32[i] = buf32[i] & a | c;
         }
     }
-    request.send();
+    imageData.data.set(buf8);
+    ctx.putImageData(imageData, 0, 0);
 };
 
-Neo.fixPCH = function(items) {
-    for (var i = 0; i < items.length; i++) {
-        var item = items[i];
 
-        var index = item.indexOf('eraseAll');
-        if (index > 0) {
-            var tmp = item.slice(index);
-            var tmp2 = item.slice(0, index);
-            console.log("fix eraseAll", tmp2, tmp);
-
-            items[i] = tmp2;
-            items.splice(i, 0, tmp)
-        }
-    }
-    return items;
-};
 
 'use strict';
 
@@ -1196,8 +1062,11 @@ Neo.dictionary = {
         "このブラウザでは<br>投稿に失敗することがあります<br>": "This browser may fail to send your picture.<br>",
 
         "画像を投稿しますか？<br>投稿に成功後、編集を終了します。": "Is the picture contributed?<br>if contribution completed, you jump to the comment page.",
-//      "PaintBBS NEOではこの動画の続きを描くことはできません": "PaintBBS NEO can't handle this animation data.",
         "描きかけの画像があります。動画の読み込みを中止して復元しますか？": "Discard animation data and restore session?",
+        "最": "Mx", 
+        "早": "H", 
+        "既": "M", 
+        "鈍": "L", 
     },
     "enx": {
 	"やり直し": "Redo",
@@ -1245,8 +1114,11 @@ Neo.dictionary = {
         "このブラウザでは<br>投稿に失敗することがあります<br>": "This browser may fail to send your picture.<br>",
 
         "画像を投稿しますか？<br>投稿に成功後、編集を終了します。": "Send this picture and end session?",
-//      "PaintBBS NEOではこの動画の続きを描くことはできません": "PaintBBS NEO can't handle this animation data.",
         "描きかけの画像があります。動画の読み込みを中止して復元しますか？": "Discard animation data and restore session?",
+        "最": "Mx", 
+        "早": "H", 
+        "既": "M", 
+        "鈍": "L", 
     },
     "es": {
 	"やり直し": "Rehacer",
@@ -1295,8 +1167,11 @@ Neo.dictionary = {
         "このブラウザでは<br>投稿に失敗することがあります<br>": "Este navegador podría no enviar su imagen.<br>",
 
         "画像を投稿しますか？<br>投稿に成功後、編集を終了します。": "¿Enviar esta imagen y finalizar sesión?",
-//      "PaintBBS NEOではこの動画の続きを描くことはできません": "PaintBBS NEO no puede analizar estos datos de animación.",
         "描きかけの画像があります。動画の読み込みを中止して復元しますか？": "¿Desechar datos de animación y restaurar sesión?",
+        "最": "Mx", 
+        "早": "H", 
+        "既": "M", 
+        "鈍": "L", 
     },
 };
 
@@ -1398,6 +1273,7 @@ Neo.Painter.prototype._currentMask = [];
 
 Neo.Painter.prototype.aerr;
 Neo.Painter.prototype.dirty = false;
+Neo.Painter.prototype.busy = false;
 
 Neo.Painter.LINETYPE_NONE = 0;
 Neo.Painter.LINETYPE_PEN = 1;
@@ -1774,6 +1650,8 @@ Neo.Painter.prototype._rollOutHandler = function(e) {
 };
 
 Neo.Painter.prototype._mouseDownHandler = function(e) {
+    if (this.busy) return; // loadAnimation実行中は何もしない
+
     if (e.target == Neo.painter.destCanvas) {
         //よくわからないがChromeでドラッグの時カレットが出るのを防ぐ
         //http://stackoverflow.com/questions/2745028/chrome-sets-cursor-to-text-while-dragging-why    
@@ -2147,6 +2025,14 @@ Neo.Painter.prototype.setZoomPosition = function(x, y) {
 */
 
 Neo.Painter.prototype.submit = function(board) {
+    if (Neo.animation) { // neo_save_layers
+        var items = this._actionMgr._items;
+        if (items.length > 0 && items[items.length - 1][0] != 'restore') {
+            this._pushUndo();
+            this._actionMgr.restore();
+        }
+    }
+
     var thumbnail = null;
     var thumbnail2 = null;
 
@@ -3708,21 +3594,16 @@ Neo.Painter.prototype.loadImage = function (filename) {
     };
 };
 
-Neo.Painter.prototype.loadAnimation = function (filename, wait) {
+Neo.Painter.prototype.loadAnimation = function (filename) {
     console.log("loadAnimation " + filename);
-    var request = new XMLHttpRequest();
-    request.open("GET", filename, true);
-    request.responseType = "arraybuffer";
-    request.onload = function() {
-        var byteArray = new Uint8Array(request.response);
-        var header = byteArray.slice(0, 12);
-        var data = LZString.decompressFromUint8Array(byteArray.slice(12));
 
-        var items = JSON.parse(data);
-        Neo.painter._actionMgr._items = Neo.fixPCH(JSON.parse(data));
-        Neo.painter._actionMgr.play(wait);
-    };
-    request.send();
+    Neo.painter.busy = true;
+    Neo.getPCH(filename, function(pch) {
+        //console.log(pch);
+        Neo.painter._actionMgr._items = pch.data;
+        Neo.painter._actionMgr._mark = pch.data.length;
+        Neo.painter._actionMgr.play();
+    });
 };
 
 Neo.Painter.prototype.loadSession = function (callback) {
@@ -3846,28 +3727,64 @@ Neo.Painter.prototype.getEmulationMode = function() {
 */
 
 Neo.Painter.prototype.play = function(wait) {
-    this.saveSnapshot();
-
     if (this._actionMgr) {
         this._actionMgr.clearCanvas();
-        this._actionMgr._head = 0;
         this.prevLine = null;
 
+        //console.log('[play]');
+        
+        this._actionMgr._head = 0;
+        this._actionMgr._index = 0;
+        this._actionMgr._mark = this._actionMgr._items.length;
+        this._actionMgr._pause = false;
         this._actionMgr.play(wait);
     }
 };
 
-Neo.Painter.prototype.snapshot = [];
-Neo.Painter.prototype.saveSnapshot = function() {
-    var width = this.canvasWidth;
-    var height = this.canvasHeight;
-    this.snapshot = [this.canvasCtx[0].getImageData(0, 0, width, height),
-                     this.canvasCtx[1].getImageData(0, 0, width, height)];
+Neo.Painter.prototype.onrewind = function() {
+    if (this._actionMgr) {
+        this._actionMgr.clearCanvas();
+        this._actionMgr._head = 0;
+        this._actionMgr._index = 0;
+        this.prevLine = null;
+     }
+    if (Neo.viewerBar) Neo.viewerBar.update();
+    if (!this._actionMgr._pause) {
+        this._actionMgr.play();
+    }
 };
 
-Neo.Painter.prototype.loadSnapshot = function() {
-    this.canvasCtx[0].putImageData(this.snapshot[0], 0, 0);
-    this.canvasCtx[1].putImageData(this.snapshot[1], 0, 0);
+Neo.Painter.prototype.onmark = function() {
+    if (Neo.viewerBar) Neo.viewerBar.update();
+    if (!this._actionMgr._pause) {
+        if (this._actionMgr._head > this._actionMgr._mark) {
+            this.onrewind();
+        } else {
+            this.onplay();
+        }
+    }
+};
+
+Neo.Painter.prototype.onplay = function() {
+    Neo.viewerPlay.setSelected(true);
+    Neo.viewerStop.setSelected(false);
+
+    this._actionMgr._pause = false;
+    this._actionMgr.play();
+};
+
+Neo.Painter.prototype.onstop = function() {
+    Neo.viewerPlay.setSelected(false);
+    Neo.viewerStop.setSelected(true);
+    this._actionMgr._pause = true;
+};
+
+Neo.Painter.prototype.onspeed = function() {
+    var mgr = Neo.painter._actionMgr;
+    var mode = (mgr._speedMode + 1) % 4;
+    mgr._speedMode = mode;
+    mgr._speed = mgr._speedTable[mode];
+//  console.log('speed=', mgr._speed);
 };
 
 Neo.Painter.prototype.setCurrent = function(item) {
@@ -5296,10 +5213,46 @@ Neo.CopyrightCommand.prototype.execute = function() {
 'use strict';
 
 
+/*
+  -----------------------------------------------------------------------
+    Action Manager
+  -----------------------------------------------------------------------
+*/
+
 Neo.ActionManager = function() {
     this._items = [];
     this._head = 0;
-}
+    this._index = 0;
+    
+    this._pause = false;
+    this._mark = 0;
+
+    this._speedTable = [-1, 0, 1, 11];
+    this._speed = parseInt(Neo.config.speed || 0);
+    this._speedMode = this.generateSpeedTable();
+
+    this._prevSpeed = this._speed; // freeHandの途中で速度が変わると困るので
+};
+
+Neo.ActionManager.prototype.generateSpeedTable = function() {
+    var speed = this._speed;
+    var mode = 0;
+
+    if (speed < 0) {
+        mode = 0;
+
+    } else if (speed == 0) {
+        mode = 1;
+        
+    } else if (speed <= 10) {
+        mode = 2;
+
+    } else {
+        mode = 3;
+    }
+    this._speedTable[mode] = speed;
+    return mode;
+};
 
 Neo.ActionManager.prototype.step = function() {
     if (!Neo.animation) return;
@@ -5309,7 +5262,8 @@ Neo.ActionManager.prototype.step = function() {
     }
     this._items.push([]);
     this._head++;
-}
+    this._index = 0;
+};
 
 Neo.ActionManager.prototype.back = function() {
     if (!Neo.animation) return;
@@ -5317,7 +5271,7 @@ Neo.ActionManager.prototype.back = function() {
     if (this._head > 0) {
         this._head--;
     }
-}
+};
 
 Neo.ActionManager.prototype.forward = function() {
     if (!Neo.animation) return;
@@ -5325,7 +5279,7 @@ Neo.ActionManager.prototype.forward = function() {
     if (this._head < this._items.length) {
         this._head++;
     }
-}
+};
 
 Neo.ActionManager.prototype.push = function() {
     if (!Neo.animation) return;
@@ -5362,10 +5316,27 @@ Neo.ActionManager.prototype.getCurrent = function(item) {
     oe._currentMaskType = item[10];
 };
 
+Neo.ActionManager.prototype.skip = function(wait) {
+    for (var i = 0; i < this._items.length; i++) {
+        if (this._items[i][0] == 'restore') {
+            this._head = i;
+        }
+    }
+};
+
 Neo.ActionManager.prototype.play = function(wait) {
-    if (!wait) wait = 0;
+    if (!wait) {
+        wait = (this._prevSpeed < 0) ? 0 : this._prevSpeed;
+        wait *= 1; //2
+    }
+    if (Neo.viewerBar) Neo.viewerBar.update();
     
-    if (this._head < this._items.length) {
+    if (this._pause) {
+        console.log('suspend viewer');
+        return;
+    }
+
+    if ((this._head < this._items.length) && (this._head < this._mark)) {
         var item = this._items[this._head];
 
         if (!Neo.viewer) {
@@ -5375,36 +5346,36 @@ Neo.ActionManager.prototype.play = function(wait) {
                                   true);
         }
 
-        if (Neo.viewer) {
-            console.log("play", item[0], this._head, this._items.length);
+        if (Neo.viewer && Neo.viewerBar) {
+            console.log("play", item[0], this._head + 1, this._items.length);
         }
 
-        if (item[0] != "restore") {
-            // sync
-            if (item[0] && this[item[0]]) {
-                (this[item[0]])(item);
-            }
-            this._head++;
+        var that = this;
+        var func = (item[0] && this[item[0]]) ? item[0] : 'dummy';
 
-            setTimeout(function() {
-                Neo.painter._actionMgr.play(wait);
-            }, wait);
-
-        } else {
-            // async
-            if (item[0] && this[item[0]]) {
-                (this[item[0]])(item, function() {
-                    Neo.painter._actionMgr.play(wait);
-                });
+        (this[func])(item, function(result) {
+            if (result) {
+                that._head++;
+                that._index = 0;
+                that._prevSpeed = that._speed;
             }
-            this._head++;
-        }
+
+            if (!Neo.viewer ||
+                ((that._prevSpeed < 0) && (that._head % 10 != 0))) {
+                Neo.painter._actionMgr.play();
+
+            } else {
+                setTimeout(function () {
+                    Neo.painter._actionMgr.play();
+                }, wait);
+            }
+        });
 
     } else {
         Neo.painter.dirty = false;
+        Neo.painter.busy = false;
     }
 }
-
 
 /*
 -------------------------------------------------------------------------
@@ -5421,6 +5392,9 @@ Neo.ActionManager.prototype.clearCanvas = function() {
     oe.canvasCtx[0].clearRect(0, 0, oe.canvasWidth, oe.canvasHeight);
     oe.canvasCtx[1].clearRect(0, 0, oe.canvasWidth, oe.canvasHeight);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.floodFill = function(layer, x, y, color) {
@@ -5438,6 +5412,9 @@ Neo.ActionManager.prototype.floodFill = function(layer, x, y, color) {
     var oe = Neo.painter;
     oe.doFloodFill(layer, x, y, color);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.eraseAll = function() {
@@ -5455,13 +5432,66 @@ Neo.ActionManager.prototype.eraseAll = function() {
     var oe = Neo.painter;
     oe.canvasCtx[layer].clearRect(0, 0, oe.canvasWidth, oe.canvasHeight);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.freeHand = function(x0, y0, lineType) {
     var oe = Neo.painter;
     var layer = oe.current;
-    
-    if (arguments.length > 1) {
+
+    if (typeof arguments[0] != "object") {
+        this.push('freeHand', layer);
+        this.pushCurrent();
+        this.push(lineType, x0, y0, x0, y0);
+        
+        oe.drawLine(oe.canvasCtx[layer], x0, y0, x0, y0, lineType);
+
+    } else if (!Neo.viewer || this._prevSpeed <= 0) {
+        this.freeHandFast(arguments[0], arguments[1]);
+        
+    } else {
+        var item = arguments[0];
+
+        layer = item[1];
+        lineType = item[11];
+        this.getCurrent(item);
+
+        var i = this._index;
+        if (i == 0) {
+            i = 12;
+        } else {
+            i += 2;
+        }
+
+        var x1 = item[i + 0];
+        var y1 = item[i + 1];
+        x0 = item[i + 2];
+        y0 = item[i + 3];
+
+        oe.drawLine(oe.canvasCtx[layer], x0, y0, x1, y1, lineType);
+        oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+        this._index = i;
+        var result = (i + 2 + 3) >= item.length;
+ 
+        if (!result) {
+            oe.prevLine = null;
+        }
+        
+        var callback = arguments[1];
+        if (callback && typeof callback == "function") {
+            callback(result);
+        }
+    }
+}
+
+Neo.ActionManager.prototype.freeHandFast = function(x0, y0, lineType) {
+    var oe = Neo.painter;
+    var layer = oe.current;
+
+    if (typeof arguments[0] != "object") {
         this.push('freeHand', layer);
         this.pushCurrent();
         this.push(lineType, x0, y0, x0, y0);
@@ -5490,6 +5520,9 @@ Neo.ActionManager.prototype.freeHand = function(x0, y0, lineType) {
         oe.prevLine = null;
         oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
     }
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.freeHandMove = function(x0, y0, x1, y1, lineType) {
@@ -5529,7 +5562,7 @@ Neo.ActionManager.prototype.line = function(
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('line', layer);
         this.pushCurrent();
         this.push(lineType, x0, y0, x1, y1);
@@ -5548,6 +5581,9 @@ Neo.ActionManager.prototype.line = function(
     }
     oe.drawLine(oe.canvasCtx[layer], x0, y0, x1, y1, lineType);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.bezier = function(
@@ -5561,7 +5597,7 @@ Neo.ActionManager.prototype.bezier = function(
     var layer = oe.current;
     var isReplay = true;
     
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('bezier', layer)
         this.pushCurrent();
         this.push(lineType, x0, y0, x1, y1, x2, y2, x3, y3);
@@ -5584,13 +5620,16 @@ Neo.ActionManager.prototype.bezier = function(
     }
     oe.drawBezier(oe.canvasCtx[layer], x0, y0, x1, y1, x2, y2, x3, y3, lineType, isReplay);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.fill = function(x, y, width, height, type) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('fill', layer);
         this.pushCurrent();
         this.push(x, y, width, height, type);
@@ -5606,15 +5645,19 @@ Neo.ActionManager.prototype.fill = function(x, y, width, height, type) {
         height = item[14];
         type = item[15];
     }
+
     oe.doFill(layer, x, y, width, height, type);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.flipH = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('flipH', layer, x, y, width, height);
         
     } else {
@@ -5627,13 +5670,16 @@ Neo.ActionManager.prototype.flipH = function(x, y, width, height) {
     }
     oe.flipH(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.flipV = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
     
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('flipV', layer, x, y, width, height);
         
     } else {
@@ -5646,13 +5692,16 @@ Neo.ActionManager.prototype.flipV = function(x, y, width, height) {
     }
     oe.flipV(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.merge = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('merge', layer, x, y, width, height);
         
     } else {
@@ -5665,13 +5714,17 @@ Neo.ActionManager.prototype.merge = function(x, y, width, height) {
     }
     oe.merge(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.blurRect = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+
+    if (typeof arguments[0] != "object") {
         this.push('blurRect', layer, x, y, width, height);
         
     } else {
@@ -5684,13 +5737,16 @@ Neo.ActionManager.prototype.blurRect = function(x, y, width, height) {
     }
     oe.blurRect(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.eraseRect2 = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('eraseRect2', layer);
         this.pushCurrent();
         this.push(x, y, width, height);
@@ -5707,13 +5763,16 @@ Neo.ActionManager.prototype.eraseRect2 = function(x, y, width, height) {
     }
     oe.eraseRect(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.eraseRect = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('eraseRect', layer, x, y, width, height);
         
     } else {
@@ -5726,13 +5785,16 @@ Neo.ActionManager.prototype.eraseRect = function(x, y, width, height) {
     }
     oe.eraseRect(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.copy = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('copy', layer, x, y, width, height);
         
     } else {
@@ -5750,13 +5812,16 @@ Neo.ActionManager.prototype.copy = function(x, y, width, height) {
     oe.tool.width = width;
     oe.tool.height = height;
 //  oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.paste = function(x, y, width, height, dx, dy) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('paste', layer, x, y, width, height, dx, dy);
         
     } else {
@@ -5772,13 +5837,16 @@ Neo.ActionManager.prototype.paste = function(x, y, width, height, dx, dy) {
 
     oe.paste(layer, x, y, width, height, dx, dy);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.turn = function(x, y, width, height) {
     var oe = Neo.painter;
     var layer = oe.current;
 
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('turn', layer, x, y, width, height);
         
     } else {
@@ -5791,6 +5859,9 @@ Neo.ActionManager.prototype.turn = function(x, y, width, height) {
     }
     oe.turn(layer, x, y, width, height);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.text = function(
@@ -5804,7 +5875,7 @@ Neo.ActionManager.prototype.text = function(
     var oe = Neo.painter;
     var layer = oe.current;
     
-    if (arguments.length > 1) {
+    if (typeof arguments[0] != "object") {
         this.push('text', layer, x, y, color, alpha, string, size, family);
 
     } else {
@@ -5821,6 +5892,9 @@ Neo.ActionManager.prototype.text = function(
     }
     oe.doText(layer, x, y, color, alpha, string, size, family);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight, true);
+
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
 }
 
 Neo.ActionManager.prototype.restore = function() {
@@ -5828,7 +5902,7 @@ Neo.ActionManager.prototype.restore = function() {
     var width = oe.canvasWidth;
     var height = oe.canvasHeight;
     
-    if (arguments.length == 0) {
+    if (typeof arguments[0] != "object") {
         this.push('restore');
 
         var img0 = oe.canvas[0].toDataURL('image/png');
@@ -5851,11 +5925,297 @@ Neo.ActionManager.prototype.restore = function() {
                 oe.canvasCtx[1].drawImage(img1, 0, 0);
                 oe.updateDestCanvas(0, 0, width, height);
 
-                if (callback) callback();
+                if (callback && typeof callback == "function") callback(true);
             }
         }
     }
 }
+
+Neo.ActionManager.prototype.dummy = function() {
+    var callback = arguments[1];
+    if (callback && typeof callback == "function") callback(true);
+}
+
+/*
+  -----------------------------------------------------------------------
+    動画表示モード
+  -----------------------------------------------------------------------
+*/
+
+Neo.createViewer = function(applet) {
+    var neo = document.createElement("div");
+    neo.className = "NEO";
+    neo.id = "NEO";
+    var html = (function() {/*
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<div id="pageView" style="margin:auto;">
+<div id="container" style="visibility:visible;" class="o">
+
+<div id="painter" style="background-color:white;">
+<div id="canvas" style="background-color:white;">
+</div>
+</div>
+
+
+<div id="viewerButtonsWrapper" style="display:block;">
+<div id="viewerButtons" style="display:block;">
+
+<div id="viewerPlay"></div>
+<div id="viewerStop"></div>
+<div id="viewerRewind"></div>
+<div id="viewerSpeed" style="padding-left:2px; margin-top: 1px;">ほ</div>
+<div id="viewerPlus"></div>
+<div id="viewerMinus"></div>
+
+<div id="viewerBar" style="display:inline-block;">
+<!--
+  <div id="viewerBarLeft" style="width:calc(50% - 2px); height:16px; position: absolute; top: 1px; left: 1px;"></div>
+  <div id="viewerBarMark" style="background-color:red; width:1px; height:16px; position:absolute; top:1px; left:1px;"></div>
+-->
+</div>
+</div>
+
+</div>
+</div>
+                                 */}).toString().match(/\/\*([^]*)\*\//)[1];
+
+    neo.innerHTML = html.replace(/\[(.*?)\]/g, function(match, str) {
+	return Neo.translate(str)
+    })
+    
+    var parent = applet.parentNode;
+    parent.appendChild(neo);
+    parent.insertBefore(neo, applet);
+
+    // applet.style.display = "none";
+
+    // NEOを組み込んだURLをアプリ版で開くとDOMツリーが2重にできて格好悪いので消しておく
+    setTimeout(function() {
+        var tmp = document.getElementsByClassName("NEO");
+        if (tmp.length > 1) {
+            for (var i = 1; i < tmp.length; i++) {
+                tmp[i].style.display = "none";
+            }
+        }
+    }, 0);
+};
+
+Neo.initViewer = function(pch) {
+    var pageview = document.getElementById("pageView");
+    var pageWidth = Neo.config.applet_width;
+    var pageHeight = Neo.config.applet_height;
+    pageview.style.width = pageWidth + "px";
+    pageview.style.height = pageHeight + "px";
+    
+    Neo.canvas = document.getElementById("canvas");
+    Neo.container = document.getElementById("container");
+    Neo.container.style.backgroundColor = Neo.config.color_back;
+    Neo.container.style.border = "0";
+
+    var dx = (pageWidth - Neo.config.width) / 2;
+    var dy = (pageHeight - Neo.config.height - 26) / 2;
+    
+    var painter = document.getElementById("painter");
+
+    painter.style.marginTop = "0";
+    painter.style.position = "absolute";
+    painter.style.padding = "0";
+    painter.style.bottom = (dy + 26) + "px";
+    painter.style.left = (dx) + "px";
+
+    var viewerButtonsWrapper = document.getElementById("viewerButtonsWrapper");
+    viewerButtonsWrapper.style.width = (pageWidth - 2) + "px";
+    
+    var viewerBar = document.getElementById("viewerBar");
+    viewerBar.style.position = "absolute";
+    viewerBar.style.right = "2px";
+    viewerBar.style.top = "1px";
+    viewerBar.style.width = (pageWidth - (24 * 6) - 2) + "px"; 
+    
+    Neo.canvas.style.width = Neo.config.width + "px";
+    Neo.canvas.style.height = Neo.config.height + "px";
+    
+    Neo.painter = new Neo.Painter();
+    Neo.painter.build(Neo.canvas, Neo.config.width, Neo.config.height);
+    
+    Neo.container.oncontextmenu = function() {return false;};
+
+    painter.addEventListener('mousedown', function() {
+        Neo.painter._actionMgr.isMouseDown = true;
+    }, false);
+    
+    document.addEventListener('mousemove', function(e) {
+        if (Neo.painter._actionMgr.isMouseDown) {
+            var zoom = Neo.painter.zoom;
+            var x = Neo.painter.zoomX - e.movementX / zoom;
+            var y = Neo.painter.zoomY - e.movementY / zoom;
+            Neo.painter.setZoomPosition(x, y);
+        }
+    }, false);
+    document.addEventListener('mouseup', function() {
+        Neo.painter._actionMgr.isMouseDown = false;
+        Neo.viewerBar.isMouseDown = false;
+    }, false);
+    
+    if (pch) {//Neo.config.pch_file) {
+        Neo.painter._actionMgr._items = pch.data;
+        Neo.painter.play();
+    }
+};
+
+Neo.startViewer = function() {
+    var name = Neo.applet.attributes.name.value || "pch";
+    if (!document[name]) document[name] = Neo;
+    Neo.applet.parentNode.removeChild(Neo.applet);
+
+    Neo.styleSheet = Neo.getStyleSheet();
+    var lightBack = Neo.multColor(Neo.config.color_back, 1.3);
+    var darkBack = Neo.multColor(Neo.config.color_back, 0.7);
+    
+    Neo.addRule(".NEO #viewerButtons", "color", Neo.config.color_text);
+    Neo.addRule(".NEO #viewerButtons", "background-color", Neo.config.color_back);
+
+    Neo.addRule(".NEO #viewerButtonsWrapper", "border", "1px solid " + Neo.config.color_frame + " !important");
+
+    Neo.addRule(".NEO #viewerButtons", "border", "1px solid " + Neo.config.color_back + " !important");
+    Neo.addRule(".NEO #viewerButtons", "border-left", "1px solid " + lightBack + " !important");
+    Neo.addRule(".NEO #viewerButtons", "border-top", "1px solid " + lightBack + " !important");
+
+    Neo.addRule(".NEO #viewerButtons >div.buttonOff", "background-color", Neo.config.color_icon + " !important");
+
+    Neo.addRule(".NEO #viewerButtons >div.buttonOff:active", "background-color", darkBack + " !important");
+    Neo.addRule(".NEO #viewerButtons >div.buttonOn", "background-color", darkBack + " !important");
+
+    Neo.addRule(".NEO #viewerButtons >div", "border", "1px solid " + Neo.config.color_frame + " !important");
+    
+    Neo.addRule(".NEO #viewerButtons >div.buttonOff:hover", "border", "1px solid" + Neo.config.color_bar_select + " !important");
+
+    Neo.addRule(".NEO #viewerButtons >div.buttonOff:active", "border", "1px solid" + Neo.config.color_bar_select + " !important");
+    Neo.addRule(".NEO #viewerButtons >div.buttonOn", "border", "1px solid" + Neo.config.color_bar_select + " !important");
+
+    Neo.addRule(".NEO #viewerBar >div", "background-color", Neo.config.color_bar);
+//  Neo.addRule(".NEO #viewerBar:active", "background-color", darkBack);
+    Neo.addRule(".NEO #viewerBarMark", "background-color", Neo.config.color_text + " !important");
+
+    setTimeout(function () {
+        Neo.viewerPlay = new Neo.ViewerButton().init("viewerPlay");
+        Neo.viewerPlay.setSelected(true);
+        Neo.viewerPlay.onmouseup = function() {
+            Neo.painter.onplay();
+        }
+        Neo.viewerStop = new Neo.ViewerButton().init("viewerStop");
+        Neo.viewerStop.onmouseup = function() {
+            Neo.painter.onstop();
+        }
+        
+        new Neo.ViewerButton().init("viewerRewind").onmouseup = function() {
+            Neo.painter.onrewind();
+        }
+        new Neo.ViewerButton().init("viewerSpeed").onmouseup = function() {
+            Neo.painter.onspeed();
+            this.update();
+        };
+        new Neo.ViewerButton().init("viewerPlus").onmouseup = function() {
+            new Neo.ZoomPlusCommand(Neo.painter).execute();
+        };
+        new Neo.ViewerButton().init("viewerMinus").onmouseup = function() {
+            new Neo.ZoomMinusCommand(Neo.painter).execute();
+        };
+
+        var length = Neo.painter._actionMgr._items.length;
+        Neo.viewerBar = new Neo.ViewerBar().init("viewerBar", { length:length });
+
+    }, 0);
+};
+
+Neo.getFilename = function() {
+    return Neo.config.pch_file || Neo.config.image_canvas;
+};
+
+Neo.getPCH = function(filename, callback) {
+    if (!filename || filename.slice(-4).toLowerCase() != ".pch") return null;
+    
+    var request = new XMLHttpRequest();
+    request.open("GET", filename, true);
+    request.responseType = "arraybuffer";
+    request.onload = function() {
+        var byteArray = new Uint8Array(request.response);
+//      var data = LZString.decompressFromUint8Array(byteArray.slice(12));
+//      var header = byteArray.slice(0, 12);
+        var data = LZString.decompressFromUint8Array(byteArray.subarray(12));
+        var header = byteArray.subarray(0, 12);
+
+        if ((header[0] == "N".charCodeAt(0)) &&
+            (header[1] == "E".charCodeAt(0)) &&
+            (header[2] == "O".charCodeAt(0))) {
+            var width = header[4] + header[5] * 0x100
+            var height = header[6] + header[7] * 0x100
+
+            //console.log('NEO animation:', width, 'x', height);
+            if (callback) {
+                var items = Neo.fixPCH(JSON.parse(data))
+                callback({
+                    width:width,
+                    height:height,
+                    data:items
+                });
+            }
+            
+        } else {
+            console.log('not a NEO animation:');
+        }
+    }
+    request.send();
+};
+
+Neo.fixPCH = function(items) {
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+
+        var index = item.indexOf('eraseAll');
+        if (index > 0) {
+            var tmp = item.slice(index);
+            var tmp2 = item.slice(0, index);
+            console.log("fix eraseAll", tmp2, tmp);
+
+            items[i] = tmp2;
+            items.splice(i, 0, tmp)
+        }
+    }
+    return items;
+};
+
+/*
+  -----------------------------------------------------------------------
+    LiveConnect
+  -----------------------------------------------------------------------
+*/
+
+Neo.playPCH = function() {
+    Neo.painter.onplay();
+};
+
+Neo.suspendDraw = function() {
+    Neo.painter.onstop();
+};
+
+Neo.setSpeed = function(value) {
+    Neo.painter._actionMgr._speed = value;
+};
+
+Neo.setMark = function(value) {
+    Neo.painter._actionMgr._mark = value;
+    Neo.painter.onmark();
+};
+
+Neo.getSeek = function() {
+    return Neo.painter._actionMgr._head;
+};
+
+Neo.getLineCount = function() {
+    return Neo.painter._actionMgr._items.length;
+};
 
 'use strict';
 
@@ -6242,31 +6602,14 @@ Neo.ToolTip.prototype.draw = function(c) {
             }.bind(this);
 
         } else {
-            this.tintImage(ctx, c);
+            Neo.tintImage(ctx, c);
         }
     }
 };
 
 Neo.ToolTip.prototype.drawTintImage = function(ctx, img, c, x, y) {
     ctx.drawImage(img, x, y);
-    this.tintImage(ctx, c);
-};
-
-Neo.ToolTip.prototype.tintImage = function(ctx, c) {
-    c = (Neo.painter.getColor(c) & 0xffffff);
-    
-    var imageData = ctx.getImageData(0, 0, 46, 18);
-    var buf32 = new Uint32Array(imageData.data.buffer);
-    var buf8 = new Uint8ClampedArray(imageData.data.buffer);
-
-    for (var i = 0; i < buf32.length; i++) {
-        var a = buf32[i] & 0xff000000;
-        if (a) {
-            buf32[i] = buf32[i] & a | c;
-        }
-    }
-    imageData.data.set(buf8);
-    ctx.putImageData(imageData, 0, 0);
+    Neo.tintImage(ctx, c);
 };
 
 Neo.ToolTip.bezier = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAATCAYAAADWOo4fAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsSAAALEgHS3X78AAAAT0lEQVRIx+3SQQoAIAhE0en+h7ZVEEKBZrX5b5sjKknAkRYpNslaMLPq44ZI9wwHs0vMQ/v87u0Kk8xfsaI242jbMdjPi5Y0r/zTAAAAD3UOjRf9jcO4sgAAAABJRU5ErkJggg==";
@@ -7122,6 +7465,133 @@ Neo.ScrollBarButton.prototype.update = function(oe) {
     }
 };
 
+/*
+  -------------------------------------------------------------------------
+    ViewerButton
+  -------------------------------------------------------------------------
+*/
+
+Neo.ViewerButton = function() {};
+Neo.ViewerButton.prototype = new Neo.Button();
+
+Neo.ViewerButton.speedStrings = ["最", "早", "既", "鈍"];
+
+Neo.ViewerButton.prototype.init = function(name, params) {
+    Neo.Button.prototype.init.call(this, name, params);
+
+    if (name != "viewerSpeed") {
+        this.element.innerHTML = "<canvas width=24 height=24></canvas>"
+        this.canvas = this.element.getElementsByTagName('canvas')[0];
+        var ctx = this.canvas.getContext("2d");
+        
+        var img = new Image();
+        img.src = Neo.ViewerButton[name.toLowerCase().replace(/viewer/, '')];
+        img.onload = function() {
+            var ref = this;
+            ctx.clearRect(0, 0, 24, 24);
+            ctx.drawImage(img, 0, 0);
+            Neo.tintImage(ctx, Neo.config.color_text)
+        }.bind(this);
+
+    } else {
+        this.element.innerHTML = "<div></div><canvas width=24 height=24></canvas>"
+        this.update();
+    }
+    return this;
+};
+
+Neo.ViewerButton.prototype.update = function() {
+    if (this.name == "viewerSpeed") {
+        var mode = Neo.painter._actionMgr._speedMode;
+        var speedString = Neo.translate(Neo.ViewerButton.speedStrings[mode]);
+        this.element.children[0].innerHTML = "<div>" + speedString + "</div>";
+    }
+};
+
+Neo.ViewerButton.minus = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEX/////HgA/G9hMAAAAAXRSTlMAQObYZgAAABFJREFUCNdjYMAG5H+AEDYAADOnAi81ABEKAAAAAElFTkSuQmCC";
+
+Neo.ViewerButton.plus = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEX/////HgD/HgAvnCBAAAAAAnRSTlMAAHaTzTgAAAAfSURBVAjXY2BAA0wTMAimVasaIARj2FQHCIGkBAUAAGm3CXHeKF1tAAAAAElFTkSuQmCC";
+
+Neo.ViewerButton.play = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEX/////HgD/HgAvnCBAAAAAAnRSTlMAAHaTzTgAAAAuSURBVAjXY2BAABUQoQkitBxAxAQQsQRErAQRq+CspSBiKogIAekIABKqDhAzAAuwB6SsnxQ6AAAAAElFTkSuQmCC";
+
+Neo.ViewerButton.stop = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEX/////HgA/G9hMAAAAAXRSTlMAQObYZgAAABFJREFUCNdjYIAB+x8EEBgAACjyDV75Mi9xAAAAAElFTkSuQmCC";
+
+Neo.ViewerButton.rewind = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEX/////HgA/G9hMAAAAAXRSTlMAQObYZgAAACxJREFUCNdjYAADJiYGNjYGPj4GOTkGOzuGujqGf/9AJJANFAGKA2WBahgYAIE2Bb0RIYJRAAAAAElFTkSuQmCC";
+
+/*
+  -------------------------------------------------------------------------
+    ViewerBar
+  -------------------------------------------------------------------------
+*/
+
+// length/mark/count
+// update
+
+Neo.ViewerBar = function() {};
+Neo.ViewerBar.prototype.init = function(name, params) {
+    this.element = document.getElementById(name);
+    this.params = params || {};
+    this.name = name;
+    this.isMouseDown = false;
+
+    this.element.style.display = "inline-block";
+    this.element.innerHTML =
+        "<div id='viewerBarLeft'></div>" +
+        "<div id='viewerBarMark'></div>" +
+        "<div id='viewerBarText'>hoge</div>";
+    this.seekElement = this.element.children[0];
+    this.markElement = this.element.children[1];
+    this.textElement = this.element.children[2];
+
+    this.width = this.seekElement.offsetWidth;
+
+    this.length = this.params.length || 100;
+    this.mark = this.length;
+    this.seek = 0;
+
+    var ref = this;
+    this.element.onmousedown = function(e) {
+        ref.isMouseDown = true;
+        ref._touchHandler(e);
+    }
+    this.element.onmousemove = function(e) {
+        if (ref.isMouseDown) {
+            ref._touchHandler(e);
+        }
+    }
+//  this.element.onmouseup = function(e) { this.isMouseDown = false; }
+//  this.element.onmouseout = function(e) { this.isMouseDown = false; }
+    this.element.addEventListener("touchstart", function(e) {
+        ref._touchHandler(e);
+        e.preventDefault();
+    }, true);
+
+    this.update();
+    return this;
+};
+
+Neo.ViewerBar.prototype.update = function() {
+    this.mark = Neo.painter._actionMgr._mark;
+    this.seek = Neo.painter._actionMgr._head;
+    
+    var markX = (this.mark / this.length) * this.width;
+    this.markElement.style.left = markX + "px";
+
+    var seekX = (this.seek / this.length) * this.width;
+    this.seekElement.style.width = seekX + "px";
+    this.textElement.innerHTML = this.seek + '/' + this.length;
+};
+
+Neo.ViewerBar.prototype._touchHandler = function(e) {
+    var x = e.offsetX / this.width;
+    x = Math.max(Math.min(x, 1), 0);
+
+    Neo.painter._actionMgr._mark = Math.round(x * this.length);
+    //this.update();
+    //  console.log('mark=', this.mark, 'head=', Neo.painter._actionMgr._head);
+
+    Neo.painter.onmark();
+};
 
 // Copyright (c) 2013 Pieroxy <pieroxy@pieroxy.net>
 // This work is free. You can redistribute it and/or modify it
