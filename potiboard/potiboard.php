@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.45.3 lot.181122
+  * POTI-board改 v1.45.5 lot.181129
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.45.3');
-define('POTI_VERLOT' , '改 v1.45.3 lot.181122');
+define('POTI_VER' , '改 v1.45.5');
+define('POTI_VERLOT' , '改 v1.45.5 lot.181129');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -83,7 +83,10 @@ define('SIIHELP_FILE' , 'siihelp.php');
 //	case 4 : $charset="UTF-8";break;
 //	default : $charset=4;
 //}
-define('CHARSET_HTML', "UTF-8");
+define('CHARSET_HTML', 'UTF-8');
+
+//タイムゾーン
+date_default_timezone_set('Asia/Tokyo');
 
 //----------htmltemplateタグ定義
 //{$hoge}
@@ -266,14 +269,11 @@ function head(&$dat){
 
 	$dat['userdel'] = USER_DEL;
 	$dat['charset'] = CHARSET_HTML;
+//OGPイメージ シェアボタン
 	$dat['rooturl'] = ROOT_URL;//設置場所url
-	//設定がなくてもエラーにならないようにする工夫
-	if (defined ( 'SHARE_BUTTON' )){
-	if (SHARE_BUTTON){
+	if (defined ('SHARE_BUTTON') && SHARE_BUTTON){
 	$dat['sharebutton'] = true;//1ならシェアボタンを表示
 		}
-		}
-
 	
 }
 
@@ -284,13 +284,15 @@ function form(&$dat,$resno,$admin="",$tmp=""){
 
 	$dat['form'] = true;
 	if(USE_PAINT){
-		$dat['palette'] = '';
-		$lines = file(PALETTEFILE);
-		foreach ( $lines as $line ) {
-			$line=preg_replace("/[\t\r\n]/","",$line);
-			list($pid,$pname,) = explode(",", $line);
-			$dat['palette'] .= '<option value="'.$pid.'">'.CleanStr($pname)."</option>\n";
-		}
+
+//v1.32のMONO WHITEでコメントアウト、対応テンプレートが無いパレット選択用データ(selectタグ用option配列)
+//		$dat['palette'] = '';
+//		$lines = file(PALETTEFILE);
+//		foreach ( $lines as $line ) {
+//			$line=preg_replace("/[\t\r\n]/","",$line);
+//			list($pid,$pname,) = explode(",", $line);
+//			$dat['palette'] .= '<option value="'.$pid.'">'.CleanStr($pname)."</option>\n";
+//		}
 		$dat['pdefw'] = PDEF_W;
 		$dat['pdefh'] = PDEF_H;
 		$dat['anime'] = USE_ANIME ? true : false;
@@ -742,7 +744,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}
 		$upfile_name = CleanStr($upfile_name);
 		if(!@file_exists($dest)) error(MSG003,$dest);
-		if(filesize($dest) > MAX_KB * 1024) error(MSG034,$dest);	//追加(v1.32)
+		if(filesize($dest) > MAX_KB * 1024){error(MSG034,$dest);} 	//追加(v1.32)
 		$size = getimagesize($dest);
 		if(!is_array($size)) error(MSG004,$dest);
 		$chk = md5_of_file($dest);
@@ -792,9 +794,13 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
 	if(!$url||preg_match("/^[ |　|]*$/",$url))   $url="";
 
-	if(!$resto&&!$textonly&&!@is_file($dest)) error(MSG007,$dest);
-	if(RES_UPLOAD&&$resto&&!$textonly&&!@is_file($dest)) error(MSG007,$dest);
-	if(!$com&&!@is_file($dest)) error(MSG008,$dest);
+//!@is_file($dest)なので画像は無い
+//if(!$resto&&!$textonly&&!@is_file($dest)) error(MSG007,$dest);
+	if(!$resto&&!$textonly&&!@is_file($dest)) error(MSG007);
+//if(RES_UPLOAD&&$resto&&!$textonly&&!@is_file($dest)) error(MSG007,$dest);
+	if(RES_UPLOAD&&$resto&&!$textonly&&!@is_file($dest)) error(MSG007);
+//if(!$com&&!@is_file($dest)) error(MSG008,$dest);
+	if(!$com&&!@is_file($dest)) error(MSG008);
 
 	if(USE_NAME&&!$name) error(MSG009,$dest);
 	if(USE_COM&&!$com) error(MSG008,$dest);
@@ -915,7 +921,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$fp=fopen(LOGFILE,"r+");
 	flock($fp, 2);
 	rewind($fp);
-	$buf=fread($fp,1000000);
+	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019,$dest);}
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
@@ -1050,7 +1056,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	set_file_buffer($tp, 0);
 	flock($tp, 2); //*
 	rewind($tp);
-	$buf=fread($tp,1000000);
+	$buf=fread($tp,2097152);
 	if($buf==''){error(MSG023,$dest);}
 	$line = explode("\n",$buf);
 	$countline=count($line);
@@ -1166,12 +1172,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	header("Content-type: text/html; charset=".CHARSET_HTML);
-if (defined('URL_PARAMETER')){
-if(URL_PARAMETER){
+if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
-	}else{
-		$urlparameter = "";
-}
 	}else{
 		$urlparameter = "";
 }
@@ -1205,7 +1207,7 @@ function treedel($delno){
 	set_file_buffer($fp, 0);
 	flock($fp, 2);
 	rewind($fp);
-	$buf=fread($fp,1000000);
+	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG024);}
 	$line = explode("\n",$buf);
 	$countline=count($line);
@@ -1269,7 +1271,7 @@ function usrdel($del,$pwd){
 		set_file_buffer($fp, 0);
 		flock($fp, 2);
 		rewind($fp);
-		$buf=fread($fp,1000000);
+		$buf=fread($fp,2097152);
 		if($buf==''){error(MSG027);}
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
@@ -1329,7 +1331,7 @@ function admindel($pass){
 		set_file_buffer($fp, 0);
 		flock($fp, 2);
 		rewind($fp);
-		$buf=fread($fp,1000000);
+		$buf=fread($fp,2097152);
 		if($buf==''){error(MSG030);}
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
@@ -1387,6 +1389,7 @@ function admindel($pass){
 			$img_flag = TRUE;
 			$clip = "<a href=\"".IMG_DIR.$time.$ext."\" target=\"_blank\" rel=\"noopener\">".$time.$ext."</a><br>";
 			$size = filesize($path.$time.$ext);
+			if(!isset($all)){$all=0;}
 			$all += $size;	//合計計算
 			$chk= substr($chk,0,10);
 		}else{
@@ -1523,8 +1526,12 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 			$saveauto = ' selected';
 	}
 	$dat['savetypes'] = "<option value='AUTO'".$saveauto.">AUTO</option>\n";
+if(isset($savepng)){
 	$dat['savetypes'].= "<option value='PNG'".$savepng.">PNG</option>\n";
+	}
+if(isset($savejpeg)){
 	$dat['savetypes'].= "<option value='JPEG'".$savejpeg.">JPEG</option>\n";
+}
 	$dat['compress_level'] = COMPRESS_LEVEL;
 	$dat['layer_count'] = LAYER_COUNT;
 	if($shi) $dat['quality'] = $quality ? $quality : $qualitys[0];
@@ -1714,7 +1721,7 @@ function openpch($pch,$sp=""){
 		$dat['paintbbs'] = true;
 		$pchfile = PCH_DIR.$pch.'.pch';
 	}
-	if(file_exists($pchfile)){//動画が差し換えられていた時
+	if(file_exists($pchfile)){//動画が無い時は処理しない
 	$datasize = filesize($pchfile);
 	$size = getimagesize($picfile);
 	if(!$sp) $sp = PCH_SPEED;
@@ -1803,12 +1810,15 @@ function incontinue($no){
 	//if(@file_exists(IMG_DIR.$ctim.'.jpg')) $dat['ctype_jpg'] = true;
 	$dat['ctype_img'] = true;
 
-	$lines = file(PALETTEFILE);
-	foreach ( $lines as $line ) {
-		$line=preg_replace("/[\t\r\n]/","",$line);
-		list($pid,$pname,) = explode(",", $line);
-		$dat['palette'] .= '<option value="'.$pid.'">'.CleanStr($pname)."</option>\n";
-	}
+//v1.32のMONO WHITEでコメントアウト、対応テンプレートが無いパレット選択用データ(selectタグ用option配列)
+//	$lines = file(PALETTEFILE);
+//	foreach ( $lines as $line ) {
+//		$line=preg_replace("/[\t\r\n]/","",$line);
+//		list($pid,$pname,) = explode(",", $line);
+//if(isset($palette)){
+//	$dat['palette'] .= '<option value="'.$pid.'">'.CleanStr($pname)."</option>\n";
+//}
+//	}
 
 	$dat['addinfo'] = $addinfo;
 	htmloutput(PAINTFILE,$dat);
@@ -1841,7 +1851,7 @@ function editform($del,$pwd){
 		if($pwd==""&&$pwdc!="") $pwd=$pwdc;
 		$fp=fopen(LOGFILE,"r");
 		flock($fp, 2);
-		$buf=fread($fp,1000000);
+		$buf=fread($fp,2097152);
 		fclose($fp);
 		if($buf==''){error(MSG019);}
 		$buf = charconvert($buf,4);
@@ -2013,7 +2023,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$fp=fopen(LOGFILE,"r+");
 	flock($fp, 2);
 	rewind($fp);
-	$buf=fread($fp,1000000);
+	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019);}
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
@@ -2050,12 +2060,8 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	updatelog();
 
 	header("Content-type: text/html; charset=".CHARSET_HTML);
-if (defined('URL_PARAMETER')){
-if(URL_PARAMETER){
+if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
-	}else{
-		$urlparameter = "";
-}
 	}else{
 		$urlparameter = "";
 }
@@ -2166,7 +2172,7 @@ function replace($no,$pwd,$stime){
 	$fp=fopen(LOGFILE,"r+");
 	flock($fp, 2);
 	rewind($fp);
-	$buf=fread($fp,1000000);
+	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019);}
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
@@ -2252,12 +2258,8 @@ function replace($no,$pwd,$stime){
 	updatelog();
 
 	header("Content-type: text/html; charset=".CHARSET_HTML);
-if (defined('URL_PARAMETER')){
-if(URL_PARAMETER){
+if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
-	}else{
-		$urlparameter = "";
-}
 	}else{
 		$urlparameter = "";
 }
@@ -2525,24 +2527,26 @@ switch($mode){
 //		regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 //未定義エラー対策
 //空文字でも定義済みになるので二重チェック。
-
-	if(isset($picfile)){//お絵かきの時
-		if($picfile){
+	if(isset($picfile)&&$picfile){//お絵かきの時
 		$upfile=$upfile_name="";
 		if(!isset($resto)){$resto="";}//レスではなかった時
 	}
-	}
-	elseif(isset($upfile_name)){//画像アップロードの時
-		if($upfile_name){
+	elseif(isset($upfile_name)&&$upfile_name){//画像アップロードの時
 		$pictmp=$picfile="";
 		if(!isset($resto)){$resto="";}
-	}
 	}
 else{//文字だけの時
 	$upfile=$upfile_name=$pictmp=$picfile="";
 		if(!isset($resto)){$resto="";}
 
 	}
+if(isset($textonly) && $textonly){//画像なしの時
+	$upfile=$upfile_name=$pictmp=$picfile="";
+	if(!isset($resto)){$resto="";}
+	}
+if(!isset($email)){
+	$email="";
+}
 	regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 	//変数クリア
 	unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
@@ -2576,6 +2580,7 @@ else{//文字だけの時
 	case 'paint':
 		$palette = "";
 		if(!isset($resto)){$resto="";}
+		if(!isset($anime)){$anime="";}
 paintform($picw,$pich,$palette,$anime);
 		break;
 	case 'piccom':
@@ -2609,6 +2614,9 @@ paintform($picw,$pich,$palette,$anime);
 		editform($del,$pwd);
 		break;
 	case 'rewrite':
+		if(!isset($email)){
+		$email="";
+}
 		rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin);
 		break;
 	case 'picrep':
@@ -2621,7 +2629,7 @@ paintform($picw,$pich,$palette,$anime);
 		potitagview();
 		break;
 	default:
-		if($res){
+	if(isset($res) && $res){
 			updatelog($res);
 		}else{
 			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
@@ -2630,7 +2638,7 @@ paintform($picw,$pich,$palette,$anime);
 }
 //default:で処理していた箇所
 else {
-	if($res){
+	if(isset($res) && $res){
 			updatelog($res);
 		}else{
 			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
