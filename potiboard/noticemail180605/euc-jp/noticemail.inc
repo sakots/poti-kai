@@ -1,12 +1,13 @@
 <?php
 /*
-** メール通知クラス(EUC-JP) lot.180605
+** メール通知クラス(EUC-JP) lot.181202
 **
 ** http://www.punyu.net/php/
 ** by SakaQ
 ** https://sakots.red/poti/
 ** by sakots
 **
+** 2018/12/02 php7の静的コール警告エラー対応
 ** 2018/06/05 エラー対処
 ** 2018/01/15 php7対応改造
 ** 2007/03/01 件名(Subject)を日本語が含まれる場合にMIMEヘッダ変換するように変更
@@ -77,7 +78,7 @@ noticemail::send($data);
 
 class noticemail{
 
-	function send($data,$usemb="1"){
+	public static function send($data,$usemb="1"){
 		$name = $data['name'];
 		$from = $data['email'];
 		$line = "---------------------------------------------------------------------\n";
