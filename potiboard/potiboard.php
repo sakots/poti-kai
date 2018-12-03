@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.45.5 lot.181129
+  * POTI-board改 v1.45.6 lot.181202
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.45.5');
-define('POTI_VERLOT' , '改 v1.45.5 lot.181129');
+define('POTI_VER' , '改 v1.45.6');
+define('POTI_VERLOT' , '改 v1.45.6 lot.181202');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -984,6 +984,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
 			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
 			if(isset($com)){
+				if(isset($textonly) && $textonly){//画像なしの時
+				$dest="";
+				}
 				switch(D_POST_CHECKLEVEL){
 					case 1:	//low
 						if($com == $lcom){error(MSG022,$dest);}
@@ -1039,7 +1042,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}//ここまで
 	list($lastno,) = explode(",", $line[0]);
 	$no = $lastno + 1;
-	if(!isset($dest)){
+	if(isset($textonly) && $textonly){
 	$dest=$ext=$W=$H=$chk="";
 	}
 	$newline = "$no,$now,$name,$email,$sub,$com,$url,$host,$pass,$ext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
