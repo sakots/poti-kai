@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.45.6 lot.181202
+  * POTI-board改 v1.45.7 lot.181210
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -68,8 +68,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.45.6');
-define('POTI_VERLOT' , '改 v1.45.6 lot.181202');
+define('POTI_VER' , '改 v1.45.7');
+define('POTI_VERLOT' , '改 v1.45.7 lot.181210');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -461,7 +461,8 @@ function updatelog($resno=0){
 				if(RES_UPLOAD){
 					//画像テーブル作成
 					$imgline=array();
-					for($k = $s; $k < count($treeline); $k++){
+					$counttreeline = count($treeline);
+					for($k = $s; $k < $counttreeline; $k++){
 						$disptree = $treeline[$k];
 						$j=$lineindex[$disptree] - 1;
 						if($line[$j]=="") continue;
@@ -524,7 +525,8 @@ function updatelog($resno=0){
 			unset($src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h,$no,$sub,$name,$now,$com,$descriptioncom,$limit,$skipres,$resub,$url,$email);
 
 			//レス作成
-			for($k = $s; $k < count($treeline); $k++){
+			$counttreeline = count($treeline);
+			for($k = $s; $k < $counttreeline; $k++){
 				$disptree = $treeline[$k];
 				$j=$lineindex[$disptree] - 1;
 				if($line[$j]=="") continue;
@@ -623,7 +625,7 @@ function updatelog($resno=0){
 				}
 			}
 			$paging = "";
-			for($i = 0; $i < count($tree) ; $i+=PAGE_DEF){
+			for($i = 0; $i < $counttree ; $i+=PAGE_DEF){
 				if($st==$i){
 					$pformat = str_replace("<PAGE>", $i/PAGE_DEF, NOW_PAGE);
 				}else{
@@ -638,7 +640,7 @@ function updatelog($resno=0){
 				$paging.=$pformat;
 			}
 			$dat['paging'] = $paging;
-			if($oya >= PAGE_DEF && count($tree) > $next){
+			if($oya >= PAGE_DEF && $counttree > $next){
 				$dat['next'] = $next/PAGE_DEF.PHP_EXT;
 			}
 		}
@@ -1010,8 +1012,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(!$sub) $sub=DEF_SUB;
 
 	// ログ行数オーバー
-	if(count($line) >= LOG_MAX){
-		for($d = count($line)-1; $d >= LOG_MAX-1; $d--){
+	$countline = count($line);
+	if($countline >= LOG_MAX){
+		for($d = $countline-1; $d >= LOG_MAX-1; $d--){
 			list($dno,,,,,,,,,$dext,,,$dtime,) = explode(",", $line[$d]);
 			if(@is_file($path.$dtime.$dext)) unlink($path.$dtime.$dext);
 			if(@is_file(THUMB_DIR.$dtime.'s.jpg')) unlink(THUMB_DIR.$dtime.'s.jpg');
@@ -1282,7 +1285,7 @@ function usrdel($del,$pwd){
 		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
 		$flag = false;
 		$find = false;
-		for($i = 0; $i<count($line); $i++){
+		for($i = 0; $i < $countline; $i++){
 			list($no,,,,,,,$dhost,$pass,$ext,,,$tim,,) = explode(",",$line[$i]);
 			if(in_array($no,$del) && (substr(md5($pwd),2,8) == $pass /*|| $dhost == $host*/ || ADMIN_PASS == $pwd)){
 				if(!$onlyimgdel){	//記事削除
@@ -1371,7 +1374,8 @@ function admindel($pass){
 	$dat['pass'] = $pass;
 
 	$line = file(LOGFILE);
-	for($j = 0; $j < count($line); $j++){
+	$countline = count($line);
+	for($j = 0; $j < $countline; $j++){
 		$img_flag = FALSE;
 		list($no,$now,$name,$email,$sub,$com,$url,
 			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($line[$j],4));
@@ -1862,7 +1866,7 @@ function editform($del,$pwd){
 		$countline=count($line);
 		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
 		$flag = FALSE;
-		for($i = 0; $i<count($line); $i++){
+		for($i = 0; $i < $countline; $i++){
 			list($no,,$name,$email,$sub,$com,$url,$ehost,$pass,,,,,,,$fcolor) = explode(",", rtrim($line[$i]));
 			if($no == $del[0] && (substr(md5($pwd),2,8) == $pass /*|| $ehost == $host*/ || ADMIN_PASS == $pwd)){
 				$flag = TRUE;
@@ -2035,7 +2039,8 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	// 記事上書き
 	$flag = FALSE;
-	for($i = 0; $i<count($line); $i++){
+	$countline=count($line);
+	for($i = 0; $i<$countline; $i++){
 		list($eno,,$ename,,$esub,$ecom,$eurl,$ehost,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$efcolor) = explode(",", rtrim($line[$i]));
 		if($eno == $no && ($pass == $epwd /*|| $ehost == $host*/ || ADMIN_PASS == $admin)){
 			if(!$name) $name = $ename;
@@ -2184,7 +2189,8 @@ function replace($no,$pwd,$stime){
 
 	// 記事上書き
 	$flag = false;
-	for($i = 0; $i<count($line); $i++){
+	$countline = count($line);
+	for($i = 0; $i < $countline; $i++){
 		list($eno,,$name,$email,$sub,$com,$url,$ehost,$epwd,$ext,$W,$H,$etim,,$eptime,$fcolor) = explode(",", rtrim($line[$i]));
 		if($eno == $no && ($pwd == $epwd /*|| $ehost == $host*/ || $pwd == substr(md5(ADMIN_PASS),2,8))){
 			$upfile = $temppath.$file_name.$imgext;
@@ -2360,7 +2366,7 @@ function catalog(){
 	// 改ページ処理
 	if($prev >= 0) $dat['prev'] = PHP_SELF.'?mode=catalog&amp;page='.$prev;
 	$paging = "";
-	for($i = 0; $i < count($tree) ; $i+=$pagedef){
+	for($i = 0; $i < $counttree ; $i+=$pagedef){
 		if($page==$i){
 			$pformat = str_replace("<PAGE>", $i/$pagedef, NOW_PAGE);
 		}else{
@@ -2370,7 +2376,7 @@ function catalog(){
 		$paging.=$pformat;
 	}
 	$dat['paging'] = $paging;
-	if(count($tree) > $next){
+	if($counttree > $next){
 		$dat['next'] = PHP_SELF.'?mode=catalog&amp;page='.$next;
 	}
 
