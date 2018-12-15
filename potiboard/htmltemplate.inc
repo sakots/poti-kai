@@ -1,6 +1,6 @@
 <?php
 /*
-Htmltemplate for PHP5 > PHP7
+Htmltemplate for PHP5 , PHP7
 Copyright (C) 2003 Hiroshi Ayukawa and @satopian
 
 This program is free software; you can redistribute it and/or
