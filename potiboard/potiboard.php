@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.0 lot.181215
+  * POTI-board改 v1.50.1 lot.181218
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -51,10 +51,10 @@ return $string;
 $mode = ( isset( $_POST["mode"] ) === true ) ? newstring($_POST["mode"]): "";
 $resto = ( isset( $_POST["resto"] ) === true ) ? newstring($_POST["resto"]): "";
 $MAX_FILE_SIZE = ( isset( $_POST["MAX_FILE_SIZE"] ) === true ) ? newstring($_POST["MAX_FILE_SIZE"]): "";
-$name = ( isset( $_POST["name"] ) === true ) ? ($_POST["name"]): "";
-$email = ( isset( $_POST["email"] ) === true ) ? ($_POST["email"]): "";
-$url = ( isset( $_POST["url"] ) === true ) ? ($_POST["url"]): "";
-$sub = ( isset( $_POST["sub"] ) === true ) ? ($_POST["sub"]): "";
+$name = ( isset( $_POST["name"] ) === true ) ? newstring($_POST["name"]): "";
+$email = ( isset( $_POST["email"] ) === true ) ? newstring($_POST["email"]): "";
+$url = ( isset( $_POST["url"] ) === true ) ? newstring($_POST["url"]): "";
+$sub = ( isset( $_POST["sub"] ) === true ) ? newstring($_POST["sub"]): "";
 $com = ( isset( $_POST["com"] ) === true ) ? ($_POST["com"]): "";
 $pwd = ( isset( $_POST["pwd"] ) === true ) ? newstring($_POST["pwd"]): "";
 $textonly = ( isset( $_POST["textonly"] ) === true ) ? newstring($_POST["textonly"]): "";
@@ -74,8 +74,6 @@ $ptime = ( isset( $_POST["ptime"]) === true ) ? newstring($_POST["ptime"]): "";
 $picfile = ( isset( $_POST["picfile"]) === true ) ? newstring($_POST["picfile"]): "";
 $del = ( isset($_POST["del"]) === true ) ? ($_POST["del"]): "";
 $admin = ( isset($_POST["admin"]) === true ) ? newstring($_POST["admin"]): "";
-$no = ( isset($_POST["no"]) === true ) ? newstring($_POST["no"]): "";
-$pch = ( isset($_POST["pch"]) === true ) ? newstring($_POST["pch"]): "";
 $pass = ( isset($_POST["pass"]) === true ) ? newstring($_POST["pass"]): "";
 $onlyimgdel = ( isset($_POST["onlyimgdel"]) === true ) ? newstring($_POST["onlyimgdel"]): "";
 //v1.32 MONO WHITE
@@ -83,12 +81,17 @@ $fcolor = ( isset($_POST["fcolor"]) === true ) ? newstring($_POST["fcolor"]): ""
 $undo = ( isset($_POST["undo"]) === true ) ? newstring($_POST["undo"]): "";
 $undo_in_mg = ( isset($_POST["undo_in_mg"]) === true ) ? newstring($_POST["undo_in_mg"]): "";
 $quality = ( isset($_POST["quality"]) === true ) ? newstring($_POST["quality"]): "";
-$savetype = ( isset($_POST["quality"]) === true ) ? newstring($_POST["savetype"]): "";
+$savetype = ( isset($_POST["savetype"]) === true ) ? newstring($_POST["savetype"]): "";
 
 //$_GETから変数を取得
 
 //var_dump($_GET);
-$res = ( isset($_GET["res"]) === true ) ? newstring($_GET["res"]): "";
+if(isset($_GET["res"])&&ctype_digit($_GET["res"])){//数字のみ
+$res = ($_GET["res"]);
+}
+else{
+$res = "";
+}
 if(isset($_GET["mode"])&&$_GET["mode"]==="openpch"){
 	$pch = (isset($_GET["pch"]) === true ) ? newstring($_GET["pch"]): "";
 	$shi = (isset($_GET["shi"]) === true ) ? newstring($_GET["shi"]): "";
@@ -172,8 +175,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.0');
-define('POTI_VERLOT' , '改 v1.50.0 lot.181215');
+define('POTI_VER' , '改 v1.50.1');
+define('POTI_VERLOT' , '改 v1.50.1 lot.181218');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -2510,7 +2513,8 @@ function potitag($str){
 				if(preg_match('/c\(([^\)]+)\)/',$base_tag,$m)){$color = $m[1];}
 				if(preg_match('/f\(([^\)]+)\)/',$base_tag,$m)){
 					$face = $m[1];
-					for($i = 0; $i < count($ryfont1); $i++){
+					$countryfont1 = count($ryfont1);
+					for($i = 0; $i < $countryfont1; $i++){
 						if($face == $ryfont1[$i]){$face = $ryfont2[$i];}
 					}
 				}
@@ -2521,7 +2525,8 @@ function potitag($str){
 				array_push($tag_ed,'</ruby>');
 				$rb_chk = 1;
 			}else{
-				for($i = 0; $i < count($tags1); $i++){
+				$counttags1 = count($tags1);
+				for($i = 0; $i < $counttags1; $i++){
 					if($base_tag==$tags1[$i]){
 						array_push($tag_ex,'<'.$tags2[$i].'>');
 						$endtag = preg_replace("/^([[:alpha:]]+)(.*)/",'\\1',$tags2[$i]);
