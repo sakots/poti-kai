@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.1 lot.181218
+  * POTI-board改 v1.50.2 lot.181222
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -73,6 +73,9 @@ $pictmp = ( isset( $_POST["pictmp"]) === true ) ? newstring($_POST["pictmp"]): "
 $ptime = ( isset( $_POST["ptime"]) === true ) ? newstring($_POST["ptime"]): "";
 $picfile = ( isset( $_POST["picfile"]) === true ) ? newstring($_POST["picfile"]): "";
 $del = ( isset($_POST["del"]) === true ) ? ($_POST["del"]): "";
+if(isset($del[0]) && !ctype_digit($del[0])){
+$del="";
+}
 $admin = ( isset($_POST["admin"]) === true ) ? newstring($_POST["admin"]): "";
 $pass = ( isset($_POST["pass"]) === true ) ? newstring($_POST["pass"]): "";
 $onlyimgdel = ( isset($_POST["onlyimgdel"]) === true ) ? newstring($_POST["onlyimgdel"]): "";
@@ -87,7 +90,7 @@ $savetype = ( isset($_POST["savetype"]) === true ) ? newstring($_POST["savetype"
 
 //var_dump($_GET);
 if(isset($_GET["res"])&&ctype_digit($_GET["res"])){//数字のみ
-$res = ($_GET["res"]);
+$res = $_GET["res"];
 }
 else{
 $res = "";
@@ -103,6 +106,9 @@ if(isset($_GET["mode"])&&$_GET["mode"]==="continue"){
 }
 if(isset($_GET["mode"])&&$_GET["mode"]==="edit"){
 		$del = ( isset($_GET["del"]) === true ) ? ($_GET["del"]): "";
+		if(isset($del[0]) && !ctype_digit($del[0])){
+		$del="";
+		}
 		$pwd = ( isset($_GET["pwd"]) === true ) ? newstring($_GET["pwd"]): "";
 		$mode = "edit"; 
 }
@@ -145,7 +151,7 @@ $namec = ( isset($_COOKIE["namec"]) === true ) ? newstring($_COOKIE["namec"]): "
 $emailc = ( isset($_COOKIE["emailc"]) === true ) ? newstring($_COOKIE["emailc"]): "";
 $pwdc = ( isset($_COOKIE["pwdc"]) === true ) ? newstring($_COOKIE["pwdc"]): "";
 $fcolorc = ( isset($_COOKIE["fcolorc"]) === true ) ? newstring($_COOKIE["fcolorc"]): "";
-$usercode = ( isset($_COOKIE["usercode"]) === true ) ? ($_COOKIE["usercode"]): false;//falseならuser-codeを発行
+$usercode = ( isset($_COOKIE["usercode"]) === true ) ? newstring($_COOKIE["usercode"]): false;//falseならuser-codeを発行
 	extract($_SERVER);
 	if (isset($_FILES["upfile"]["name"])) {
 		$upfile_name=$_FILES["upfile"]["name"];
@@ -175,8 +181,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.1');
-define('POTI_VERLOT' , '改 v1.50.1 lot.181218');
+define('POTI_VER' , '改 v1.50.2');
+define('POTI_VERLOT' , '改 v1.50.2 lot.181222');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
