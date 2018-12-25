@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.2 lot.181222
+  * POTI-board改 v1.50.3 lot.181225
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -73,9 +73,17 @@ $pictmp = ( isset( $_POST["pictmp"]) === true ) ? newstring($_POST["pictmp"]): "
 $ptime = ( isset( $_POST["ptime"]) === true ) ? newstring($_POST["ptime"]): "";
 $picfile = ( isset( $_POST["picfile"]) === true ) ? newstring($_POST["picfile"]): "";
 $del = ( isset($_POST["del"]) === true ) ? ($_POST["del"]): "";
-if(isset($del[0]) && !ctype_digit($del[0])){
-$del="";
+if(is_array($del)){
+$countdel=count($del);
+	for($i = 0; $i < $countdel; $i++){
+		if(!ctype_digit($del[$i])){//数字のみ
+		$del="";
+		}
+	}
 }
+	else{
+	$del="";
+	}
 $admin = ( isset($_POST["admin"]) === true ) ? newstring($_POST["admin"]): "";
 $pass = ( isset($_POST["pass"]) === true ) ? newstring($_POST["pass"]): "";
 $onlyimgdel = ( isset($_POST["onlyimgdel"]) === true ) ? newstring($_POST["onlyimgdel"]): "";
@@ -106,9 +114,17 @@ if(isset($_GET["mode"])&&$_GET["mode"]==="continue"){
 }
 if(isset($_GET["mode"])&&$_GET["mode"]==="edit"){
 		$del = ( isset($_GET["del"]) === true ) ? ($_GET["del"]): "";
-		if(isset($del[0]) && !ctype_digit($del[0])){
+if(is_array($del)){
+$countdel=count($del);
+	for($i = 0; $i < $countdel; $i++){
+		if(!ctype_digit($del[$i])){//数字のみ
 		$del="";
 		}
+	}
+}
+	else{
+	$del="";
+	}
 		$pwd = ( isset($_GET["pwd"]) === true ) ? newstring($_GET["pwd"]): "";
 		$mode = "edit"; 
 }
@@ -181,8 +197,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.2');
-define('POTI_VERLOT' , '改 v1.50.2 lot.181222');
+define('POTI_VER' , '改 v1.50.3');
+define('POTI_VERLOT' , '改 v1.50.3 lot.181225');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
