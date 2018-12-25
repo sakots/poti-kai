@@ -40,6 +40,9 @@
 	<!-- <dt class="ver"></dt>
 	<dd class="con"></dd>
 	<dd></dd> -->
+	<dt class="ver">[2018/12/25] v1.50.3 lot.181225</dt>
+	<dd class="con">【仕様変更】</dd>
+	<dd>セキュリティ関連（by さとぴあ）</dd>
 	<dt class="ver">[2018/12/16] v1.50.0 lot.181215</dt>
 	<dd class="con">【仕様変更】</dd>
 	<dd>信頼できないデータに extract() を使用しない。（by さとぴあ）</dd>
