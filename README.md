@@ -37,9 +37,6 @@
 <dl>
 [2018/09/23] v1.45.1 lot.180923
 【仕様変更】
-	<!-- <dt class="ver"></dt>
-	<dd class="con"></dd>
-	<dd></dd> -->
 	<dt class="ver">[2018/12/25] v1.50.3 lot.181225</dt>
 	<dd class="con">【仕様変更】</dd>
 	<dd>セキュリティ関連（by さとぴあ）</dd>

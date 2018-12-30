@@ -311,7 +311,7 @@ class htmltemplate{
 //http://jp2.php.net/manual/ja/language.oop5.static.php
 //2018.09.22
 
-	public static function &getInstance(){
+	private static function &getInstance(){
 		static $instance;
 		if(! $instance) $instance=new htmltemplate();
 		return $instance;
