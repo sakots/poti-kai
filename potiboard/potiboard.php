@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.3 lot.181225
+  * POTI-board改 v1.50.5 lot.190101
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -197,8 +197,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.3');
-define('POTI_VERLOT' , '改 v1.50.3 lot.181225');
+define('POTI_VER' , '改 v1.50.5');
+define('POTI_VERLOT' , '改 v1.50.5 lot.190101');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1408,7 +1408,13 @@ function usrdel($del,$pwd){
 		$flag = false;
 		$find = false;
 		for($i = 0; $i < $countline; $i++){
+		if($line[$i]){
 			list($no,,,,,,,$dhost,$pass,$ext,,,$tim,,) = explode(",",$line[$i]);
+			
+		}
+		else{
+			$no=$dhost=$pass=$ext=$tim="";
+		}
 			if(in_array($no,$del) && (substr(md5($pwd),2,8) == $pass /*|| $dhost == $host*/ || ADMIN_PASS == $pwd)){
 				if(!$onlyimgdel){	//記事削除
 					treedel($no);
@@ -1464,10 +1470,15 @@ function admindel($pass){
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
+		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
 		$find = false;
 		for($i = 0; $i < $countline; $i++){
+		if($line[$i]){
 			list($no,,,,,,,,,$ext,,,$tim,,) = explode(",",$line[$i]);
+		}
+		else{
+			$no=$ext=$tim="";
+		}
 			if(in_array($no,$del)){
 				if(!$onlyimgdel){	//記事削除
 					treedel($no);
@@ -1530,7 +1541,7 @@ function admindel($pass){
 
 		$dat['del'][$j] = compact('bg','no','now','sub','name','com','host','clip','size','chk');
 	}
-
+			if(!isset($all)){$all=0;}
 	$dat['all'] = (int)($all / 1024);
 	htmloutput(OTHERFILE,$dat);
 	exit;
@@ -1546,7 +1557,7 @@ function init(){
 			set_file_buffer($fp, 0);
 			$now = now_date(time());//日付取得
 			if(DISP_ID) $now .= " ID:???";
-			$testmes="1,".$now.",".DEF_NAME.",,".DEF_SUB.",".DEF_COM.",,\n";
+			$testmes="1,".$now.",".DEF_NAME.",,".DEF_SUB.",".DEF_COM.",,,,,,,,,,\n";
 			if($value==LOGFILE)fputs($fp,charconvert($testmes,4));
 			if($value==TREEFILE)fputs($fp,"1\n");
 			fclose($fp);
