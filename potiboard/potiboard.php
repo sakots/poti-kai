@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.5 lot.190101
+  * POTI-board改 v1.50.6 lot.190111
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -197,8 +197,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.5');
-define('POTI_VERLOT' , '改 v1.50.5 lot.190101');
+define('POTI_VER' , '改 v1.50.6');
+define('POTI_VERLOT' , '改 v1.50.6 lot.190111');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -906,11 +906,15 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$url   = charconvert($url  ,4);
 	$ptime = charconvert($ptime,4);
 
-	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
+	if(!isset($dest)){
+		$dest="";
+	}
+
+	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
 	if($REQUEST_METHOD != "POST") error(MSG006,$dest);
 
 //指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);};}
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);}}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
@@ -918,9 +922,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
 	if(!$url||preg_match("/^[ |　|]*$/",$url))   $url="";
 
-	if(!isset($dest)){
-		$dest="";
-	}
 	if(!$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 	if(RES_UPLOAD&&$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 
@@ -1340,7 +1341,7 @@ function treedel($delno){
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	$find=false;
-	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
+	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
 	for($i = 0; $i < $countline; $i++){
 		$treeline = explode(",", rtrim($line[$i]));
 		$counttreeline=count($treeline);
@@ -1404,7 +1405,7 @@ function usrdel($del,$pwd){
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
+		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
 		$flag = false;
 		$find = false;
 		for($i = 0; $i < $countline; $i++){
@@ -2003,7 +2004,7 @@ function editform($del,$pwd){
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
+		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
 		$flag = FALSE;
 		for($i = 0; $i < $countline; $i++){
 			list($no,,$name,$email,$sub,$com,$url,$ehost,$pass,,,,,,,$fcolor) = explode(",", rtrim($line[$i]));
@@ -2058,11 +2059,15 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$email = charconvert($email,4);
 	$url   = charconvert($url  ,4);
 
-	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);};}
+	if(!isset($dest)){
+		$dest="";
+	}
+
+	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
 	if($REQUEST_METHOD != "POST") error(MSG006);
 
 //指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);};}
+	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);}}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
@@ -2174,7 +2179,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
+	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
 
 	// 記事上書き
 	$flag = FALSE;
@@ -2324,7 +2329,8 @@ function replace($no,$pwd,$stime){
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";};}
+	for($i = 0; $i < $countline; $i++){
+		if($line[$i]!=""){$line[$i].="\n";}}
 
 	// 記事上書き
 	$flag = false;
