@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.6 lot.190111
+  * POTI-board改 v1.50.8 lot.190113
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -197,8 +197,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.6');
-define('POTI_VERLOT' , '改 v1.50.6 lot.190111');
+define('POTI_VER' , '改 v1.50.8');
+define('POTI_VERLOT' , '改 v1.50.8 lot.190113');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -551,26 +551,47 @@ function updatelog($resno=0){
 						$thumb = true;
 						$imgsrc = THUMB_DIR.$time.'s.jpg';
 					}else{
+						$thumb = "";
 						$imgsrc = $src;
 					}
 				}
 				//描画時間
-				if(DSP_PAINTTIME) $painttime = $ptime;
+				if(DSP_PAINTTIME){
+				$painttime = $ptime;
+				}
+				else{
+					$painttime="";
+				}
 				//動画リンク
 				if(USE_ANIME){
-					if(file_exists(PCH_DIR.$time.'.pch'))
+					if(file_exists(PCH_DIR.$time.'.pch')){
 						$pch = $time.$ext;
-					if(file_exists(PCH_DIR.$time.'.spch'))
+					}
+					elseif(file_exists(PCH_DIR.$time.'.spch')){
 						$pch = $time.$ext.'&amp;shi=1';
+					}
+					else{
+						$pch="";
+					}
 				}
+				else{
+						$pch="";
+					}
 				//コンティニュー
 				if(USE_CONTINUE){
 					//if(file_exists(PCH_DIR.$time.'.pch')||file_exists(PCH_DIR.$time.'.spch')||$ext=='.jpg')
 						$continue = $no;
-				}
+				}else{$continue="";}
+			}
+			else{//画像が無い時
+				$src=$srcname=$imgsrc=$size=$pch=$thumb=$continue=$painttime="";
 			}
 			// そろそろ消える。
-			if($lineindex[$no]-1 >= LOG_MAX*LOG_LIMIT/100) $limit = true;
+			if($lineindex[$no]-1 >= LOG_MAX*LOG_LIMIT/100) {
+				$limit = true;}
+				else{
+				$limit ="";
+				}
 			// ミニフォーム用
 			if(USE_RESUB) $resub = 'Re: '.$sub;
 			// レス省略
@@ -640,6 +661,9 @@ function updatelog($resno=0){
 	//メタタグに使うコメントから
 	//タグを除去
 	$descriptioncom=strip_tags($com);
+	if(!isset($skipres)){
+		$skipres="";
+	}
 
 			// 親記事格納
 			$dat['oya'][$oya] = compact('src','srcname','size','painttime','pch','continue','thumb','imgsrc','w','h','no','sub','name','now','com','descriptioncom','limit','skipres','resub','url','email','id','updatemark','trip','tab','fontcolor');
@@ -673,24 +697,40 @@ function updatelog($resno=0){
 							$thumb = true;
 							$imgsrc = THUMB_DIR.$time.'s.jpg';
 						}else{
+							$thumb = "";
 							$imgsrc = $src;
 						}
 					}
 					//描画時間
-					if(DSP_PAINTTIME) $painttime = $ptime;
+					if(DSP_PAINTTIME){ $painttime = $ptime;
+					}
+					else{
+						$painttime="";
+					}
 					//動画リンク
 					if(USE_ANIME){
-						if(file_exists(PCH_DIR.$time.'.pch'))
+						if(file_exists(PCH_DIR.$time.'.pch')){
 							$pch = $time.$ext;
-						if(file_exists(PCH_DIR.$time.'.spch'))
+						}
+						elseif(file_exists(PCH_DIR.$time.'.spch')){
 							$pch = $time.$ext.'&amp;shi=1';
+						}
+					else{
+						$pch="";
+					}
+					}
+					else{
+						$pch="";
 					}
 					//コンティニュー
 					if(USE_CONTINUE){
 						//if(file_exists(PCH_DIR.$time.'.pch')||file_exists(PCH_DIR.$time.'.spch')||$ext=='.jpg')
 							$continue = $no;
-					}
+					}else{$continue="";}
 				}
+			else{//画像が無い時
+				$src=$srcname=$imgsrc=$size=$pch=$thumb=$continue=$painttime="";
+			}
 
 				//日付とIDを分離
 				if(preg_match("/( ID:)(.*)/",$now,$regs)){
@@ -1081,20 +1121,20 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				if($host==$lhost
 				|| substr(md5($pwd),2,8)==$lpwd
 				|| substr(md5($pwdc),2,8)==$lpwd
-				|| (isset($name) && $name==$lname)
-				|| (isset($email) && $email==$lemail)
-				|| (isset($url) && $url==$lurl)
-				|| (isset($sub) && $sub==$lsub)
+				|| ($name==$lname)
+				|| ($email==$lemail)
+				|| ($url==$lurl)
+				|| ($sub==$lsub)
 				){$pchk=1;}
 				break;
 			case 3:	//high
 				if($host==$lhost
 				|| substr(md5($pwd),2,8)==$lpwd
 				|| substr(md5($pwdc),2,8)==$lpwd
-				|| (isset($name) && similar_str($name,$lname) > VALUE_LIMIT)
-				|| (isset($email) && similar_str($email,$lemail) > VALUE_LIMIT)
-				|| (isset($url) && similar_str($url,$lurl) > VALUE_LIMIT)
-				|| (isset($sub) && similar_str($sub,$lsub) > VALUE_LIMIT)
+				|| (similar_str($name,$lname) > VALUE_LIMIT)
+				|| (similar_str($email,$lemail) > VALUE_LIMIT)
+				|| (similar_str($url,$lurl) > VALUE_LIMIT)
+				|| (similar_str($sub,$lsub) > VALUE_LIMIT)
 				){$pchk=1;}
 				break;
 			case 4:	//full
@@ -1108,8 +1148,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			$ltime = (int)$ltime;
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
 			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
-			if(isset($com)){
-				if(isset($textonly) && $textonly){//画像なしの時
+			if($com){
+				if($textonly){//画像なしの時
 				$dest="";
 				}
 				switch(D_POST_CHECKLEVEL){
@@ -1168,7 +1208,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}//ここまで
 	list($lastno,) = explode(",", $line[0]);
 	$no = $lastno + 1;
-	if(isset($textonly) && $textonly || !isset($ext)){
+	if($textonly){
 	$dest=$ext=$W=$H=$chk="";
 	}
 	$newline = "$no,$now,$name,$email,$sub,$com,$url,$host,$pass,$ext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
@@ -2470,12 +2510,24 @@ function catalog(){
 				}else{$w=CATALOG_W;}
 				//動画リンク
 				if(USE_ANIME){
-					if(file_exists(PCH_DIR.$time.'.pch'))
+					if(file_exists(PCH_DIR.$time.'.pch')){
 						$pch = $time.$ext;
-					if(file_exists(PCH_DIR.$time.'.spch'))
+					}
+					elseif(file_exists(PCH_DIR.$time.'.spch')){
 						$pch = $time.$ext.'&amp;shi=1';
+					}
+					else{
+						$pch="";
+					}
 				}
-			}else{$txt=true;}
+				else{
+						$pch="";
+					}
+			}
+			else{//画像が無い時
+				$txt=true;
+				$imgsrc=$pch="";
+			}
 			//日付とIDを分離
 			if(preg_match("/( ID:)(.*)/",$now,$regs)){
 				$id=$regs[2];
@@ -2495,6 +2547,10 @@ function catalog(){
 				$trip=$regs[1];
 				$name=preg_replace("/(◆.*)/","",$name);
 			}else{$trip='';}
+
+	if(!isset($txt)){
+		$txt="";
+	}
 
 			// 記事格納
 			$dat['y'][$y]['x'][$x] = compact('imgsrc','w','no','sub','name','now','pch','txt','id','updatemark','trip');
@@ -2675,7 +2731,7 @@ switch($mode){
 //		regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 //未定義エラー対策
 //空文字でも定義済みになるので二重チェック。
-	if(isset($picfile)&&$picfile){//お絵かきの時
+	if($picfile){//お絵かきの時
 		$upfile=$upfile_name="";
 		if(!isset($resto)){$resto="";}//レスではなかった時
 	}
@@ -2688,13 +2744,10 @@ else{//文字だけの時
 		if(!isset($resto)){$resto="";}
 
 	}
-if(isset($textonly) && $textonly){//画像なしの時
+if($textonly){//画像なしの時
 	$upfile=$upfile_name=$pictmp=$picfile="";
 	if(!isset($resto)){$resto="";}
 	}
-if(!isset($email)){
-	$email="";
-}
 	regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 	//変数クリア
 	unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
@@ -2702,14 +2755,12 @@ if(!isset($email)){
 		break;
 
 	case 'admin':
-		if(!isset($pass)){$pass="";}
 		valid($pass); 
 		if($admin=="del") admindel($pass);
 		if($admin=="post"){
 			$dat['post_mode'] = true;
 			$dat['regist'] = true;
 			head($dat);
-		if(!isset($res)){$res="";}
 			form($dat,$res,1);
 			htmloutput(OTHERFILE,$dat);
 		}
@@ -2728,7 +2779,6 @@ if(!isset($email)){
 	case 'paint':
 		$palette = "";
 		if(!isset($resto)){$resto="";}
-		if(!isset($anime)){$anime="";}
 paintform($picw,$pich,$palette,$anime);
 		break;
 	case 'piccom':
@@ -2762,9 +2812,6 @@ paintform($picw,$pich,$palette,$anime);
 		editform($del,$pwd);
 		break;
 	case 'rewrite':
-		if(!isset($email)){
-		$email="";
-}
 		rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin);
 		break;
 	case 'picrep':
@@ -2777,7 +2824,7 @@ paintform($picw,$pich,$palette,$anime);
 		potitagview();
 		break;
 	default:
-	if(isset($res) && $res){
+	if($res){
 			updatelog($res);
 		}else{
 			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
@@ -2786,7 +2833,7 @@ paintform($picw,$pich,$palette,$anime);
 }
 //default:で処理していた箇所
 else {
-	if(isset($res) && $res){
+	if($res){
 			updatelog($res);
 		}else{
 			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
