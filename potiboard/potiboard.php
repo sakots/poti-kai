@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.6 lot.190111
+  * POTI-board改 v1.50.7 lot.190113
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -197,8 +197,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.6');
-define('POTI_VERLOT' , '改 v1.50.6 lot.190111');
+define('POTI_VER' , '改 v1.50.7');
+define('POTI_VERLOT' , '改 v1.50.7 lot.190113');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -551,26 +551,47 @@ function updatelog($resno=0){
 						$thumb = true;
 						$imgsrc = THUMB_DIR.$time.'s.jpg';
 					}else{
+						$thumb = "";
 						$imgsrc = $src;
 					}
 				}
 				//描画時間
-				if(DSP_PAINTTIME) $painttime = $ptime;
+				if(DSP_PAINTTIME){
+				$painttime = $ptime;
+				}
+				else{
+					$painttime="";
+				}
 				//動画リンク
 				if(USE_ANIME){
-					if(file_exists(PCH_DIR.$time.'.pch'))
+					if(file_exists(PCH_DIR.$time.'.pch')){
 						$pch = $time.$ext;
-					if(file_exists(PCH_DIR.$time.'.spch'))
+					}
+					elseif(file_exists(PCH_DIR.$time.'.spch')){
 						$pch = $time.$ext.'&amp;shi=1';
+					}
+					else{
+						$pch="";
+					}
 				}
+				else{
+						$pch="";
+					}
 				//コンティニュー
 				if(USE_CONTINUE){
 					//if(file_exists(PCH_DIR.$time.'.pch')||file_exists(PCH_DIR.$time.'.spch')||$ext=='.jpg')
 						$continue = $no;
-				}
+				}else{$continue="";}
+			}
+			else{//画像が無い時
+				$src=$srcname=$imgsrc=$size=$pch=$thumb=$continue=$painttime="";
 			}
 			// そろそろ消える。
-			if($lineindex[$no]-1 >= LOG_MAX*LOG_LIMIT/100) $limit = true;
+			if($lineindex[$no]-1 >= LOG_MAX*LOG_LIMIT/100) {
+				$limit = true;}
+				else{
+				$limit ="";
+				}
 			// ミニフォーム用
 			if(USE_RESUB) $resub = 'Re: '.$sub;
 			// レス省略
@@ -640,6 +661,9 @@ function updatelog($resno=0){
 	//メタタグに使うコメントから
 	//タグを除去
 	$descriptioncom=strip_tags($com);
+	if(!isset($skipres)){
+		$skipres="";
+	}
 
 			// 親記事格納
 			$dat['oya'][$oya] = compact('src','srcname','size','painttime','pch','continue','thumb','imgsrc','w','h','no','sub','name','now','com','descriptioncom','limit','skipres','resub','url','email','id','updatemark','trip','tab','fontcolor');
@@ -673,24 +697,40 @@ function updatelog($resno=0){
 							$thumb = true;
 							$imgsrc = THUMB_DIR.$time.'s.jpg';
 						}else{
+							$thumb = "";
 							$imgsrc = $src;
 						}
 					}
 					//描画時間
-					if(DSP_PAINTTIME) $painttime = $ptime;
+					if(DSP_PAINTTIME){ $painttime = $ptime;
+					}
+					else{
+						$painttime="";
+					}
 					//動画リンク
 					if(USE_ANIME){
-						if(file_exists(PCH_DIR.$time.'.pch'))
+						if(file_exists(PCH_DIR.$time.'.pch')){
 							$pch = $time.$ext;
-						if(file_exists(PCH_DIR.$time.'.spch'))
+						}
+						elseif(file_exists(PCH_DIR.$time.'.spch')){
 							$pch = $time.$ext.'&amp;shi=1';
+						}
+					else{
+						$pch="";
+					}
+					}
+					else{
+						$pch="";
 					}
 					//コンティニュー
 					if(USE_CONTINUE){
 						//if(file_exists(PCH_DIR.$time.'.pch')||file_exists(PCH_DIR.$time.'.spch')||$ext=='.jpg')
 							$continue = $no;
-					}
+					}else{$continue="";}
 				}
+			else{//画像が無い時
+				$src=$srcname=$imgsrc=$size=$pch=$thumb=$continue=$painttime="";
+			}
 
 				//日付とIDを分離
 				if(preg_match("/( ID:)(.*)/",$now,$regs)){
@@ -2470,12 +2510,24 @@ function catalog(){
 				}else{$w=CATALOG_W;}
 				//動画リンク
 				if(USE_ANIME){
-					if(file_exists(PCH_DIR.$time.'.pch'))
+					if(file_exists(PCH_DIR.$time.'.pch')){
 						$pch = $time.$ext;
-					if(file_exists(PCH_DIR.$time.'.spch'))
+					}
+					elseif(file_exists(PCH_DIR.$time.'.spch')){
 						$pch = $time.$ext.'&amp;shi=1';
+					}
+					else{
+						$pch="";
+					}
 				}
-			}else{$txt=true;}
+				else{
+						$pch="";
+					}
+			}
+			else{//画像が無い時
+				$txt=true;
+				$imgsrc=$pch="";
+			}
 			//日付とIDを分離
 			if(preg_match("/( ID:)(.*)/",$now,$regs)){
 				$id=$regs[2];
@@ -2495,6 +2547,10 @@ function catalog(){
 				$trip=$regs[1];
 				$name=preg_replace("/(◆.*)/","",$name);
 			}else{$trip='';}
+
+	if(!isset($txt)){
+		$txt="";
+	}
 
 			// 記事格納
 			$dat['y'][$y]['x'][$x] = compact('imgsrc','w','no','sub','name','now','pch','txt','id','updatemark','trip');
