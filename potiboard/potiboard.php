@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.8 lot.190113
+  * POTI-board改 v1.50.9 lot.190115
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -54,6 +54,9 @@ $MAX_FILE_SIZE = ( isset( $_POST["MAX_FILE_SIZE"] ) === true ) ? newstring($_POS
 $name = ( isset( $_POST["name"] ) === true ) ? newstring($_POST["name"]): "";
 $email = ( isset( $_POST["email"] ) === true ) ? newstring($_POST["email"]): "";
 $url = ( isset( $_POST["url"] ) === true ) ? newstring($_POST["url"]): "";
+if(strpos($url,'http') === false){
+	$url = "";
+}
 $sub = ( isset( $_POST["sub"] ) === true ) ? newstring($_POST["sub"]): "";
 $com = ( isset( $_POST["com"] ) === true ) ? ($_POST["com"]): "";
 $pwd = ( isset( $_POST["pwd"] ) === true ) ? newstring($_POST["pwd"]): "";
@@ -197,8 +200,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.8');
-define('POTI_VERLOT' , '改 v1.50.8 lot.190113');
+define('POTI_VER' , '改 v1.50.9');
+define('POTI_VERLOT' , '改 v1.50.9 lot.190115');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -960,7 +963,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(!$url||preg_match("/^[ |　|]*$/",$url))   $url="";
+	if(!$url||preg_match("/^ *?javascript|^ *?file|(^[ |　|]*$)/i",$url))   $url="";
 
 	if(!$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 	if(RES_UPLOAD&&$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
@@ -1421,7 +1424,7 @@ function CleanStr($str){
 		$str = stripslashes($str);
 	}
 	if($admin!=ADMIN_PASS){//管理者はタグ可能
-		$str = htmlspecialchars($str);//タグっ禁止
+		$str = htmlspecialchars($str,ENT_QUOTES,'utf-8');//タグっ禁止
 		$str = str_replace("&amp;", "&", $str);//特殊文字
 	}
 	return str_replace(",", "&#44;", $str);//カンマを変換
@@ -1563,7 +1566,7 @@ function admindel($pass){
 		if($email) $name="<a href=\"mailto:$email\">$name</a>";
 		$com = preg_replace("{<br(( *)|( *)/)>}i"," ",$com);
 		//$com = str_replace("<br />"," ",$com);
-		$com = htmlspecialchars($com);
+		$com = htmlspecialchars($com,ENT_QUOTES,'utf-8');
 		if(strlen($com) > 20) $com = substr($com,0,18) . ".";
 		// 画像があるときはリンク
 		if($ext && is_file($path.$time.$ext)){
@@ -2113,7 +2116,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(!$url||preg_match("/^[ |　|]*$/",$url))   $url="";
+	if(!$url||preg_match("/^ *?javascript|^ *?file|(^[ |　|]*$)/i",$url))   $url="";
 
 	//$name=preg_replace("/管理/","\"管理\"",$name);
 	//$name=preg_replace("/削除/","\"削除\"",$name);
