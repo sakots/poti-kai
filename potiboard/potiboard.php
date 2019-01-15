@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.8 lot.190113
+  * POTI-board改 v1.50.9 lot.190115
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -197,8 +197,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.8');
-define('POTI_VERLOT' , '改 v1.50.8 lot.190113');
+define('POTI_VER' , '改 v1.50.9');
+define('POTI_VERLOT' , '改 v1.50.9 lot.190115');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -960,7 +960,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(!$url||preg_match("/^[ |　|]*$/",$url))   $url="";
+	if(!$url||!preg_match("/^ *?https?:\/\//",$url))   $url="";
 
 	if(!$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 	if(RES_UPLOAD&&$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
@@ -1421,7 +1421,7 @@ function CleanStr($str){
 		$str = stripslashes($str);
 	}
 	if($admin!=ADMIN_PASS){//管理者はタグ可能
-		$str = htmlspecialchars($str);//タグっ禁止
+		$str = htmlspecialchars($str,ENT_QUOTES,'utf-8');//タグっ禁止
 		$str = str_replace("&amp;", "&", $str);//特殊文字
 	}
 	return str_replace(",", "&#44;", $str);//カンマを変換
@@ -1445,17 +1445,13 @@ function usrdel($del,$pwd){
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
+		for($i = 0; $i < $countline; $i++){if($line[$i]!==""){$line[$i].="\n";}}
 		$flag = false;
 		$find = false;
 		for($i = 0; $i < $countline; $i++){
 		if($line[$i]){
 			list($no,,,,,,,$dhost,$pass,$ext,,,$tim,,) = explode(",",$line[$i]);
 			
-		}
-		else{
-			$no=$dhost=$pass=$ext=$tim="";
-		}
 			if(in_array($no,$del) && (substr(md5($pwd),2,8) == $pass /*|| $dhost == $host*/ || ADMIN_PASS == $pwd)){
 				if(!$onlyimgdel){	//記事削除
 					treedel($no);
@@ -1471,6 +1467,7 @@ function usrdel($del,$pwd){
 				$flag = true;
 			}
 		}
+	}
 		if(!$flag)error(MSG028);
 		if($find){//ログ更新
 			ftruncate($fp,0);
@@ -1516,10 +1513,6 @@ function admindel($pass){
 		for($i = 0; $i < $countline; $i++){
 		if($line[$i]){
 			list($no,,,,,,,,,$ext,,,$tim,,) = explode(",",$line[$i]);
-		}
-		else{
-			$no=$ext=$tim="";
-		}
 			if(in_array($no,$del)){
 				if(!$onlyimgdel){	//記事削除
 					treedel($no);
@@ -1533,6 +1526,7 @@ function admindel($pass){
 				if(is_file(PCH_DIR.$tim.'.spch')) unlink(PCH_DIR.$tim.'.spch');//削除
 			}
 		}
+	}
 		if($find){//ログ更新
 			ftruncate($fp,0);
 			set_file_buffer($fp, 0);
@@ -1563,7 +1557,7 @@ function admindel($pass){
 		if($email) $name="<a href=\"mailto:$email\">$name</a>";
 		$com = preg_replace("{<br(( *)|( *)/)>}i"," ",$com);
 		//$com = str_replace("<br />"," ",$com);
-		$com = htmlspecialchars($com);
+		$com = htmlspecialchars($com,ENT_QUOTES,'utf-8');
 		if(strlen($com) > 20) $com = substr($com,0,18) . ".";
 		// 画像があるときはリンク
 		if($ext && is_file($path.$time.$ext)){
@@ -2047,12 +2041,14 @@ function editform($del,$pwd){
 		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
 		$flag = FALSE;
 		for($i = 0; $i < $countline; $i++){
+		if($line[$i]){
 			list($no,,$name,$email,$sub,$com,$url,$ehost,$pass,,,,,,,$fcolor) = explode(",", rtrim($line[$i]));
 			if($no == $del[0] && (substr(md5($pwd),2,8) == $pass /*|| $ehost == $host*/ || ADMIN_PASS == $pwd)){
 				$flag = TRUE;
 				break;
 			}
 		}
+	}
 		if(!$flag) error(MSG028);
 
 		head($dat);
@@ -2113,7 +2109,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(!$url||preg_match("/^[ |　|]*$/",$url))   $url="";
+	if(!$url||!preg_match("/^ *?https?:\/\//",$url))   $url="";
 
 	//$name=preg_replace("/管理/","\"管理\"",$name);
 	//$name=preg_replace("/削除/","\"削除\"",$name);
@@ -2230,7 +2226,6 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 			if(!$name) $name = $ename;
 			if(!$sub)  $sub  = $esub;
 			if(!$com)  $com  = $ecom;
-			if(!$url)  $url  = $eurl;
 			if(!$fcolor) $fcolor = $efcolor;
 			$line[$i] = "$no,$now,$name,$email,$sub,$com,$url,$host,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
 			$flag = TRUE;
