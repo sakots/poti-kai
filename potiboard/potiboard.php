@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.50.9 lot.190115
+  * POTI-board改 v1.51.0 lot.190121
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -38,10 +38,12 @@
 if(phpversion()>="5.2.0"){
 //スパム無効化関数
 function newstring($string) {
-$string = stripslashes($string);
-$string = htmlspecialchars($string,ENT_QUOTES,'utf-8');
-$string = str_replace(",","，",$string);
-return $string;
+if(get_magic_quotes_gpc()){
+	$string = stripslashes($string);
+	}
+	$string = htmlspecialchars($string,ENT_QUOTES,'utf-8');
+	$string = str_replace(",","，",$string);
+	return $string;
 }
 //無効化ここまで
 
@@ -74,7 +76,7 @@ $ptime = ( isset( $_POST["ptime"]) === true ) ? newstring($_POST["ptime"]): "";
 $picfile = ( isset( $_POST["picfile"]) === true ) ? newstring($_POST["picfile"]): "";
 $del = ( isset($_POST["del"]) === true ) ? ($_POST["del"]): "";
 if(is_array($del)){
-$countdel=count($del);
+	$countdel=count($del);
 	for($i = 0; $i < $countdel; $i++){
 		if(!ctype_digit($del[$i])){//数字のみ
 		$del="";
@@ -83,7 +85,7 @@ $countdel=count($del);
 }
 	else{
 	$del="";
-	}
+}
 $admin = ( isset($_POST["admin"]) === true ) ? newstring($_POST["admin"]): "";
 $pass = ( isset($_POST["pass"]) === true ) ? newstring($_POST["pass"]): "";
 $onlyimgdel = ( isset($_POST["onlyimgdel"]) === true ) ? newstring($_POST["onlyimgdel"]): "";
@@ -106,17 +108,17 @@ $res = "";
 if(isset($_GET["mode"])&&$_GET["mode"]==="openpch"){
 	$pch = (isset($_GET["pch"]) === true ) ? newstring($_GET["pch"]): "";
 	$shi = (isset($_GET["shi"]) === true ) ? newstring($_GET["shi"]): "";
-	$mode = "openpch"; 
+	$mode = "openpch";
 	}
 if(isset($_GET["mode"])&&$_GET["mode"]==="continue"){
 		$no = ( isset($_GET["no"]) === true ) ? newstring($_GET["no"]): "";
-		$mode = "continue"; 
+		$mode = "continue";
 }
 if(isset($_GET["mode"])&&$_GET["mode"]==="edit"){
 		$del = ( isset($_GET["del"]) === true ) ? ($_GET["del"]): "";
-if(is_array($del)){
-$countdel=count($del);
-	for($i = 0; $i < $countdel; $i++){
+		if(is_array($del)){
+		$countdel=count($del);
+		for($i = 0; $i < $countdel; $i++){
 		if(!ctype_digit($del[$i])){//数字のみ
 		$del="";
 		}
@@ -124,10 +126,11 @@ $countdel=count($del);
 }
 	else{
 	$del="";
-	}
+}
 		$pwd = ( isset($_GET["pwd"]) === true ) ? newstring($_GET["pwd"]): "";
 		$mode = "edit"; 
 }
+	
 if(isset($_GET["mode"])&&$_GET["mode"]==="admin"){
 	$admin = ( isset($_GET["admin"]) === true ) ? newstring($_GET["admin"]): "";
 	$pass = ( isset($_GET["pass"]) === true ) ? newstring($_GET["pass"]): "";
@@ -168,13 +171,17 @@ $emailc = ( isset($_COOKIE["emailc"]) === true ) ? newstring($_COOKIE["emailc"])
 $pwdc = ( isset($_COOKIE["pwdc"]) === true ) ? newstring($_COOKIE["pwdc"]): "";
 $fcolorc = ( isset($_COOKIE["fcolorc"]) === true ) ? newstring($_COOKIE["fcolorc"]): "";
 $usercode = ( isset($_COOKIE["usercode"]) === true ) ? newstring($_COOKIE["usercode"]): false;//falseならuser-codeを発行
-	extract($_SERVER);
-	if (isset($_FILES["upfile"]["name"])) {
-		$upfile_name=$_FILES["upfile"]["name"];
-	}
-	if (isset($_FILES["upfile"]["tmp_name"])) {
-		$upfile=$_FILES["upfile"]["tmp_name"];
-	}
+
+//$_SERVERから変数を取得
+//var_dump($_SERVER);
+
+$REQUEST_METHOD = ( isset($_SERVER["REQUEST_METHOD"]) === true ) ? ($_SERVER["REQUEST_METHOD"]): "";
+
+//$_FILESから変数を取得
+
+$upfile_name = ( isset( $_FILES["upfile"]["name"]) === true ) ? ($_FILES["upfile"]["name"]): "";
+$upfile = ( isset( $_FILES["upfile"]["tmp_name"]) === true ) ? ($_FILES["upfile"]["tmp_name"]): "";
+
 }
 //設定の読み込み
 require("config.php");
@@ -197,8 +204,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.50.9');
-define('POTI_VERLOT' , '改 v1.50.9 lot.190115');
+define('POTI_VER' , '改 v1.51.0');
+define('POTI_VERLOT' , '改 v1.51.0 lot.190121');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -808,9 +815,7 @@ function updatelog($resno=0){
 		}
 
 		if($resno){htmloutput(RESFILE,$dat);break;}
-
 		$dat['resform'] = RES_FORM ? true : false;
-
 		htmltemplate::removeTag("q_escape");
 		htmltemplate::addTag("q_escape2");
 		$buf = htmloutput(MAINFILE,$dat,true);
@@ -951,7 +956,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
-	if($REQUEST_METHOD != "POST") error(MSG006,$dest);
+	if($REQUEST_METHOD !== "POST") error(MSG006,$dest);
 
 //指定文字列+本文へのURL書き込みで拒絶
 	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);}}
@@ -1054,6 +1059,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$url  = CleanStr($url);   $url  =preg_replace("/[\r\n]/","",$url);
 	$url  = str_replace(" ", "", $url);
 	$com  = CleanStr($com);
+	//管理モードで使用できるタグを制限
+	if(preg_match('/\< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
+
 	// 改行文字の統一。
 	$com = str_replace("\r\n", "\n", $com);
 	$com = str_replace("\r", "\n", $com);
@@ -1421,7 +1429,7 @@ function CleanStr($str){
 		$str = stripslashes($str);
 	}
 	if($admin!=ADMIN_PASS){//管理者はタグ可能
-		$str = htmlspecialchars($str,ENT_QUOTES,'utf-8');//タグっ禁止
+		$str = htmlspecialchars($str,ENT_QUOTES,'utf-8');//タグ禁止
 		$str = str_replace("&amp;", "&", $str);//特殊文字
 	}
 	return str_replace(",", "&#44;", $str);//カンマを変換
@@ -2100,7 +2108,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	}
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
-	if($REQUEST_METHOD != "POST") error(MSG006);
+	if($REQUEST_METHOD !== "POST") error(MSG006);
 
 //指定文字列+本文へのURL書き込みで拒絶
 	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);}}
@@ -2181,6 +2189,9 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$url  = CleanStr($url);    $url  =preg_replace("/[\r\n]/","",$url);
 	$url  = str_replace(" ", "", $url);
 	$com  = CleanStr($com);
+	//管理モードで使用できるタグを制限
+	if(preg_match('/\< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
+
 	// 改行文字の統一。
 	$com = str_replace("\r\n", "\n", $com);
 	$com = str_replace("\r", "\n", $com);
@@ -2715,37 +2726,18 @@ if(!$usercode){//falseなら発行
 }
 setcookie("usercode", $usercode, time()+86400*365);//1年間
 
-//未定義エラー対策
-if (isset($mode)){
 switch($mode){
 	case 'regist':
 		if(ADMIN_NEWPOST && !$resto){
 			if($pwd != ADMIN_PASS){ error(MSG029);
 			}else{ $admin=$pwd; }
 		}
-//		regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
-//未定義エラー対策
-//空文字でも定義済みになるので二重チェック。
-	if($picfile){//お絵かきの時
-		$upfile=$upfile_name="";
-		if(!isset($resto)){$resto="";}//レスではなかった時
-	}
-	elseif(isset($upfile_name)&&$upfile_name){//画像アップロードの時
-		$pictmp=$picfile="";
-		if(!isset($resto)){$resto="";}
-	}
-else{//文字だけの時
+	if($textonly){//画像なしの時
 	$upfile=$upfile_name=$pictmp=$picfile="";
-		if(!isset($resto)){$resto="";}
-
 	}
-if($textonly){//画像なしの時
-	$upfile=$upfile_name=$pictmp=$picfile="";
-	if(!isset($resto)){$resto="";}
-	}
-	regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
+regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 	//変数クリア
-	unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
+unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 
 		break;
 
@@ -2773,11 +2765,9 @@ if($textonly){//画像なしの時
 		break;
 	case 'paint':
 		$palette = "";
-		if(!isset($resto)){$resto="";}
 paintform($picw,$pich,$palette,$anime);
 		break;
 	case 'piccom':
-		if(!isset($resto)){$resto="";}
 		paintcom($resto);
 		break;
 	case 'openpch':
@@ -2825,14 +2815,5 @@ paintform($picw,$pich,$palette,$anime);
 			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
 		}
 }
-}
-//default:で処理していた箇所
-else {
-	if($res){
-			updatelog($res);
-		}else{
-			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
-		}
-	 }
 
 ?>
