@@ -50,7 +50,7 @@ http://dev.perl.org/perl6/rfc/346.html
 
 */
 
-define("FILE_READ_UNIT",8192);
+define('FILE_READ_UNIT',8192);
 
 
 /*
@@ -94,7 +94,7 @@ class TagBasis{
 		return $str;
 	}
 
-	function closeTag($str){
+	private function closeTag($str){
 		if($this->closestring){
 			$str=str_replace($this->closestring,
 			"<?php
@@ -152,7 +152,7 @@ class ArrayTag extends TagBasis{
 
 /* main definition of parser */
 class TemplateParser{
-	var $tags=array("simple"=>array(),"multi"=>array());
+	private $tags=array("simple"=>array(),"multi"=>array());
 
 	function add($tag){
 		if($tag->regardasarray) $this->tags["multi"][]=$tag;

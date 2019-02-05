@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.0 lot.190121
+  * POTI-board改 v1.51.1 lot.190203
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ if(isset($_GET["mode"])&&$_GET["mode"]==="openpch"){
 	$mode = "openpch";
 	}
 if(isset($_GET["mode"])&&$_GET["mode"]==="continue"){
-		$no = ( isset($_GET["no"]) === true ) ? newstring($_GET["no"]): "";
+		$no = (isset($_GET["no"]) === true) ? newstring($_GET["no"]): "";
 		$mode = "continue";
 }
 if(isset($_GET["mode"])&&$_GET["mode"]==="edit"){
@@ -204,8 +204,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.0');
-define('POTI_VERLOT' , '改 v1.51.0 lot.190121');
+define('POTI_VER' , '改 v1.51.1');
+define('POTI_VERLOT' , '改 v1.51.1 lot.190203');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -362,18 +362,18 @@ function gd_check(){
 
 //gdのバージョンを調べる
 function get_gd_ver(){
-	if(function_exists("gd_info")){
+//	if(function_exists("gd_info")){
 		$gdver=gd_info();
 		$phpinfo=$gdver["GD Version"];
-	}else{ //php4.3.0未満用
-		ob_start();
-		phpinfo(8);
-		$phpinfo=ob_get_contents();
-		ob_end_clean();
-		$phpinfo=strip_tags($phpinfo);
-		$phpinfo=stristr($phpinfo,"gd version");
-		$phpinfo=stristr($phpinfo,"version");
-	}
+//	}else{ //php4.3.0未満用
+//		ob_start();
+//		phpinfo(8);
+//		$phpinfo=ob_get_contents();
+//		ob_end_clean();
+//		$phpinfo=strip_tags($phpinfo);
+//		$phpinfo=stristr($phpinfo,"gd version");
+//		$phpinfo=stristr($phpinfo,"version");
+//	}
 	$end=strpos($phpinfo,".");
 	$phpinfo=substr($phpinfo,0,$end);
 	$length = strlen($phpinfo)-1;
@@ -1059,8 +1059,11 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$url  = CleanStr($url);   $url  =preg_replace("/[\r\n]/","",$url);
 	$url  = str_replace(" ", "", $url);
 	$com  = CleanStr($com);
+	$pwd= CleanStr($pwd);
+	$pwd=preg_replace("/[\r\n]/","",$pwd);
+
 	//管理モードで使用できるタグを制限
-	if(preg_match('/\< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
+	if(preg_match('/< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
 
 	// 改行文字の統一。
 	$com = str_replace("\r\n", "\n", $com);
@@ -1153,7 +1156,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 //KASIRAが入らない10桁のUNIX timeを取り出す
 			if(strlen($ltime)>10){$ltime=substr($ltime,-13,-3);}
 //文字列を整数に
-			$ltime = (int)$ltime;
+//			$ltime = $ltime;
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
 			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
 			if($com){
@@ -1600,7 +1603,9 @@ function init(){
 			set_file_buffer($fp, 0);
 			$now = now_date(time());//日付取得
 			if(DISP_ID) $now .= " ID:???";
-			$testmes="1,".$now.",".DEF_NAME.",,".DEF_SUB.",".DEF_COM.",,,,,,,,,,\n";
+			$time = time();
+			$tim = $time.substr(microtime(),2,3);
+			$testmes="1,".$now.",".DEF_NAME.",,".DEF_SUB.",".DEF_COM.",,,,,,,".$tim.",,,\n";
 			if($value==LOGFILE)fputs($fp,charconvert($testmes,4));
 			if($value==TREEFILE)fputs($fp,"1\n");
 			fclose($fp);
@@ -1974,6 +1979,7 @@ function incontinue($no){
 	$dat['passflag'] = true;
 //新規投稿で削除キー不要の時 true
 	if(! CONTINUE_PASS) $dat['newpost_nopassword'] = true;
+//var_dump(IMG_DIR.$ctim.$cext);
 	if(file_exists(IMG_DIR.$ctim.$cext)){//画像が無い時は処理しない
 	$dat['picfile'] = IMG_DIR.$ctim.$cext;
 	$size = getimagesize($dat['picfile']);
@@ -2189,8 +2195,11 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$url  = CleanStr($url);    $url  =preg_replace("/[\r\n]/","",$url);
 	$url  = str_replace(" ", "", $url);
 	$com  = CleanStr($com);
+	$pwd= CleanStr($pwd);
+	$pwd=preg_replace("/[\r\n]/","",$pwd);
+
 	//管理モードで使用できるタグを制限
-	if(preg_match('/\< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
+	if(preg_match('/< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
 
 	// 改行文字の統一。
 	$com = str_replace("\r\n", "\n", $com);
@@ -2637,8 +2646,7 @@ function potitag($str){
 				}
 			}
 		}
-
-		if($rb_chk){
+		if(isset($rb_chk)&&$rb_chk){
 			if(preg_match('/\(([^\):]+):([^\)]+)\)$/',$com,$m)){
 				$com = str_replace($m[0],'('.$m[2].')',$com);
 				$rb_color = ' style="color:'.$m[1].'"';
@@ -2646,15 +2654,15 @@ function potitag($str){
 			$com = preg_replace('/\(([^\)]+)\)$/','<rp>(</rp><rt'.$rb_color.'>\\1</rt><rp>)</rp>',$com);
 		}
 
-		if($font_ex){
-			$size  = ($size)  ? ' size="'.$size.'"' : '';
-			$color = ($color) ? ' color="'.$color.'"' : '';
-			$face  = ($face)  ? ' face="'.$face.'"' : '';
+		if(isset($font_ex)&&$font_ex){
+			$size  = (isset($size)&&$size)  ? ' size="'.$size.'"' : '';
+			$color = (isset($color)&&$color) ? ' color="'.$color.'"' : '';
+			$face  = (isset($face)&&$face)  ? ' face="'.$face.'"' : '';
 			array_unshift($tag_ex,"<font$size$color$face>");
 			array_unshift($tag_ed,"</font>");
 		}
-
-		for($i = 0; $i < count($tag_ex); $i++){
+		$counttag_ex=count($tag_ex);
+		for($i = 0; $i < $counttag_ex; $i++){
 			$com = $tag_ex[$i].$com.$tag_ed[$i];
 		}
 		array_push($tagrps2,$com);
