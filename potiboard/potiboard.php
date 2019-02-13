@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.1 lot.190203
+  * POTI-board改 v1.51.2 lot.190212
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -204,8 +204,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.1');
-define('POTI_VERLOT' , '改 v1.51.1 lot.190203');
+define('POTI_VER' , '改 v1.51.2');
+define('POTI_VERLOT' , '改 v1.51.2 lot.190212');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1199,7 +1199,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}
 	}
 	// アップロード処理
-	if(isset($dest)){//未定義エラー対策
+//	var_dump($dest);
+//	if(isset($dest)){
+	if($dest){//画像が無い時は処理しない
 	$countline=(count($line));
 		if($countline >= 201){//存在する行数のみチェック
 		$chkline=200;
@@ -1215,13 +1217,15 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				error(MSG005,$dest);
 			}
 		}
+		}
 	}
-		}//ここまで
+	else{//画像が無い時
+	$ext=$W=$H=$chk="";
+	}
+		
+		
 	list($lastno,) = explode(",", $line[0]);
 	$no = $lastno + 1;
-	if($textonly){
-	$dest=$ext=$W=$H=$chk="";
-	}
 	$newline = "$no,$now,$name,$email,$sub,$com,$url,$host,$pass,$ext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
 	$newline.= implode('', $line);
 	ftruncate($fp,0);
