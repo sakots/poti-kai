@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.2 lot.190212
+  * POTI-board改 v1.51.3 lot.190408
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -204,8 +204,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.2');
-define('POTI_VERLOT' , '改 v1.51.2 lot.190212');
+define('POTI_VER' , '改 v1.51.3');
+define('POTI_VERLOT' , '改 v1.51.3 lot.190408');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1155,8 +1155,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 //			if(strlen($ltime)>10){$ltime=substr($ltime,0,-3);}
 //KASIRAが入らない10桁のUNIX timeを取り出す
 			if(strlen($ltime)>10){$ltime=substr($ltime,-13,-3);}
-//文字列を整数に
-//			$ltime = $ltime;
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
 			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
 			if($com){
@@ -1285,13 +1283,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if(USE_MB){
 			mb_language(LANG);
 			$c_cookie = mb_convert_encoding($c_cook, "UTF-8", "auto");	//to UTF-8
-		// jcode.php by TOMO
-		}elseif(file_exists("jcode.phps")||file_exists("jcode.php")){
-			if(file_exists("jcode.phps")){ require_once('jcode.phps'); }
-			else{ require_once('jcode.php'); }
-			global $table_jis_utf8;
-			include_once('code_table.jis2ucs');
-			$c_cookie = JcodeConvert($c_cook, 0, 4);	//to UTF-8
 		}elseif(function_exists("iconv")){
 			$c_cookie = iconv("euc-jp", "UTF-8", $c_cook);	//to UTF-8
 		}else{
@@ -2694,21 +2685,6 @@ function charconvert($str,$charset){
 		mb_language(LANG);
 		return mb_convert_encoding($str, $charset_mb, "auto");
 
-	// jcode.php by TOMO
-	}elseif((file_exists("jcode.phps")||file_exists("jcode.php"))&&is_numeric($charset)){
-		if(file_exists("jcode.phps")){ require_once('jcode.phps'); }
-		else{ require_once('jcode.php'); }
-		$jc_from = AutoDetect($str);
-		if($charset == 4){
-			global $table_jis_utf8;
-			include_once('code_table.jis2ucs');
-		}
-		if($jc_from == 4){
-			global $table_utf8_jis;
-			include_once('code_table.ucs2jis');
-		}
-		return JcodeConvert($str, $jc_from, $charset);
-
 	}else{
 		return $str;
 	}
@@ -2745,7 +2721,7 @@ switch($mode){
 			}else{ $admin=$pwd; }
 		}
 	if($textonly){//画像なしの時
-	$upfile=$upfile_name=$pictmp=$picfile="";
+	$upfile=$upfile_name="";
 	}
 regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile);
 	//変数クリア
@@ -2790,8 +2766,6 @@ paintform($picw,$pich,$palette,$anime);
 		incontinue($no);
 		break;
 	case 'contpaint':
-//コンティニュー時のパスワード
-//		if(CONTINUE_PASS) usrchk($no,$pwd);
 //パスワードが必要なのは差し換えの時だけ
 		if(CONTINUE_PASS||$type=='rep') usrchk($no,$pwd);
 		if(ADMIN_NEWPOST) $admin=$pwd;
