@@ -7,7 +7,7 @@
 */
 
 //テンプレートのバージョン
-define('TEMPLATE_VER', "v1.30 lot.190520");
+define('TEMPLATE_VER', "v1.30 lot.190522");
 
 /* ---------- ADD:2018/04/20 ---------- */
 
@@ -49,7 +49,7 @@ define('MSG034', "アップロードに失敗しました[It failed in up-loadin
 define('MSG035', "何か日本語で書いてください[Comment should have at least some Japanese characters.]");
 define('MSG036', "本文にそのURLを書く事はできません。[This URL can not be used in text.]");
 define('MSG037', "予備");
-define('MSG038', "予備");
+define('MSG038', "そのタグは使えません。[This tags can not be used.]");
 define('MSG039', "予備");
 define('MSG040', "予備");
 

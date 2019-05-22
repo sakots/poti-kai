@@ -49,8 +49,8 @@
 				<section>
 					<form class="delf" action="{$self}" method="post">
 						<p>
-							No <input class="form" type="text" name="del[]" size="4" value="" autocomplete="section-no">
-							Pass <input class="form" type="password" name="pwd" size="6" value="" autocomplete="new-password">
+							No <input class="form" type="number" min="1" name="del[]" size="4" value="" autocomplete="section-no">
+							Pass <input class="form" type="password" name="pwd" size="6" value="" autocomplete="current-password">
 							<select class="form" name="mode">
 								<option value="edit" selected>編集</option>
 								<!--{def userdel}--><?php echo "\n"; ?>
@@ -110,7 +110,7 @@
 				UseFunction -
 				<a href="http://hoover.ktplan.ne.jp/kaihatsu/php/" target="_top"title="HTML template v1.3.2 (by The PHP Den)">HTML template</a>
 				<a href="http://wondercatstudio.com/" target="_top" title="by WonderCatStudio">DynamicPalette</a>
-				<a href="https://github.com/funige/neo/" target="_top" title="by ImageCanvas">PaintBBS NEO</a>
+				<a href="https://github.com/funige/neo/" target="_top" title="by funige">PaintBBS NEO</a>
 			</p>
 		</footer>
 	</body>
