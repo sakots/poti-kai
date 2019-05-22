@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.3 lot.190408
+  * POTI-board改 v1.51.5 lot.190522
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -204,8 +204,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.3');
-define('POTI_VERLOT' , '改 v1.51.3 lot.190408');
+define('POTI_VER' , '改 v1.51.5');
+define('POTI_VERLOT' , '改 v1.51.5 lot.190522');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -794,6 +794,25 @@ function updatelog($resno=0){
 				}
 			}
 			$paging = "";
+//			for($i = 0; $i < $counttree ; $i+=PAGE_DEF){
+//				if($st==$i){
+//					$pformat = str_replace("<PAGE>", $i/PAGE_DEF, NOW_PAGE);
+//				}else{
+//					if($i==0){
+//						$pno = str_replace("<PAGE>", "0", OTHER_PAGE);
+//						$pformat = str_replace("<PURL>", PHP_SELF2, $pno);
+//					}else{
+//						$pno = str_replace("<PAGE>", $i/PAGE_DEF, OTHER_PAGE);
+//						$pformat = str_replace("<PURL>", ($i/PAGE_DEF).PHP_EXT, $pno);
+//					}
+//				}
+//				$paging.=$pformat;
+//			}
+
+//表示しているページが20ページ以上または投稿数が少ない時はページ番号のリンクを制限しない
+
+	if($counttree < PAGE_DEF*22||$i >= PAGE_DEF*22){
+
 			for($i = 0; $i < $counttree ; $i+=PAGE_DEF){
 				if($st==$i){
 					$pformat = str_replace("<PAGE>", $i/PAGE_DEF, NOW_PAGE);
@@ -808,6 +827,35 @@ function updatelog($resno=0){
 				}
 				$paging.=$pformat;
 			}
+	}
+
+//表示しているページが20ページ以下の時はページ番号のリンクを制限する
+
+	elseif($i < PAGE_DEF*22 ){
+			for($i = 0; $i < PAGE_DEF*22 ; $i+=PAGE_DEF){
+				if($st==$i){
+					$pformat = str_replace("<PAGE>", $i/PAGE_DEF, NOW_PAGE);
+				}else{
+					if($i==0){
+						$pno = str_replace("<PAGE>", "0", OTHER_PAGE);
+						$pformat = str_replace("<PURL>", PHP_SELF2, $pno);
+					}else{
+					if($i==PAGE_DEF*21){
+						$pno = str_replace("<PAGE>", "≫", OTHER_PAGE);
+//						$pformat = str_replace("<PURL>", PHP_SELF2, $pno);
+						$pformat = str_replace("<PURL>", ($i/PAGE_DEF).PHP_EXT, $pno);
+					}else{
+						$pno = str_replace("<PAGE>", $i/PAGE_DEF, OTHER_PAGE);
+						$pformat = str_replace("<PURL>", ($i/PAGE_DEF).PHP_EXT, $pno);
+					}
+				}}
+				$paging.=$pformat;
+			}
+	}
+
+//改ページ分岐ここまで
+
+			
 			$dat['paging'] = $paging;
 			if($oya >= PAGE_DEF && $counttree > $next){
 				$dat['next'] = $next/PAGE_DEF.PHP_EXT;
@@ -1649,7 +1697,7 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 	if($pich > PMAX_H) $pich = PMAX_H;
 //	$w = $picw + 150;
 	if(!$useneo && $shi){
-	$w = $picw + 465;//しぃぺの時の幅
+	$w = $picw + 510;//しぃぺの時の幅
 	$h = $pich + 120;//しぃぺの時の高さ
 	}
 	else{
@@ -2577,7 +2625,23 @@ function catalog(){
 	// 改ページ処理
 	if($prev >= 0) $dat['prev'] = PHP_SELF.'?mode=catalog&amp;page='.$prev;
 	$paging = "";
-	for($i = 0; $i < $counttree ; $i+=$pagedef){
+
+//カタログモードの改ページ
+
+//	for($i = 0; $i < $counttree ; $i+=$pagedef){
+//		if($page==$i){
+//			$pformat = str_replace("<PAGE>", $i/$pagedef, NOW_PAGE);
+//		}else{
+//			$pno = str_replace("<PAGE>", $i/$pagedef, OTHER_PAGE);
+//			$pformat = str_replace("<PURL>", PHP_SELF."?mode=catalog&amp;page=".$i, $pno);
+//		}
+//		$paging.=$pformat;
+//	}
+
+//表示しているページが20ページ以上または投稿数が少ない時はページ番号のリンクを制限しない
+
+	if($counttree < $pagedef*22||$i >= $pagedef*22){
+			for($i = 0; $i < $counttree ; $i+=$pagedef){
 		if($page==$i){
 			$pformat = str_replace("<PAGE>", $i/$pagedef, NOW_PAGE);
 		}else{
@@ -2586,6 +2650,30 @@ function catalog(){
 		}
 		$paging.=$pformat;
 	}
+	}
+
+//表示しているページが20ページ以下の時はページ番号のリンクを制限する
+
+		elseif($i < $pagedef*22 ){
+			for($i = 0; $i < $pagedef*22 ; $i+=$pagedef){
+		if($page==$i){
+			$pformat = str_replace("<PAGE>", $i/$pagedef, NOW_PAGE);
+		}
+
+		elseif($i==$pagedef*21){
+			$pno = str_replace("<PAGE>", "≫", OTHER_PAGE);
+			$pformat = str_replace("<PURL>", PHP_SELF."?mode=catalog&amp;page=".$i, $pno);
+
+		}else{
+			$pno = str_replace("<PAGE>", $i/$pagedef, OTHER_PAGE);
+			$pformat = str_replace("<PURL>", PHP_SELF."?mode=catalog&amp;page=".$i, $pno);
+		}
+		$paging.=$pformat;
+	}
+	}
+
+//改ページ分岐ここまで
+	
 	$dat['paging'] = $paging;
 	if($counttree > $next){
 		$dat['next'] = PHP_SELF.'?mode=catalog&amp;page='.$next;
@@ -2680,14 +2768,8 @@ function potitagview(){
 
 /* 文字コード変換 */
 function charconvert($str,$charset){
-	$charset_mb="UTF-8";
-	if(USE_MB){
-		mb_language(LANG);
-		return mb_convert_encoding($str, $charset_mb, "auto");
-
-	}else{
-		return $str;
-	}
+	mb_language(LANG);
+		return mb_convert_encoding($str, "UTF-8", "auto");
 }
 
 /* HTML出力 */
@@ -2741,14 +2823,14 @@ unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picf
 		}
 		if($admin=="update"){
 			updatelog();
-			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
+			echo "<meta http-equiv=\"refresh\" content=\"0; URL=".PHP_SELF2."\">";
 		}
 		break;
 	case 'usrdel':
 		if(USER_DEL){
 			usrdel($del,$pwd);
 			updatelog();
-			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
+			echo "<meta http-equiv=\"refresh\" content=\"0; URL=".PHP_SELF2."\">";
 		}else{error(MSG033);}
 		break;
 	case 'paint':
@@ -2798,7 +2880,7 @@ paintform($picw,$pich,$palette,$anime);
 	if($res){
 			updatelog($res);
 		}else{
-			echo "<meta http-equiv=\"refresh\" content=\"0;URL=".PHP_SELF2."\">";
+			echo "<meta http-equiv=\"refresh\" content=\"0; URL=".PHP_SELF2."\">";
 		}
 }
 
