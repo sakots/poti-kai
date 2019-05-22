@@ -80,39 +80,41 @@
 		<main>
 			<!--(========== PAINT MODE(お絵かきモード) start ==========)--><?php echo "\n"; ?>
 			<!--{def paint_mode}--><?php echo "\n"; ?>
+			<!--(========== 動的パレットスクリプト ここから ==========)-->
 			<script type="text/javascript">
-			<!--
 			var DynamicColor = 1;	// パレットリストに色表示
 			var Palettes = new Array();
+			<!--(========== パレット配列作成 ==========)-->
 			<!--{def palettes}--><!--{each palettes}-->
 			{$palettes}
 			<!--{/each}--><!--{/def}-->
+			<!--(
 			//-------------------------------------------------------------------
 			// OS&ブラウザ判定
-			var uAgent,aName,version,BROWSER,OS;
-			uAgent = navigator.userAgent.toUpperCase();
-			aName   = navigator.appName.toUpperCase();
-			if (uAgent.indexOf("MAC") >= 0)			{ OS="MAC" }
-			else if (uAgent.indexOf("WIN") >= 0)		{ OS="WIN" }
-
-			if (aName.indexOf("NETSCAPE") >= 0)		{ BROWSER="NN" }
-			else if (aName.indexOf("MICROSOFT") >= 0)	{ BROWSER="IE" }
-
-			if (aName.indexOf("NETSCAPE") >= 0){
-				appVer  = navigator.appVersion;
-				s = appVer.indexOf(" ",0);
-				version = eval(parseInt(appVer.substring(0,s)));
-				if (version >= 5) version++;
-			}else if (aName.indexOf("MICROSOFT") >= 0){
-				appVer  = navigator.userAgent;
-				s = appVer.indexOf("MSIE ",0) + 5;
-				e = appVer.indexOf(";",s);
-				version = eval(parseInt(appVer.substring(s,e)));
-			}
-
+			//var uAgent,aName,version,BROWSER,OS;
+			//uAgent = navigator.userAgent.toUpperCase();
+			//aName   = navigator.appName.toUpperCase();
+			//if (uAgent.indexOf("MAC") >= 0)			{ OS="MAC" }
+			//else if (uAgent.indexOf("WIN") >= 0)		{ OS="WIN" }
+			//if (aName.indexOf("NETSCAPE") >= 0)		{ BROWSER="NN" }
+			//else if (aName.indexOf("MICROSOFT") >= 0)	{ BROWSER="IE" }
+			//if (aName.indexOf("NETSCAPE") >= 0){
+			//	appVer  = navigator.appVersion;
+			//	s = appVer.indexOf(" ",0);
+			//	version = eval(parseInt(appVer.substring(0,s)));
+			//	if (version >= 5) version++;
+			//}else if (aName.indexOf("MICROSOFT") >= 0){
+			//	appVer  = navigator.userAgent;
+			//	s = appVer.indexOf("MSIE ",0) + 5;
+			//	e = appVer.indexOf(";",s);
+			//	version = eval(parseInt(appVer.substring(s,e)));
+			//}
+			)-->
 			function setPalette(){
 				d = document
 				d.paintbbs.setColors(Palettes[d.Palette.select.selectedIndex])
+				if(! d.grad.view.checked){return}
+				GetPalette();
 			}
 			function PaletteSave(){
 				Palettes[0] = String(document.paintbbs.getColors())
@@ -127,26 +129,27 @@
 				str = prompt("パレット名","パレット " + cutomP)
 				if(str == null || str == ""){cutomP--;return}
 				s.options[s.length] = new Option(str)
-				if(s.length < 30) s.size = s.length
+				if(30 > s.length) s.size = s.length
+				PaletteListSetColor()
 			}
 			function PaletteRenew(){
 				d = document
 				Palettes[d.Palette.select.selectedIndex] = String(d.paintbbs.getColors())
+				PaletteListSetColor()
 			}
 			function PaletteDel(){
 				p = Palettes.length
 				s = document.Palette.select
 				i = s.selectedIndex
 				if(i == -1)return
-
 				flag = confirm("「"+s.options[i].text + "」を削除してよろしいですか？")
-				if (!flag) return
+				if(!flag) return
 				s.options[i] = null
-				while(i<p){
+				while(p>i){
 					Palettes[i] = Palettes[i+1]
 					i++
 				}
-				if(s.length < 30) s.size = s.length
+				if(30 > s.length) s.size = s.length
 			}
 			function P_Effect(v){
 				v=parseInt(v)
@@ -156,19 +159,20 @@
 				p=String(d.getColors()).split("\n")
 				l = p.length
 				var s = ""
-				for(n=0; n<l;n++){
+				for(n=0;l>n;n++){
 					R = v+(parseInt("0x" + p[n].substr(1,2))*x)
 					G = v+(parseInt("0x" + p[n].substr(3,2))*x)
 					B = v+(parseInt("0x" + p[n].substr(5,2))*x)
 					if(R > 255){ R = 255}
-					else if(R < 0){ R = 0}
+					else if(0 > R){ R = 0}
 					if(G > 255){ G = 255}
-					else if(G < 0){ G = 0}
+					else if(0 > G){ G = 0}
 					if(B > 255){ B = 255}
-					else if(B < 0){ B = 0}
+					else if(0 > B){ B = 0}
 					s += "#"+Hex(R)+Hex(G)+Hex(B)+"\n"
 				}
 				d.setColors(s)
+				PaletteListSetColor()
 			}
 			function PaletteMatrixGet(){
 				d = document.Palette
@@ -176,39 +180,39 @@
 				s = d.select
 				m = d.m_m.selectedIndex
 				t = d.setr
-				t.value = "!Palette\\n"+String(document.paintbbs.getColors())
 				switch(m){
 				case 0:case 2:default:
+				t.value = ""
 					n=0;c=0
-					while(n<p){
+					while(p>n){
 						if(s.options[n] != null){ t.value = t.value + "\n!"+ s.options[n].text +"\n" + Palettes[n];c++}
 						n++
 					}
 					alert ("パレット数："+c+"\nパレットマトリクスを取得しました");break
 				case 1:
+				t.value = "!Palette\n"+String(document.paintbbs.getColors())
 					alert("現在使用されているパレット情報を取得しました");break
 				}
-					t.value = t.value + "\n!Matrix"
+					t.value = t.value.trim() + "\n!Matrix"
 			}
 			function PalleteMatrixSet(){
-				m = document.Palette.m_m.selectedIndex;
+				m = document.Palette.m_m.selectedIndex
 				str = "パレットマトリクスをセットします。"
 				switch(m){
 				case 0:default:
 					flag = confirm(str+"\n現在の全パレット情報は失われますがよろしいですか？");break
 				case 1:
-					flag = confirm(str+"\n現在表示しているパレットと置き換えますがよろしいですか？");break;
+					flag = confirm(str+"\n現在使用しているパレットと置き換えますがよろしいですか？");break;
 				case 2:
 					flag = confirm(str+"\n現在のパレット情報に追加しますがよろしいですか？");break
 				}
 					if (!flag) return
-
 				PaletteSet()
-				if(s.length < 30){ s.size = s.length}else{s.size=30};
+				if(s.length < 30){ s.size = s.length}else{s.size=30}
 				if(DynamicColor) PaletteListSetColor()
 			}
 			function PalleteMatrixHelp(){
-				alert("★PALETTE MATRIX\nパレットマトリクスとはパレット情報を列挙したテキストを用いる事により\n自由なパレット設定を使用する事が出来ます。\n\n■マトリクスの取得\n1)「取得」ボタンよりパレットマトリクスを取得します。\n2)取得された情報が下のテキストエリアに出ます、これを全てコピーします。\n3)このマトリクス情報をテキストとしてファイルに保存しておくなりしましょう。\n\n■マトリクスのセット\n1）コピーしたマトリクスを下のテキストエリアに貼り付け(ペースト)します。\n2)ファイルに保存してある場合は、それをコピーし貼り付けます。\n3)「セット」ボタンを押せば保存されたパレットが使用できます。\n\n余分な情報があるとパレットが正しくセットされませんのでご注意下さい。");
+				alert("★PALETTE MATRIX\nパレットマトリクスとはパレット情報を列挙したテキストを用いる事により\n自由なパレット設定を使用する事が出来ます。\n\n□マトリクスの取得\n1)「取得」ボタンよりパレットマトリクスを取得します。\n2)取得された情報が下のテキストエリアに出ます、これを全てコピーします。\n3)このマトリクス情報をテキストとしてファイルに保存しておくなりしましょう。\n\n□マトリクスのセット\n1）コピーしたマトリクスを下のテキストエリアに貼り付け(ペースト)します。\n2)ファイルに保存してある場合は、それをコピーし貼り付けます。\n3)「セット」ボタンを押せば保存されたパレットが使用できます。\n\n余分な情報があるとパレットが正しくセットされませんのでご注意下さい。");
 			}
 			function PaletteSet(){
 				d = document.Palette
@@ -231,21 +235,23 @@
 					i=s.options.length
 					n = se.indexOf("!",0)+1
 					if(n == 0)return
+						Matrix1 = 1
+						Matrix2 = -1
 					while(n<l){
 						e = se.indexOf("\n#",n)
 						if(e == -1)return
-
-						pn = se.substring(n,e-1)
+						
+						pn = se.substring(n,e+Matrix1)
 						o = se.indexOf("!",e)
 						if(o == -1)return
-						pa = se.substring(e+1,o-2)
+						pa = se.substring(e+1,o+Matrix2)
 						if (pn != "Palette"){
 						if(i >= 0)s.options[i] = new Option(pn)
-
+						
 						Palettes[i] = pa
 						i++
 						}else{document.paintbbs.setColors(pa)}
-
+						
 						n=o+1
 					}
 					break
@@ -255,10 +261,11 @@
 					e = se.indexOf("\n#",n)
 					o = se.indexOf("!",e)
 						if(e >= 0){
-							pa = se.substring(e+1,o-2)
+							pa = se.substring(e+1,o-1)
 						}
 					document.paintbbs.setColors(pa)
 				}
+				PaletteListSetColor()
 			}
 			function PaletteListSetColor(){
 				var s = document.Palette.select;
@@ -266,55 +273,54 @@
 					var c = Palettes[i].split("\n");
 					s.options[i].style.background = c[4];
 					s.options[i].style.color = GetBright(c[4]);
-				}
+			}
 			}
 			function GetBright(c){
 				r=parseInt("0x"+c.substr(1,2)),
 				g=parseInt("0x"+c.substr(3,2)),
 				b=parseInt("0x"+c.substr(5,2));
 				c=(r>=g)?(r>=b)?r:b:(g>=b)?g:b;
-				return c<128?"#FFFFFF":"#000000";
+				return 128>c?"#FFFFFF":"#000000";
 			}
 			function Chenge_(){
 				var st = document.grad.pst.value
 				var ed = document.grad.ped.value
-
+				
 				if(isNaN(parseInt("0x" + st)))return
 				if(isNaN(parseInt("0x" + ed)))return
 				GradView("#"+st,"#"+ed);
 			}
 			function ChengeGrad(){
 				var d =document
-				st = d.grad.pst.value
-				ed = d.grad.ped.value
+				var st = d.grad.pst.value
+				var ed = d.grad.ped.value
 				Chenge_()
-
-				degi_R = parseInt("0x" + st.substr(0,2))
-				degi_G = parseInt("0x" + st.substr(2,2))
-				degi_B = parseInt("0x" + st.substr(4,2))
-				R = parseInt((degi_R - parseInt("0x" + ed.substr(0,2)))/15)
-				G = parseInt((degi_G - parseInt("0x" + ed.substr(2,2)))/15)
-				B = parseInt((degi_B - parseInt("0x" + ed.substr(4,2)))/15)
+				var degi_R = parseInt("0x" + st.substr(0,2))
+				var degi_G = parseInt("0x" + st.substr(2,2))
+				var degi_B = parseInt("0x" + st.substr(4,2))
+				var R = parseInt((degi_R - parseInt("0x" + ed.substr(0,2)))/15)
+				var G = parseInt((degi_G - parseInt("0x" + ed.substr(2,2)))/15)
+				var B = parseInt((degi_B - parseInt("0x" + ed.substr(4,2)))/15)
 				if(isNaN(R)) R = 1
 				if(isNaN(G)) G = 1
 				if(isNaN(B)) B = 1
 				var p = new String()
-				for(cnt=0,m1=degi_R,m2=degi_G,m3=degi_B; cnt<14; cnt++,m1-=R,m2-=G,m3-=B){
-					if ((m1 > 255)||(m1 < 0)){ R *= -1;m1-=R}
-					if ((m2 > 255)||(m2 < 0)){ G *= -1;m2-=G}
-					if ((m3 > 255)||(m3 < 0)){ B *= -1;m2-=B}
+				for(cnt=0,m1=degi_R,m2=degi_G,m3=degi_B; 14>cnt; cnt++,m1-=R,m2-=G,m3-=B){
+					if((m1 > 255)||(0 > m1)){ R *= -1;m1-=R}
+					if((m2 > 255)||(0 > m2)){ G *= -1;m2-=G}
+					if((m3 > 255)||(0 > m3)){ B *= -1;m2-=B}
 					p += "#"+Hex(m1)+Hex(m2)+Hex(m3)+"\n"
 				}
-				d.paintbbs.setColors(p)
+				d.paintbbs.setColors(p);
 			}
 			function Hex(n){
-				n = parseInt(n);if (n < 0) n *=-1;
+				n = parseInt(n);if(0 > n) n *=-1;
 				var hex = new String()
 				var m
 				var k
 				while(n > 16){
 				m = n
-				if (n >16){
+				if(n >16){
 					n = parseInt(n/16)
 					m -= (n * 16)
 				}
@@ -323,7 +329,7 @@
 				}
 					k = Hex_(n)
 					hex = k + hex
-				while(hex.length < 2){hex="0" + hex}
+				while(2 > hex.length){hex="0" + hex}
 				return hex
 			}
 			function Hex_(n){
@@ -338,46 +344,64 @@
 				return n
 			}
 			function GetPalette(){
-				d = document
-				p = String(document.paintbbs.getColors());
+				d = document;
+				p = String(d.paintbbs.getColors());
 				if(p == "null" || p == ""){return};
 				ps = p.split("\n");
 				st = d.grad.p_st.selectedIndex
 				ed = d.grad.p_ed.selectedIndex
 				d.grad.pst.value = ps[st].substr(1.6)
 				d.grad.ped.value = ps[ed].substr(1.6)
-				if(OS == "WIN" & (BROWSER == "IE" | (BROWSER == "NN" & version == "6"))) GradSelC()
+				GradSelC()
 				GradView(ps[st],ps[ed])
-				if(DynamicColor) PaletteListSetColor()
+				PaletteListSetColor()
 			}
 			function GradSelC(){
 				if(! d.grad.view.checked)return
 				d = document.grad
-				for(n=0;ps.length>n;n++){
+				l = ps.length
+				pe=""
+				for(n=0;l>n;n++){
+					R = 255+(parseInt("0x" + ps[n].substr(1,2))*-1)
+					G = 255+(parseInt("0x" + ps[n].substr(3,2))*-1)
+					B = 255+(parseInt("0x" + ps[n].substr(5,2))*-1)
+					if(R > 255){ R = 255}
+					else if(0 > R){ R = 0}
+					if(G > 255){ G = 255}
+					else if(0 > G){ G = 0}
+					if(B > 255){ B = 255}
+					else if(0 > B){ B = 0}
+					pe += "#"+Hex(R)+Hex(G)+Hex(B)+"\n"
+				}
+				pe = pe.split("\n");
+				for(n=0;l>n;n++){
 					d.p_st.options[n].style.background = ps[n];
-					d.p_st.options[n].style.color = GetBright(ps[n]);
+					d.p_st.options[n].style.color = pe[n];
 					d.p_ed.options[n].style.background = ps[n];
-					d.p_ed.options[n].style.color = GetBright(ps[n]);
+					d.p_ed.options[n].style.color = pe[n];
 				}
 			}
 			function GradView(st,ed){
 				d = document
-				if (! d.grad.view.checked)return
-				html = "<TABLE BGCOLOR=white cellspacing=0 cellpadding=0><TR><TD colspan=2><TT><font color=#FF6699><B>GRADATION</B></TT></TD></TR><TR><TD><TT><font color=#FF6699>START </TT></TD><TD><FONT COLOR="+st+" SIZE=4>■</FONT></TD></TR><TR><TD><font color=#FF6699><TT>END </TT></TD><TD><FONT COLOR="+ed+" SIZE=4>■</FONT></TD></TR></TABLE>";
-				if(d.layers) {
-					with(d.layers["psft"]){
-						left = window.innerWidth - 120
-						top = window.pageYOffset+5
-						d = document
-						d.open()
-						d.write(html)
-						d.close();
-					}
-				} else if(d.all){
+				if(! d.grad.view.checked)return
+			<!--(
+				//	html = "<TABLE BGCOLOR=white cellspacing=0 cellpadding=0><TR><TD colspan=2><TT><font color=#FF6699><B>GRADATION</B></TT></TD></TR><TR><TD><TT><font color=#FF6699>START </TT></TD><TD><FONT COLOR="+st+" SIZE=4>■</FONT></TD></TR><TR><TD><font color=#FF6699><TT>END </TT></TD><TD><FONT COLOR="+ed+" SIZE=4>■</FONT></TD></TR></TABLE>";
+			//	if(d.layers) {
+			//		with(d.layers["psft"]){
+			//			left = window.innerWidth - 120
+			//			top = window.pageYOffset+5
+			//			d = document
+			//			d.open()
+			//			d.write(html)
+			//			d.close();
+			//		}
+			//	} else if(d.all){
+			)-->
+					if(d.all){
 					with(d.all("psft")){
 						style.left = d.body.offsetWidth - 120
 						style.top = d.body.scrollTop+5
-						innerHTML = html
+			//			innerHTML = html
 					}
 				}
 			}
@@ -389,15 +413,19 @@
 				}else{
 					l = d.all("psft").style
 				}
-				if (! d.grad.view.checked){
+				if(! d.grad.view.checked){
 					l.visibility = "hidden"
 				}
-				if (d.grad.view.checked){
-					l.visibility = "visible";GetPalette();
+				if(d.grad.view.checked){
+					l.visibility = "visible";
+					GetPalette();
 				}
 			}
+
+
 			//-->
 			</script>
+			<!--(========== 動的パレットスクリプト ここまで ==========)-->
 			<noscript>
 				<p>JavaScriptが動いてないよ</p>
 			</noscript>
@@ -568,7 +596,7 @@
 							<option value="rep">replace</option>
 							<option value="new">newpost</option>
 						</select>
-						<!--{def passflag}-->Pass<input class="form" type="password" name="pwd" size="8" value="" autocomplete="current-password"> <!--{/def}--><?php echo "\n"; ?>
+						<!--{def passflag}-->Pass<input class="form" type="password" name="pwd" size="8" value=""> <!--{/def}--><?php echo "\n"; ?>
 						<input class="button" type="submit" value="続きを描く">
 					</form>
 					<!--{def passflag}--><?php echo "\n"; ?>
@@ -608,7 +636,7 @@
 				UseFunction -
 				<a href="http://hoover.ktplan.ne.jp/kaihatsu/php/" target="_top"title="HTML template v1.3.2 (by The PHP Den)">HTML template</a>
 				<a href="http://wondercatstudio.com/" target="_top" title="by WonderCatStudio">DynamicPalette</a>
-				<a href="https://github.com/funige/neo/" target="_top" title="by funige">PaintBBS NEO</a>
+				<a href="https://github.com/funige/neo/" target="_top" title="by ImageCanvas">PaintBBS NEO</a>
 			</p>
 		</footer>
 	</body>
