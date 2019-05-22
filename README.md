@@ -35,6 +35,8 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2019/05/23] v1.51.5 lot.190522</dt>
+	<dd class="con">スキン周り修正。</dd>
 	<dt class="ver">[2019/02/12] v1.51.2 lot.190212</dt>
 	<dd class="con">安定版</dd>
 	<dt class="ver">[2019/01/22] v1.51.0 lot.190122</dt>
