@@ -1,13 +1,13 @@
 <?php
 /*
-  * Template - neewhite - v1.10 lot.180521  by sakots  >> https://sakots.red/poti/
+  * Template - neewhite - v1.32 lot.180523  by sakots  >> https://sakots.red/poti/
   *
   * potiboard.php(v1.40～)のTemplate設定ファイルです。
   *
 */
 
 //テンプレートのバージョン
-define('TEMPLATE_VER', "v1.30 lot.190522");
+define('TEMPLATE_VER', "v1.32 lot.190523");
 
 /* ---------- ADD:2018/04/20 ---------- */
 

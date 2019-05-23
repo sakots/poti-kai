@@ -481,6 +481,7 @@
 						</fieldset>
 						<fieldset>
 							<legend>MATRIX</legend>
+							<form>
 							<select class="form" name="m_m">
 								<option value="0">全体</option>
 								<option value="1">現在</option>
@@ -495,42 +496,43 @@
 						<fieldset>
 							<legend>GRADATION</legend>
 							<form name="grad">
-							<input type="checkbox" name="view" onclick="showHideLayer()">
-							<input type="button" class="button" value=" OK " onclick="ChengeGrad()"><br>
-							<select class="form" name="p_st" onchange="GetPalette()">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-								<option>11</option>
-								<option>12</option>
-								<option>13</option>
-								<option>14</option>
-							</select>
-							<input class="form "type="text" name="pst" size="8" onkeypress="Chenge_()" onchange="Chenge_()"><br>
-							<select class="form" name="p_ed" onchange="GetPalette()">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-								<option>11</option>
-								<option selected>12</option>
-								<option>13</option>
-								<option>14</option>
-							</select>
-							<input class="form" type="text" name="ped" size="8" onkeypress="Chenge_()" onchange="Chenge_()"><div id="psft" style="position:absolute;width:100px;height:30px;z-index:1;left:5px;top:10px;"></div>
+								<input type="checkbox" name="view" onclick="showHideLayer()">
+								<input type="button" class="button" value=" OK " onclick="ChengeGrad()"><br>
+								<select class="form" name="p_st" onchange="GetPalette()">
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10</option>
+									<option>11</option>
+									<option>12</option>
+									<option>13</option>
+									<option>14</option>
+								</select>
+								<input class="form "type="text" name="pst" size="8" onkeypress="Chenge_()" onchange="Chenge_()"><br>
+								<select class="form" name="p_ed" onchange="GetPalette()">
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+									<option>7</option>
+									<option>8</option>
+									<option>9</option>
+									<option>10</option>
+									<option>11</option>
+									<option selected>12</option>
+									<option>13</option>
+									<option>14</option>
+								</select>
+								<input class="form" type="text" name="ped" size="8" onkeypress="Chenge_()" onchange="Chenge_()"><div id="psft" style="position:absolute;width:100px;height:30px;z-index:1;left:5px;top:10px;"></div>
+							</form>
 						</fieldset>
 						<p class="c"><a href="http://wondercatstudio.com/" target="_blank" title="WonderCatStudio">DynamicPalette &copy;NoraNeko</a></p>
 					</form>
