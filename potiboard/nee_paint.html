@@ -72,7 +72,7 @@
 				</form>
 				<hr>
 				<p>
-					[<a href="{$self}?mode=piccom<!--{def resno}-->&amp;resto={$resno}<!--{/def}-->">投稿途中の画像</a>]
+					[<a href="{$self}?mode=piccom<!--{def resno}-->&resto={$resno}<!--{/def}-->">投稿途中の画像</a>]
 				</p>
 			</div>
 			<!--{/def}--><?php echo "\n"; ?>
@@ -440,7 +440,7 @@
 						<param name="undo" value="{$undo}">
 						<param name="undo_in_mg" value="{$undo_in_mg}">
 						<param name="url_save" value="picpost.php">
-						<param name="url_exit" value="{$self}?mode={$mode}&amp;stime={$stime}">
+						<param name="url_exit" value="{$self}?mode={$mode}&stime={$stime}">
 						<!--{def anime}--><param name="thumbnail_type" value="animation"><!--{/def}--><?php echo "\n"; ?>
 						<!--{def pchfile}--><param name="pch_file" value="{$pchfile}"><!--{/def}--><?php echo "\n"; ?>
 						<!--{def imgfile}--><param name="image_canvas" value="{$imgfile}"><!--{/def}--><?php echo "\n"; ?>
@@ -481,7 +481,6 @@
 						</fieldset>
 						<fieldset>
 							<legend>MATRIX</legend>
-							<form>
 							<select class="form" name="m_m">
 								<option value="0">全体</option>
 								<option value="1">現在</option>
