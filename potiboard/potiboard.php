@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.5 lot.190522
+  * POTI-board改 v1.51.6 lot.190528
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ $picfile = ( isset( $_POST["picfile"]) === true ) ? newstring($_POST["picfile"])
 $del = ( isset($_POST["del"]) === true ) ? ($_POST["del"]): "";
 if(is_array($del)){
 	$countdel=count($del);
-	for($i = 0; $i < $countdel; $i++){
+	for($i = 0; $i < $countdel; ++$i){
 		if(!ctype_digit($del[$i])){//数字のみ
 		$del="";
 		}
@@ -118,7 +118,7 @@ if(isset($_GET["mode"])&&$_GET["mode"]==="edit"){
 		$del = ( isset($_GET["del"]) === true ) ? ($_GET["del"]): "";
 		if(is_array($del)){
 		$countdel=count($del);
-		for($i = 0; $i < $countdel; $i++){
+		for($i = 0; $i < $countdel; ++$i){
 		if(!ctype_digit($del[$i])){//数字のみ
 		$del="";
 		}
@@ -204,8 +204,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.5');
-define('POTI_VERLOT' , '改 v1.51.5 lot.190522');
+define('POTI_VER' , '改 v1.51.6');
+define('POTI_VERLOT' , '改 v1.51.6 lot.190528');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -509,7 +509,7 @@ function updatelog($resno=0){
 	$find = false;
 	if($resno){
 		$counttree=count($tree);
-		for($i = 0;$i<$counttree;$i++){
+		for($i = 0;$i<$counttree;++$i){
 			list($artno,)=explode(",",rtrim($tree[$i]));
 			if($artno==$resno){$st=$i;$find=true;break;} //レス先検索
 		}
@@ -517,7 +517,7 @@ function updatelog($resno=0){
 	}
 	$line = file(LOGFILE);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){
+	for($i = 0; $i < $countline; ++$i){
 		list($no,) = explode(",", $line[$i]);
 		$lineindex[$no]=$i + 1; //逆変換テーブル作成
 	}
@@ -530,7 +530,7 @@ function updatelog($resno=0){
 		if(!$resno){
 			$st = $page;
 		}
-		for($i = $st; $i < $st+PAGE_DEF; $i++){
+		for($i = $st; $i < $st+PAGE_DEF; ++$i){
 //			if($tree[$i]=="") continue;
 			if(isset($tree[$i])){//未定義エラー対策
 			}else{continue;} 
@@ -885,8 +885,12 @@ function updatelog($resno=0){
 
 /* オートリンク */
 function auto_link($proto){
+	if(!preg_match("/script/",$proto)){//scriptがなければ続行
 	$proto = preg_replace("{(https?|ftp|news)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)}","<a href=\"\\1\\2\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">\\1\\2</a>",$proto);
 	return $proto;
+	}else{
+	return $proto;
+	}
 }
 
 /* 日付 */
@@ -1012,9 +1016,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
-	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(!$url||!preg_match("/^ *?https?:\/\//",$url))   $url="";
-
+	if(!$sub||preg_match("/^[ |　|]*$/",$sub)) $sub="";
+	if(!$url||!preg_match("/^ *?https?:\/\//",$url)||preg_match("/&lt;|</",$url)) $url="" ;
 	if(!$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 	if(RES_UPLOAD&&$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 
@@ -1150,7 +1153,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){
+	for($i = 0; $i < $countline; ++$i){
 		if($line[$i]!=""){
 			list($artno,)=explode(",", rtrim($line[$i]));	//逆変換テーブル作成
 			$lineindex[$artno]=$i+1;
@@ -1165,8 +1168,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	else{
 	$chkline=$countline-1;
 	}
-//	for($i=0;$i<20;$i++){ 
-	for($i=0;$i<$chkline;$i++){
+//	for($i=0;$i<20;++$i){ 
+	for($i=0;$i<$chkline;++$i){
 		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $line[$i]);
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
@@ -1256,8 +1259,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$chkline=$countline-1;
 	}
 	if($dest&&file_exists($dest)){
-//		for($i=0;$i<200;$i++){ //画像重複チェック
-		for($i=0;$i<$chkline;$i++){ //画像重複チェック
+//		for($i=0;$i<200;++$i){ //画像重複チェック
+		for($i=0;$i<$chkline;++$i){ //画像重複チェック
 			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $line[$i]);
 			if($chkp==$chk&&file_exists($path.$timep.$extp)){
 				error(MSG005,$dest);
@@ -1290,7 +1293,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if($buf==''){error(MSG023,$dest);}
 	$line = explode("\n",$buf);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){
+	for($i = 0; $i < $countline; ++$i){
 		if($line[$i]!=""){
 			$line[$i].="\n";
 			$j=explode(",", rtrim($line[$i]));
@@ -1298,7 +1301,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				$line[$i]='';
 	}	}	}
 	if($resto){
-		for($i = 0; $i < $countline; $i++){
+		for($i = 0; $i < $countline; ++$i){
 			$rtno = explode(",", rtrim($line[$i]));
 			if($rtno[0]==$resto){
 				$find = TRUE;
@@ -1400,11 +1403,11 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	}else{
 		$urlparameter = "";
 }
-	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2.$urlparameter."\">\n";
+	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1; URL=".PHP_SELF2.$urlparameter."\">\n";
 	
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	if(!isset($mes)){$mes="";}
-	$str.= "<body>$mes 画面を切り替えます</body></html>";
+	$str.= "<body>".$mes." 画面を切り替えます</body></html>";
 	echo charconvert($str,4);
 }
 
@@ -1435,8 +1438,8 @@ function treedel($delno){
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	$find=false;
-	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
-	for($i = 0; $i < $countline; $i++){
+	for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
+	for($i = 0; $i < $countline; ++$i){
 		$treeline = explode(",", rtrim($line[$i]));
 		$counttreeline=count($treeline);
 		for($j = 0; $j < $counttreeline; $j++){
@@ -1499,10 +1502,10 @@ function usrdel($del,$pwd){
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; $i++){if($line[$i]!==""){$line[$i].="\n";}}
+		for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
 		$flag = false;
 		$find = false;
-		for($i = 0; $i < $countline; $i++){
+		for($i = 0; $i < $countline; ++$i){
 		if($line[$i]){
 			list($no,,,,,,,$dhost,$pass,$ext,,,$tim,,) = explode(",",$line[$i]);
 			
@@ -1562,9 +1565,9 @@ function admindel($pass){
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
+		for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
 		$find = false;
-		for($i = 0; $i < $countline; $i++){
+		for($i = 0; $i < $countline; ++$i){
 		if($line[$i]){
 			list($no,,,,,,,,,$ext,,,$tim,,) = explode(",",$line[$i]);
 			if(in_array($no,$del)){
@@ -1824,7 +1827,7 @@ if(isset($savejpeg)){
 		$dat['anime'] = false;
 		$dat['imgfile'] = './'.PCH_DIR.$pch.$ext;
 	}
-	if(ADMIN_NEWPOST&&$admin==ADMIN_PASS) $dat['admin'] = 'picpost';
+	if(ADMIN_NEWPOST&&$admin===ADMIN_PASS) $dat['admin'] = 'picpost';
 
 	if(isset($C_Palette)){
 		for ($n = 1;$n < 7;++$n)
@@ -2095,9 +2098,9 @@ function editform($del,$pwd){
 		$buf = charconvert($buf,4);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
+		for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
 		$flag = FALSE;
-		for($i = 0; $i < $countline; $i++){
+		for($i = 0; $i < $countline; ++$i){
 		if($line[$i]){
 			list($no,,$name,$email,$sub,$com,$url,$ehost,$pass,,,,,,,$fcolor) = explode(",", rtrim($line[$i]));
 			if($no == $del[0] && (substr(md5($pwd),2,8) == $pass /*|| $ehost == $host*/ || ADMIN_PASS == $pwd)){
@@ -2278,12 +2281,12 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){if($line[$i]!=""){$line[$i].="\n";}}
+	for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
 
 	// 記事上書き
 	$flag = FALSE;
 	$countline=count($line);
-	for($i = 0; $i<$countline; $i++){
+	for($i = 0; $i<$countline; ++$i){
 		list($eno,,$ename,,$esub,$ecom,$eurl,$ehost,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$efcolor) = explode(",", rtrim($line[$i]));
 		if($eno == $no && ($pass == $epwd /*|| $ehost == $host*/ || ADMIN_PASS == $admin)){
 			if(!$name) $name = $ename;
@@ -2315,11 +2318,11 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	}else{
 		$urlparameter = "";
 }
-	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2.$urlparameter."\">\n";
+	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1; URL=".PHP_SELF2.$urlparameter."\">\n";
 	
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	if(!isset($mes)){$mes="";}
-	$str.= "<body>$mes 画面を切り替えます</body></html>";
+	$str.= "<body>".$mes." 画面を切り替えます</body></html>";
 	echo charconvert($str,4);
 }
 
@@ -2373,7 +2376,7 @@ function replace($no,$pwd,$stime){
 			list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode) = explode("\t", rtrim($userdata));
 			$file_name = preg_replace("/\.(dat)$/i","",$file);
 			//画像があり、認識コードがhitすれば抜ける
-			if(file_exists(TEMP_DIR.$file_name.$imgext) && $urepcode == $repcode){$find=true;break;}
+			if(file_exists(TEMP_DIR.$file_name.$imgext) && $urepcode === $repcode){$find=true;break;}
 		}
 	}
 	closedir($handle);
@@ -2427,13 +2430,13 @@ function replace($no,$pwd,$stime){
 	$buf = charconvert($buf,4);
 	$line = explode("\n",$buf);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){
+	for($i = 0; $i < $countline; ++$i){
 		if($line[$i]!=""){$line[$i].="\n";}}
 
 	// 記事上書き
 	$flag = false;
 	$countline = count($line);
-	for($i = 0; $i < $countline; $i++){
+	for($i = 0; $i < $countline; ++$i){
 		list($eno,,$name,$email,$sub,$com,$url,$ehost,$epwd,$ext,$W,$H,$etim,,$eptime,$fcolor) = explode(",", rtrim($line[$i]));
 		if($eno == $no && ($pwd == $epwd /*|| $ehost == $host*/ || $pwd == substr(md5(ADMIN_PASS),2,8))){
 			$upfile = $temppath.$file_name.$imgext;
@@ -2515,11 +2518,11 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	}else{
 		$urlparameter = "";
 }
-	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1;URL=".PHP_SELF2.$urlparameter."\">\n";
+	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1; URL=".PHP_SELF2.$urlparameter."\">\n";
 	
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	if(!isset($mes)){$mes="";}
-	$str.= "<body>$mes 画面を切り替えます</body></html>";
+	$str.= "<body>".$mes." 画面を切り替えます</body></html>";
 	echo charconvert($str,4);
 }
 
@@ -2529,7 +2532,7 @@ function catalog(){
 
 	$line = file(LOGFILE);
 	$countline=count($line);
-	for($i = 0; $i < $countline; $i++){
+	for($i = 0; $i < $countline; ++$i){
 		list($no,) = explode(",", $line[$i]);
 		$lineindex[$no]=$i + 1; //逆変換テーブル作成
 	}
@@ -2542,7 +2545,7 @@ function catalog(){
 	head($dat);
 	form($dat,'');
 	if(!$page) $page=0;
-	for($i = $page; $i < $page+$pagedef; $i++){
+	for($i = $page; $i < $page+$pagedef; ++$i){
 //		if($tree[$i]==""){
 //空文字ではなく未定義になっている
 		if(!isset($tree[$i])){
@@ -2707,7 +2710,7 @@ function potitag($str){
 				if(preg_match('/f\(([^\)]+)\)/',$base_tag,$m)){
 					$face = $m[1];
 					$countryfont1 = count($ryfont1);
-					for($i = 0; $i < $countryfont1; $i++){
+					for($i = 0; $i < $countryfont1; ++$i){
 						if($face == $ryfont1[$i]){$face = $ryfont2[$i];}
 					}
 				}
@@ -2719,7 +2722,7 @@ function potitag($str){
 				$rb_chk = 1;
 			}else{
 				$counttags1 = count($tags1);
-				for($i = 0; $i < $counttags1; $i++){
+				for($i = 0; $i < $counttags1; ++$i){
 					if($base_tag==$tags1[$i]){
 						array_push($tag_ex,'<'.$tags2[$i].'>');
 						$endtag = preg_replace("/^([[:alpha:]]+)(.*)/",'\\1',$tags2[$i]);
@@ -2745,7 +2748,7 @@ function potitag($str){
 			array_unshift($tag_ed,"</font>");
 		}
 		$counttag_ex=count($tag_ex);
-		for($i = 0; $i < $counttag_ex; $i++){
+		for($i = 0; $i < $counttag_ex; ++$i){
 			$com = $tag_ex[$i].$com.$tag_ed[$i];
 		}
 		array_push($tagrps2,$com);
