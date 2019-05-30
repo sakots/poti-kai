@@ -150,11 +150,11 @@ $qualitys = array('1','2','3','4');
 //　セキュリティ関連－URLとクリック数かタイマーのどちらかが設定されていれば有効
 //※アプレットのreadmeを参照し、十分テストした上で設定して下さい
 //セキュリティクリック数。設定しないなら''で
-define('SECURITY_CLICK', '100');
+define('SECURITY_CLICK', '40');
 //セキュリティタイマー(単位:秒)。設定しないなら''で
-define('SECURITY_TIMER', '180');
+define('SECURITY_TIMER', '60');
 //セキュリティにヒットした場合の飛び先
-define('SECURITY_URL', 'http://www.npa.go.jp/');
+define('SECURITY_URL', './');
 
 //続きを描くときのセキュリティ。利用しないなら両方''で
 //続きを描くときのセキュリティクリック数。設定しないなら''で
@@ -181,7 +181,7 @@ define('TO_MAIL', 'root@xxx.xxx');
 
 //メール通知のほか、シェアボタンなどで使用
 //設置場所のURL。'/'まで
-define('ROOT_URL', 'http://www.xxx.com/poti/');
+define('ROOT_URL', 'http://www.hoge.ne.jp/');
 
 //メール通知に本文を付ける 付ける:1 付けない:0
 define('SEND_COM', '0');
@@ -354,7 +354,7 @@ define('KASIRA', 'OB');
 define('TEMP_DIR', 'tmp/');
 
 //テンポラリ内のファイル有効期限(日数)
-define('TEMP_LIMIT', '14');
+define('TEMP_LIMIT', '3');
 
 //お絵描き最大サイズ（これ以上は強制でこの値
 //最小値は幅、高さともに 100 固定です
