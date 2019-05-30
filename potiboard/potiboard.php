@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.6 lot.190528
+  * POTI-board改 v1.51.7 lot.190530
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -204,8 +204,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.6');
-define('POTI_VERLOT' , '改 v1.51.6 lot.190528');
+define('POTI_VER' , '改 v1.51.7');
+define('POTI_VERLOT' , '改 v1.51.7 lot.190530');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1327,18 +1327,12 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	setcookie ("pwdc", $c_pass,time()+SAVE_COOKIE*24*3600);
 	setcookie ("fcolorc", $fcolor,time()+SAVE_COOKIE*24*3600);
 
-	//クッキー項目："クッキー名<>クッキー値"　※漢字を含む項目はこちらに追加
-	$cooks = array("namec<>$names","emailc<>$email","urlc<>$url");
+	//クッキー項目："クッキー名<>クッキー値"　※漢字を含む項目はこちらに追加 //190528
+	$cooks = array("namec<>".$names,"emailc<>".$email,"urlc<>".$url);
 	foreach ( $cooks as $cook ) {
 		list($c_name,$c_cook) = explode('<>',$cook);
-		if(USE_MB){
 			mb_language(LANG);
 			$c_cookie = mb_convert_encoding($c_cook, "UTF-8", "auto");	//to UTF-8
-		}elseif(function_exists("iconv")){
-			$c_cookie = iconv("euc-jp", "UTF-8", $c_cook);	//to UTF-8
-		}else{
-			$c_cookie = $c_cook;
-		}
 		setcookie ($c_name, $c_cookie,time()+SAVE_COOKIE*24*3600);
 	}
 
