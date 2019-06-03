@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.7 lot.190530
+  * POTI-board改 v1.51.8 lot.190603
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -35,12 +35,9 @@
 「ふたば★ちゃんねる」「ぷにゅねっと」に問い合わせないでください。
 ご質問は、<https://sakots.red/nee/>までどうぞ。
 */
-if(phpversion()>="5.2.0"){
+if(phpversion()>="5.4.0"){
 //スパム無効化関数
 function newstring($string) {
-if(get_magic_quotes_gpc()){
-	$string = stripslashes($string);
-	}
 	$string = htmlspecialchars($string,ENT_QUOTES,'utf-8');
 	$string = str_replace(",","，",$string);
 	return $string;
@@ -53,12 +50,12 @@ if(get_magic_quotes_gpc()){
 $mode = ( isset( $_POST["mode"] ) === true ) ? newstring($_POST["mode"]): "";
 $resto = ( isset( $_POST["resto"] ) === true ) ? newstring($_POST["resto"]): "";
 $MAX_FILE_SIZE = ( isset( $_POST["MAX_FILE_SIZE"] ) === true ) ? newstring($_POST["MAX_FILE_SIZE"]): "";
-$name = ( isset( $_POST["name"] ) === true ) ? newstring($_POST["name"]): "";
-$email = ( isset( $_POST["email"] ) === true ) ? newstring($_POST["email"]): "";
-$url = ( isset( $_POST["url"] ) === true ) ? newstring($_POST["url"]): "";
-$sub = ( isset( $_POST["sub"] ) === true ) ? newstring($_POST["sub"]): "";
+$name = ( isset( $_POST["name"] ) === true ) ? ($_POST["name"]): "";
+$email = ( isset( $_POST["email"] ) === true ) ? ($_POST["email"]): "";
+$url = ( isset( $_POST["url"] ) === true ) ? ($_POST["url"]): "";
+$sub = ( isset( $_POST["sub"] ) === true ) ? ($_POST["sub"]): "";
 $com = ( isset( $_POST["com"] ) === true ) ? ($_POST["com"]): "";
-$pwd = ( isset( $_POST["pwd"] ) === true ) ? newstring($_POST["pwd"]): "";
+$pwd = ( isset( $_POST["pwd"] ) === true ) ? ($_POST["pwd"]): "";
 $textonly = ( isset( $_POST["textonly"] ) === true ) ? newstring($_POST["textonly"]): "";
 $submit = ( isset( $_POST["submit"]) === true ) ? newstring($_POST["submit"]): "";
 $shi = ( isset( $_POST["shi"]) === true ) ? newstring($_POST["shi"]): "";
@@ -75,17 +72,19 @@ $pictmp = ( isset( $_POST["pictmp"]) === true ) ? newstring($_POST["pictmp"]): "
 $ptime = ( isset( $_POST["ptime"]) === true ) ? newstring($_POST["ptime"]): "";
 $picfile = ( isset( $_POST["picfile"]) === true ) ? newstring($_POST["picfile"]): "";
 $del = ( isset($_POST["del"]) === true ) ? ($_POST["del"]): "";
-if(is_array($del)){
-	$countdel=count($del);
-	for($i = 0; $i < $countdel; ++$i){
-		if(!ctype_digit($del[$i])){//数字のみ
+
+if(is_array($del)){//190602
+foreach($del as $vdel){
+	if(!ctype_digit($vdel)){//数字のみ
 		$del="";
-		}
 	}
 }
-	else{
-	$del="";
+unset($vdel);
 }
+else{
+$del="";
+}
+
 $admin = ( isset($_POST["admin"]) === true ) ? newstring($_POST["admin"]): "";
 $pass = ( isset($_POST["pass"]) === true ) ? newstring($_POST["pass"]): "";
 $onlyimgdel = ( isset($_POST["onlyimgdel"]) === true ) ? newstring($_POST["onlyimgdel"]): "";
@@ -165,12 +164,12 @@ if(isset($_GET["mode"])&&$_GET["mode"]==="tag"){
 //$_COOKIEから変数を取得
 
 //var_dump($_COOKIE);
-$urlc = ( isset($_COOKIE["urlc"]) === true ) ? newstring($_COOKIE["urlc"]): "";
-$namec = ( isset($_COOKIE["namec"]) === true ) ? newstring($_COOKIE["namec"]): "";
-$emailc = ( isset($_COOKIE["emailc"]) === true ) ? newstring($_COOKIE["emailc"]): "";
-$pwdc = ( isset($_COOKIE["pwdc"]) === true ) ? newstring($_COOKIE["pwdc"]): "";
-$fcolorc = ( isset($_COOKIE["fcolorc"]) === true ) ? newstring($_COOKIE["fcolorc"]): "";
-$usercode = ( isset($_COOKIE["usercode"]) === true ) ? newstring($_COOKIE["usercode"]): false;//falseならuser-codeを発行
+$urlc = ( isset($_COOKIE["urlc"]) === true ) ? ($_COOKIE["urlc"]): "";
+$namec = ( isset($_COOKIE["namec"]) === true ) ? ($_COOKIE["namec"]): "";
+$emailc = ( isset($_COOKIE["emailc"]) === true ) ? ($_COOKIE["emailc"]): "";
+$pwdc = ( isset($_COOKIE["pwdc"]) === true ) ? ($_COOKIE["pwdc"]): "";
+$fcolorc = ( isset($_COOKIE["fcolorc"]) === true ) ? ($_COOKIE["fcolorc"]): "";
+$usercode = ( isset($_COOKIE["usercode"]) === true ) ? ($_COOKIE["usercode"]): false;//falseならuser-codeを発行
 
 //$_SERVERから変数を取得
 //var_dump($_SERVER);
@@ -179,8 +178,13 @@ $REQUEST_METHOD = ( isset($_SERVER["REQUEST_METHOD"]) === true ) ? ($_SERVER["RE
 
 //$_FILESから変数を取得
 
-$upfile_name = ( isset( $_FILES["upfile"]["name"]) === true ) ? ($_FILES["upfile"]["name"]): "";
-$upfile = ( isset( $_FILES["upfile"]["tmp_name"]) === true ) ? ($_FILES["upfile"]["tmp_name"]): "";
+$upfile_name = ( isset( $_FILES["upfile"]["name"]) === true ) ? ($_FILES["upfile"]["name"]): "";//190603
+	if(preg_match('/\//', $upfile_name)){//ファイル名に/がなければ続行
+	$_FILES["upfile"]["name"]="";
+	$upfile ="";
+	}
+else{
+$upfile = ( isset( $_FILES["upfile"]["tmp_name"]) === true ) ? ($_FILES["upfile"]["tmp_name"]): "";}
 
 }
 //設定の読み込み
@@ -204,8 +208,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.7');
-define('POTI_VERLOT' , '改 v1.51.7 lot.190530');
+define('POTI_VER' , '改 v1.51.8');
+define('POTI_VERLOT' , '改 v1.51.8 lot.190603');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -967,7 +971,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if(!file_exists($dest)) error(MSG003,$dest);
 		if(filesize($dest) > MAX_KB * 1024){error(MSG034,$dest);} 	//追加(v1.32)
 		$size = getimagesize($dest);
-		if(!is_array($size)) error(MSG004,$dest);
+//		if(!is_array($size)) error(MSG004,$dest);
+		$img_type=mime_content_type($dest);//190603
+		if($img_type==="image/gif"||$img_type==="image/jpeg"||$img_type==="image/png"){//190603
 		$chk = md5_of_file($dest);
 		foreach($badfile as $value){if(preg_match("/^$value/",$chk)){
 			error(MSG005,$dest); //拒絶画像
@@ -976,13 +982,12 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$W = $size[0];
 		$H = $size[1];
 
-		switch ($size[2]) {
-			case 1 : $ext=".gif";break;
-			case 2 : $ext=".jpg";break;
-			case 3 : $ext=".png";break;
+		switch ($img_type) {
+			case "image/gif" : $ext=".gif";break;
+			case "image/jpeg" : $ext=".jpg";break;
+			case "image/png" : $ext=".png";break;
 			default : error(MSG004,$dest);
 		}
-
 		// 画像表示縮小
 		$max_w = $resto ? MAX_RESW : MAX_W;
 		$max_h = $resto ? MAX_RESH : MAX_H;
@@ -994,6 +999,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			$H = ceil($H * $key);
 		}
 		$mes = "画像 $upfile_name のアップロードが成功しました<br><br>";
+		}
+		else{
+		error(MSG004,$dest);
+		}
 	}
 
 	$name  = charconvert($name ,4);
@@ -1016,8 +1025,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
-	if(!$sub||preg_match("/^[ |　|]*$/",$sub)) $sub="";
-	if(!$url||!preg_match("/^ *?https?:\/\//",$url)||preg_match("/&lt;|</",$url)) $url="" ;
+	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
+	if(preg_match("/&lt;|</",$email))   $email="";//190602
+	if(!$url||!preg_match("/^ *?https?:\/\//",$url)||preg_match("/&lt;|</",$url))   $url="";
 	if(!$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 	if(RES_UPLOAD&&$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
 
@@ -1104,17 +1114,19 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$now = str_replace(",", "&#44;", $now);
 	$ptime = str_replace(",", "&#44;", $ptime);
 	//テキスト整形
-	$email= CleanStr($email); $email=preg_replace("/[\r\n]/","",$email);
-	$sub  = CleanStr($sub);   $sub  =preg_replace("/[\r\n]/","",$sub);
+	$email=strip_tags($email);
+	$email= CleanStr($email); 
+	$email=preg_replace("/[\r\n]/","",$email);
+	$sub  = CleanStr($sub);
+	$sub  =preg_replace("/[\r\n]/","",$sub);
 	$resto= CleanStr($resto); $resto=preg_replace("/[\r\n]/","",$resto);
 	$url  = CleanStr($url);   $url  =preg_replace("/[\r\n]/","",$url);
 	$url  = str_replace(" ", "", $url);
-	$com  = CleanStr($com);
+	$com  = CleanCom($com);
 	$pwd= CleanStr($pwd);
 	$pwd=preg_replace("/[\r\n]/","",$pwd);
-
 	//管理モードで使用できるタグを制限
-	if(preg_match('/< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
+	if(preg_match('/< *?script|< *?\? *?php|< *?img|< *?a  *?onmouseover|< *?iframe|< *?frame|< *?div|< *?table|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
 
 	// 改行文字の統一。
 	$com = str_replace("\r\n", "\n", $com);
@@ -1333,6 +1345,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		list($c_name,$c_cook) = explode('<>',$cook);
 			mb_language(LANG);
 			$c_cookie = mb_convert_encoding($c_cook, "UTF-8", "auto");	//to UTF-8
+			$c_cookie = str_replace("&amp;", "&", $c_cookie);
+
 		setcookie ($c_name, $c_cookie,time()+SAVE_COOKIE*24*3600);
 	}
 
@@ -1465,15 +1479,16 @@ function treedel($delno){
 }
 
 /* テキスト整形 */
-function CleanStr($str){
+function CleanStr($str){//コメント以外190603
+	$str = trim($str);//先頭と末尾の空白除去
+	$str = htmlspecialchars($str,ENT_QUOTES,'utf-8');
+	return str_replace(",", "&#44;", $str);//カンマを変換
+}
+function CleanCom($str){//コメントは管理者以外タグ禁止
 	global $admin;
 	$str = trim($str);//先頭と末尾の空白除去
-	if (get_magic_quotes_gpc()) {//￥を削除
-		$str = stripslashes($str);
-	}
-	if($admin!=ADMIN_PASS){//管理者はタグ可能
+	if($admin!==ADMIN_PASS){//管理者はタグ可能
 		$str = htmlspecialchars($str,ENT_QUOTES,'utf-8');//タグ禁止
-		$str = str_replace("&amp;", "&", $str);//特殊文字
 	}
 	return str_replace(",", "&#44;", $str);//カンマを変換
 }
@@ -2163,7 +2178,8 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(!$url||!preg_match("/^ *?https?:\/\//",$url))   $url="";
+	if(preg_match("/&lt;|</",$email))   $email="";
+	if(!$url||!preg_match("/^ *?https?:\/\//",$url)||preg_match("/&lt;|</",$url))   $url="";
 
 	//$name=preg_replace("/管理/","\"管理\"",$name);
 	//$name=preg_replace("/削除/","\"削除\"",$name);
@@ -2230,16 +2246,19 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	}
 	$now = str_replace(",", "&#44;", $now);//カンマを変換
 	//テキスト整形
-	$email= CleanStr($email);  $email=preg_replace("/[\r\n]/","",$email);
-	$sub  = CleanStr($sub);    $sub  =preg_replace("/[\r\n]/","",$sub);
-	$url  = CleanStr($url);    $url  =preg_replace("/[\r\n]/","",$url);
+	$email=strip_tags($email);
+	$email= CleanStr($email); 
+	$email=preg_replace("/[\r\n]/","",$email);
+	$sub  = CleanStr($sub);
+	$sub  =preg_replace("/[\r\n]/","",$sub);
+	$url  = CleanStr($url);
+	$url  =preg_replace("/[\r\n]/","",$url);
 	$url  = str_replace(" ", "", $url);
-	$com  = CleanStr($com);
+	$com  = CleanCom($com);
 	$pwd= CleanStr($pwd);
 	$pwd=preg_replace("/[\r\n]/","",$pwd);
-
 	//管理モードで使用できるタグを制限
-	if(preg_match('/< *?script|< *?a  *?onmouseover|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
+	if(preg_match('/< *?script|< *?\? *?php|< *?img|< *?a  *?onmouseover|< *?iframe|< *?frame|< *?div|< *?table|< *?meta|< *?base|< *?object|< *?embed|< *?input|< *?body|< *?style/i', $com)) error(MSG038,$dest);
 
 	// 改行文字の統一。
 	$com = str_replace("\r\n", "\n", $com);
@@ -2438,13 +2457,19 @@ function replace($no,$pwd,$stime){
 			copy($upfile, $dest);
 			if(!file_exists($dest)) error(MSG003,$dest);
 			$size = getimagesize($dest);
-			if(!is_array($size)) error(MSG004,$dest);
+//			if(!is_array($size)) error(MSG004,$dest);
+		$img_type=mime_content_type($dest);//190603
+		if($img_type==="image/gif"||$img_type==="image/jpeg"||$img_type==="image/png"){//190603
 			$chk = md5_of_file($dest);
 			foreach($badfile as $value){if(preg_match("/^$value/",$chk)){
 				error(MSG005,$dest); //拒絶画像
 			}}
 			chmod($dest,0666);
 			$mes = "画像のアップロードが成功しました<br><br>";
+			}
+		else{
+		error(MSG004,$dest);
+		}
 			//差し換え前と同じ大きさのサムネイル作成
 			if(USE_THUMB) thumb($path,$tim,$imgext,$W,$H);
 			//ワークファイル削除
