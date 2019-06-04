@@ -35,6 +35,8 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2019/06/03] v1.51.8 lot.190603</dt>
+	<dd class="con">クッキーの文字化けに対処 セキュリティ対策。（by さとぴあ）</dd>
 	<dt class="ver">[2019/05/23] v1.51.6 lot.190528</dt>
 	<dd class="con">こまかい修正。</dd>
 	<dt class="ver">[2019/05/23] v1.51.5 lot.190522</dt>
