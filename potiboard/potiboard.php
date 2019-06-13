@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.8 lot.190603
+  * POTI-board改 v1.51.9 lot.190612
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -44,145 +44,116 @@ function newstring($string) {
 }
 //無効化ここまで
 
-//$_POSTから変数を取得
+//INPUT_POSTから変数を取得
 
 //var_dump($_POST);
-$mode = ( isset( $_POST["mode"] ) === true ) ? newstring($_POST["mode"]): "";
-$resto = ( isset( $_POST["resto"] ) === true ) ? newstring($_POST["resto"]): "";
-$MAX_FILE_SIZE = ( isset( $_POST["MAX_FILE_SIZE"] ) === true ) ? newstring($_POST["MAX_FILE_SIZE"]): "";
-$name = ( isset( $_POST["name"] ) === true ) ? ($_POST["name"]): "";
-$email = ( isset( $_POST["email"] ) === true ) ? ($_POST["email"]): "";
-$url = ( isset( $_POST["url"] ) === true ) ? ($_POST["url"]): "";
-$sub = ( isset( $_POST["sub"] ) === true ) ? ($_POST["sub"]): "";
-$com = ( isset( $_POST["com"] ) === true ) ? ($_POST["com"]): "";
-$pwd = ( isset( $_POST["pwd"] ) === true ) ? ($_POST["pwd"]): "";
-$textonly = ( isset( $_POST["textonly"] ) === true ) ? newstring($_POST["textonly"]): "";
-$submit = ( isset( $_POST["submit"]) === true ) ? newstring($_POST["submit"]): "";
-$shi = ( isset( $_POST["shi"]) === true ) ? newstring($_POST["shi"]): "";
-$picw = ( isset( $_POST["picw"]) === true ) ? newstring($_POST["picw"]): "";
-$pich = ( isset( $_POST["pich"]) === true ) ? newstring($_POST["pich"]): "";
-$anime = ( isset( $_POST["anime"]) === true ) ? newstring($_POST["anime"]): "";
-$useneo = ( isset( $_POST["useneo"]) === true ) ? newstring($_POST["useneo"]): "";
-$no = ( isset( $_POST["no"]) === true ) ? newstring($_POST["no"]): "";
-$pch = ( isset( $_POST["pch"]) === true ) ? newstring($_POST["pch"]): "";
-$ext = ( isset( $_POST["ext"]) === true ) ? newstring($_POST["ext"]): "";
-$ctype = ( isset( $_POST["ctype"]) === true ) ? newstring($_POST["ctype"]): "";
-$type = ( isset( $_POST["type"]) === true ) ? newstring($_POST["type"]): "";
-$pictmp = ( isset( $_POST["pictmp"]) === true ) ? newstring($_POST["pictmp"]): "";
-$ptime = ( isset( $_POST["ptime"]) === true ) ? newstring($_POST["ptime"]): "";
-$picfile = ( isset( $_POST["picfile"]) === true ) ? newstring($_POST["picfile"]): "";
-$del = ( isset($_POST["del"]) === true ) ? ($_POST["del"]): "";
+$mode = newstring(filter_input(INPUT_POST, 'mode'));
+$resto = filter_input(INPUT_POST, 'resto',FILTER_VALIDATE_INT);
+$MAX_FILE_SIZE = newstring(filter_input(INPUT_POST, 'MAX_FILE_SIZE'));
+$name = filter_input(INPUT_POST, 'name');
+$email = filter_input(INPUT_POST, 'email');
+$url = filter_input(INPUT_POST, 'url',FILTER_VALIDATE_URL);
+$sub = filter_input(INPUT_POST, 'sub');
+$com = filter_input(INPUT_POST, 'com');
+$pwd = filter_input(INPUT_POST, 'pwd');
+$textonly = filter_input(INPUT_POST, 'textonly',FILTER_VALIDATE_BOOLEAN);
+$submit = newstring(filter_input(INPUT_POST, 'submit'));
+$shi = filter_input(INPUT_POST, 'shi',FILTER_VALIDATE_INT);
+$picw = filter_input(INPUT_POST, 'picw',FILTER_VALIDATE_INT);
+$pich = filter_input(INPUT_POST, 'pich',FILTER_VALIDATE_INT);
+$anime = filter_input(INPUT_POST, 'anime',FILTER_VALIDATE_BOOLEAN);
+$useneo = filter_input(INPUT_POST, 'useneo',FILTER_VALIDATE_BOOLEAN);
+$no = filter_input(INPUT_POST, 'no',FILTER_VALIDATE_INT);
+$pch = newstring(filter_input(INPUT_POST, 'pch'));
+$ext = newstring(filter_input(INPUT_POST, 'ext'));
+$ctype = newstring(filter_input(INPUT_POST, 'ctype'));
+$type = newstring(filter_input(INPUT_POST, 'type'));
+$pictmp = filter_input(INPUT_POST, 'pictmp',FILTER_VALIDATE_INT);
+$ptime = newstring(filter_input(INPUT_POST, 'ptime'));
+$picfile = newstring(filter_input(INPUT_POST, 'picfile'));
+$del = filter_input(INPUT_POST,'del',FILTER_VALIDATE_INT,FILTER_REQUIRE_ARRAY);//$del は配列
+$admin = newstring(filter_input(INPUT_POST, 'admin'));
+$pass = newstring(filter_input(INPUT_POST, 'pass'));
+$onlyimgdel = filter_input(INPUT_POST, 'onlyimgdel',FILTER_VALIDATE_BOOLEAN);
 
-if(is_array($del)){//190602
-foreach($del as $vdel){
-	if(!ctype_digit($vdel)){//数字のみ
-		$del="";
-	}
-}
-unset($vdel);
-}
-else{
-$del="";
-}
-
-$admin = ( isset($_POST["admin"]) === true ) ? newstring($_POST["admin"]): "";
-$pass = ( isset($_POST["pass"]) === true ) ? newstring($_POST["pass"]): "";
-$onlyimgdel = ( isset($_POST["onlyimgdel"]) === true ) ? newstring($_POST["onlyimgdel"]): "";
 //v1.32 MONO WHITE
-$fcolor = ( isset($_POST["fcolor"]) === true ) ? newstring($_POST["fcolor"]): "";
-$undo = ( isset($_POST["undo"]) === true ) ? newstring($_POST["undo"]): "";
-$undo_in_mg = ( isset($_POST["undo_in_mg"]) === true ) ? newstring($_POST["undo_in_mg"]): "";
-$quality = ( isset($_POST["quality"]) === true ) ? newstring($_POST["quality"]): "";
-$savetype = ( isset($_POST["savetype"]) === true ) ? newstring($_POST["savetype"]): "";
+$fcolor = newstring(filter_input(INPUT_POST, 'fcolor'));
+$undo = filter_input(INPUT_POST, 'undo',FILTER_VALIDATE_INT);
+$undo_in_mg = filter_input(INPUT_POST, 'undo_in_mg',FILTER_VALIDATE_INT);
+$quality = filter_input(INPUT_POST, 'quality',FILTER_VALIDATE_INT);
+$savetype = newstring(filter_input(INPUT_POST, 'savetype'));
 
-//$_GETから変数を取得
+//INPUT_GETから変数を取得
 
 //var_dump($_GET);
-if(isset($_GET["res"])&&ctype_digit($_GET["res"])){//数字のみ
-$res = $_GET["res"];
+$res = filter_input(INPUT_GET, 'res',FILTER_VALIDATE_INT);
+if((filter_input(INPUT_GET, 'mode'))==="openpch"){
+$pch = newstring(filter_input(INPUT_GET, 'pch'));
+$shi = filter_input(INPUT_GET, 'shi',FILTER_VALIDATE_INT);
+$mode = "openpch";
 }
-else{
-$res = "";
-}
-if(isset($_GET["mode"])&&$_GET["mode"]==="openpch"){
-	$pch = (isset($_GET["pch"]) === true ) ? newstring($_GET["pch"]): "";
-	$shi = (isset($_GET["shi"]) === true ) ? newstring($_GET["shi"]): "";
-	$mode = "openpch";
-	}
-if(isset($_GET["mode"])&&$_GET["mode"]==="continue"){
-		$no = (isset($_GET["no"]) === true) ? newstring($_GET["no"]): "";
-		$mode = "continue";
-}
-if(isset($_GET["mode"])&&$_GET["mode"]==="edit"){
-		$del = ( isset($_GET["del"]) === true ) ? ($_GET["del"]): "";
-		if(is_array($del)){
-		$countdel=count($del);
-		for($i = 0; $i < $countdel; ++$i){
-		if(!ctype_digit($del[$i])){//数字のみ
-		$del="";
-		}
-	}
-}
-	else{
-	$del="";
-}
-		$pwd = ( isset($_GET["pwd"]) === true ) ? newstring($_GET["pwd"]): "";
-		$mode = "edit"; 
-}
-	
-if(isset($_GET["mode"])&&$_GET["mode"]==="admin"){
-	$admin = ( isset($_GET["admin"]) === true ) ? newstring($_GET["admin"]): "";
-	$pass = ( isset($_GET["pass"]) === true ) ? newstring($_GET["pass"]): "";
-
-	$mode = "admin";
-}
-if(isset($_GET["mode"])&&$_GET["mode"]==="catalog"){
-	$page = ( isset($_GET["page"]) === true ) ? newstring($_GET["page"]): "";
-	$mode = "catalog";
-}
-if(isset($_GET["mode"])&&$_GET["mode"]==="piccom"){
-	$stime = ( isset($_GET["stime"]) === true ) ? newstring($_GET["stime"]): "";
-	$resto = ( isset($_GET["resto"]) === true ) ? newstring($_GET["resto"]): "";
-	
-	$mode = "piccom";
-}
-if(isset($_GET["mode"])&&$_GET["mode"]==="picrep"){
-	$no = ( isset($_GET["no"]) === true ) ? newstring($_GET["no"]): "";
-	$pwd = ( isset($_GET["pwd"]) === true ) ? newstring($_GET["pwd"]): "";
-	$repcode = ( isset($_GET["repcode"]) === true ) ? newstring($_GET["repcode"]): "";
-	$stime = ( isset($_GET["stime"]) === true ) ? newstring($_GET["stime"]): "";
-	
-	$mode = "picrep";
-}
-if(isset($_GET["mode"])&&$_GET["mode"]==="newpost"){
-	$mode = "newpost";
-}
-if(isset($_GET["mode"])&&$_GET["mode"]==="tag"){
-	$mode = "tag";
+if((filter_input(INPUT_GET, 'mode'))==="continue"){
+$no = filter_input(INPUT_GET, 'no',FILTER_VALIDATE_INT);
+$mode = "continue";
 }
 
-//$_COOKIEから変数を取得
+if((filter_input(INPUT_GET, 'mode'))==="edit"){
+$del = filter_input(INPUT_GET,'del',FILTER_VALIDATE_INT,FILTER_REQUIRE_ARRAY);
+$pwd = newstring(filter_input(INPUT_GET, 'pwd'));
+$mode = "edit";
+}
+
+if((filter_input(INPUT_GET, 'mode'))==="admin"){
+$admin = newstring(filter_input(INPUT_GET, 'admin'));
+$pass = newstring(filter_input(INPUT_GET, 'pass'));
+$mode = "admin";
+}if((filter_input(INPUT_GET, 'mode'))==="catalog"){
+$page = filter_input(INPUT_GET, 'page',FILTER_VALIDATE_INT);
+$mode = "catalog";
+}
+if((filter_input(INPUT_GET, 'mode'))==="piccom"){
+$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
+$resto = filter_input(INPUT_GET, 'resto',FILTER_VALIDATE_INT);
+$mode = "piccom";
+}
+if((filter_input(INPUT_GET, 'mode'))==="picrep"){
+$no = filter_input(INPUT_GET, 'no',FILTER_VALIDATE_INT);
+$pwd = newstring(filter_input(INPUT_GET, 'pwd'));
+$repcode = newstring(filter_input(INPUT_GET, 'repcode'));
+$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
+$mode = "picrep";
+}
+if((filter_input(INPUT_GET, 'mode'))==="newpost"){
+$mode = "newpost";
+}
+if((filter_input(INPUT_GET, 'mode'))==="tag"){
+$mode = "tag";
+}
+//INPUT_COOKIEから変数を取得
 
 //var_dump($_COOKIE);
-$urlc = ( isset($_COOKIE["urlc"]) === true ) ? ($_COOKIE["urlc"]): "";
-$namec = ( isset($_COOKIE["namec"]) === true ) ? ($_COOKIE["namec"]): "";
-$emailc = ( isset($_COOKIE["emailc"]) === true ) ? ($_COOKIE["emailc"]): "";
-$pwdc = ( isset($_COOKIE["pwdc"]) === true ) ? ($_COOKIE["pwdc"]): "";
-$fcolorc = ( isset($_COOKIE["fcolorc"]) === true ) ? ($_COOKIE["fcolorc"]): "";
-$usercode = ( isset($_COOKIE["usercode"]) === true ) ? ($_COOKIE["usercode"]): false;//falseならuser-codeを発行
+
+$urlc = filter_input(INPUT_COOKIE, 'urlc');
+$namec = filter_input(INPUT_COOKIE, 'namec');
+$emailc = filter_input(INPUT_COOKIE, 'emailc');
+$pwdc = filter_input(INPUT_COOKIE, 'pwdc');
+$usercode = filter_input(INPUT_COOKIE, 'usercode');//nullならuser-codeを発行
+
+$fcolorc = filter_input(INPUT_COOKIE, 'fcolorc');
 
 //$_SERVERから変数を取得
 //var_dump($_SERVER);
 
 $REQUEST_METHOD = ( isset($_SERVER["REQUEST_METHOD"]) === true ) ? ($_SERVER["REQUEST_METHOD"]): "";
+//INPUT_SERVER が動作しないサーバがあるので$_SERVERを使う。
 
 //$_FILESから変数を取得
 
 $upfile_name = ( isset( $_FILES["upfile"]["name"]) === true ) ? ($_FILES["upfile"]["name"]): "";//190603
-	if(preg_match('/\//', $upfile_name)){//ファイル名に/がなければ続行
-	$_FILES["upfile"]["name"]="";
-	$upfile ="";
-	}
+if (strpos($upfile_name, '/') !== false) {//ファイル名に/がなければ続行
+$upfile_name="";
+$upfile ="";
+}
 else{
 $upfile = ( isset( $_FILES["upfile"]["tmp_name"]) === true ) ? ($_FILES["upfile"]["tmp_name"]): "";}
 
@@ -208,8 +179,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.8');
-define('POTI_VERLOT' , '改 v1.51.8 lot.190603');
+define('POTI_VER' , '改 v1.51.9');
+define('POTI_VERLOT' , '改 v1.51.9 lot.190612');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -963,6 +934,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($pictmp==2){
 			copy($upfile, $dest);
 		}else{
+	if(!preg_match('/\A(jpe?g|gif|png)\z/i', pathinfo($upfile_name, PATHINFO_EXTENSION))){//もとのファイル名の拡張子190606
+	$dest="";
+		error(MSG004,$dest);
+	}
 			move_uploaded_file($upfile, $dest);
 			//↑でエラーなら↓に変更
 			//copy($upfile, $dest);
@@ -1141,9 +1116,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$name=preg_replace("/◆/","◇",$name);
 	$name=preg_replace("/[\r\n]/","",$name);
 	$names=$name;
-	if (get_magic_quotes_gpc()) {//￥を削除
-		$names = stripslashes($names);
-	}
 	$name=CleanStr($name);
 	if(preg_match("/(#|＃)(.*)/",$names,$regs)){
 		$cap = $regs[2];
@@ -1260,7 +1232,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}
 	}
 	// アップロード処理
-//	var_dump($dest);
 //	if(isset($dest)){
 	if($dest){//画像が無い時は処理しない
 	$countline=(count($line));
@@ -1758,6 +1729,9 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 		$dat['newpaint'] = true;
 	}
 	$dat['security_url'] = SECURITY_URL;
+			$saveauto = '';
+			$savepng='';
+			$savejpeg='';
 	switch($savetype){
 		case 'PNG':
 			$dat['image_jpeg'] = 'false';
@@ -1774,13 +1748,9 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 			$dat['image_size'] = IMAGE_SIZE;
 			$saveauto = ' selected';
 	}
-	$dat['savetypes'] = "<option value='AUTO'".$saveauto.">AUTO</option>\n";
-if(isset($savepng)){
-	$dat['savetypes'].= "<option value='PNG'".$savepng.">PNG</option>\n";
-	}
-if(isset($savejpeg)){
-	$dat['savetypes'].= "<option value='JPEG'".$savejpeg.">JPEG</option>\n";
-}
+	$dat['savetypes'] = '<option value="AUTO"'.$saveauto.'>AUTO</option>';
+	$dat['savetypes'].= '<option value="PNG"'.$savepng.'>PNG</option>';
+	$dat['savetypes'].= '<option value="JPEG"'.$savejpeg.'>JPEG</option>';
 	$dat['compress_level'] = COMPRESS_LEVEL;
 	$dat['layer_count'] = LAYER_COUNT;
 	if($shi) $dat['quality'] = $quality ? $quality : $qualitys[0];
@@ -2034,7 +2004,6 @@ function incontinue($no){
 	$dat['passflag'] = true;
 //新規投稿で削除キー不要の時 true
 	if(! CONTINUE_PASS) $dat['newpost_nopassword'] = true;
-//var_dump(IMG_DIR.$ctim.$cext);
 	if(file_exists(IMG_DIR.$ctim.$cext)){//画像が無い時は処理しない
 	$dat['picfile'] = IMG_DIR.$ctim.$cext;
 	$size = getimagesize($dat['picfile']);
@@ -2386,7 +2355,7 @@ function replace($no,$pwd,$stime){
 			$fp = fopen(TEMP_DIR.$file, "r");
 			$userdata = fread($fp, 1024);
 			fclose($fp);
-			list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode) = explode("\t", rtrim($userdata));
+			list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode) = explode("\t", rtrim($userdata)."\t");//区切りの"\t"を行末に190610
 			$file_name = preg_replace("/\.(dat)$/i","",$file);
 			//画像があり、認識コードがhitすれば抜ける
 			if(file_exists(TEMP_DIR.$file_name.$imgext) && $urepcode === $repcode){$find=true;break;}
