@@ -1748,9 +1748,9 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 			$dat['image_size'] = IMAGE_SIZE;
 			$saveauto = ' selected';
 	}
-	$dat['savetypes'] = '<option value="AUTO"'.$saveauto.'>AUTO</option>\n';
-	$dat['savetypes'].= '<option value="PNG"'.$savepng.'>PNG</option>\n';
-	$dat['savetypes'].= '<option value="JPEG"'.$savejpeg.'>JPEG</option>\n';
+	$dat['savetypes'] = '<option value="AUTO"'.$saveauto.'>AUTO</option>';
+	$dat['savetypes'].= '<option value="PNG"'.$savepng.'>PNG</option>';
+	$dat['savetypes'].= '<option value="JPEG"'.$savejpeg.'>JPEG</option>';
 	$dat['compress_level'] = COMPRESS_LEVEL;
 	$dat['layer_count'] = LAYER_COUNT;
 	if($shi) $dat['quality'] = $quality ? $quality : $qualitys[0];
