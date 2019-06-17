@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.51.9 lot.190612
+  * POTI-board改 v1.52.0 lot.190617
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -96,13 +96,11 @@ if((filter_input(INPUT_GET, 'mode'))==="continue"){
 $no = filter_input(INPUT_GET, 'no',FILTER_VALIDATE_INT);
 $mode = "continue";
 }
-
 if((filter_input(INPUT_GET, 'mode'))==="edit"){
 $del = filter_input(INPUT_GET,'del',FILTER_VALIDATE_INT,FILTER_REQUIRE_ARRAY);
 $pwd = newstring(filter_input(INPUT_GET, 'pwd'));
 $mode = "edit";
 }
-
 if((filter_input(INPUT_GET, 'mode'))==="admin"){
 $admin = newstring(filter_input(INPUT_GET, 'admin'));
 $pass = newstring(filter_input(INPUT_GET, 'pass'));
@@ -138,7 +136,6 @@ $namec = filter_input(INPUT_COOKIE, 'namec');
 $emailc = filter_input(INPUT_COOKIE, 'emailc');
 $pwdc = filter_input(INPUT_COOKIE, 'pwdc');
 $usercode = filter_input(INPUT_COOKIE, 'usercode');//nullならuser-codeを発行
-
 $fcolorc = filter_input(INPUT_COOKIE, 'fcolorc');
 
 //$_SERVERから変数を取得
@@ -179,8 +176,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.51.9');
-define('POTI_VERLOT' , '改 v1.51.9 lot.190612');
+define('POTI_VER' , '改 v1.52.0');
+define('POTI_VERLOT' , '改 v1.52.0 lot.190617');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -513,9 +510,9 @@ function updatelog($resno=0){
 			$treeline = explode(",", rtrim($tree[$i]));
 			$disptree = $treeline[0];
 			$j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
-			if($line[$j]=="") continue;   //$jが範囲外なら次の行
+			if($line[$j]==="") continue;   //$jが範囲外なら次の行
 			list($no,$now,$name,$email,$sub,$com,$url,
-				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j],4)));
+				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j])));
 			// URLとメールにリンク
 			//if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 			if(AUTOLINK) $com = auto_link($com);
@@ -590,7 +587,7 @@ function updatelog($resno=0){
 					for($k = $s; $k < $counttreeline; $k++){
 						$disptree = $treeline[$k];
 						$j=$lineindex[$disptree] - 1;
-						if($line[$j]=="") continue;
+						if($line[$j]==="") continue;
 						list(,,,,,,,,,$rext,,,$rtime,,,) = explode(",", rtrim($line[$j]));
 						$resimg = $path.$rtime.$rext;
 						if($rext && is_file($resimg)){ $imgline[]='img'; }else{ $imgline[]='0'; }
@@ -657,9 +654,9 @@ function updatelog($resno=0){
 			for($k = $s; $k < $counttreeline; $k++){
 				$disptree = $treeline[$k];
 				$j=$lineindex[$disptree] - 1;
-				if($line[$j]=="") continue;
+				if($line[$j]==="") continue;
 				list($no,$now,$name,$email,$sub,$com,$url,
-						 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j],4)));
+						 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j])));
 				// URLとメールにリンク
 				//if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 				if(AUTOLINK) $com = auto_link($com);
@@ -860,7 +857,7 @@ function updatelog($resno=0){
 
 /* オートリンク */
 function auto_link($proto){
-	if(!preg_match("/script/",$proto)){//scriptがなければ続行
+	if(!preg_match("/script/i",$proto)){//scriptがなければ続行
 	$proto = preg_replace("{(https?|ftp|news)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)}","<a href=\"\\1\\2\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">\\1\\2</a>",$proto);
 	return $proto;
 	}else{
@@ -914,7 +911,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if(!$picfile) error(MSG002);
 		$upfile = $temppath.$picfile;
 		$upfile_name = $picfile;
-		$picfile = str_replace(strrchr($picfile,"."),"",$picfile); //拡張子除去
+		$picfile=pathinfo($picfile);
+		$picfile = $picfile['filename']; //拡張子除去 190616
 		$tim = KASIRA.$tim;
 		//選択された絵が投稿者の絵か再チェック
 		if(file_exists($temppath.$picfile.".dat")){
@@ -980,12 +978,12 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}
 	}
 
-	$name  = charconvert($name ,4);
-	$sub   = charconvert($sub  ,4);
-	$com   = charconvert($com  ,4);
-	$email = charconvert($email,4);
-	$url   = charconvert($url  ,4);
-	$ptime = charconvert($ptime,4);
+	$name  = charconvert($name );
+	$sub   = charconvert($sub  );
+	$com   = charconvert($com  );
+	$email = charconvert($email);
+	$url   = charconvert($url  );
+	$ptime = charconvert($ptime);
 
 	if(!isset($dest)){
 		$dest="";
@@ -1134,7 +1132,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	rewind($fp);
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019,$dest);}
-	$buf = charconvert($buf,4);
+	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; ++$i){
@@ -1263,7 +1261,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	ftruncate($fp,0);
 	set_file_buffer($fp, 0);
 	rewind($fp);
-	fputs($fp, charconvert($newline,4));
+	fputs($fp, charconvert($newline));
 
 	//ツリー更新
 	$find = false;
@@ -1371,7 +1369,12 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			$data['subject'] = '['.TITLE.'] 新規投稿がありました';
 			$data['option'][] = "\n記事URL,".ROOT_URL.PHP_SELF.'?res='.$no;
 		}
-		if(SEND_COM) $data['comment'] = preg_replace("#<br(( *)|( *)/)>#i","\n", $com);
+		if(SEND_COM){
+		$data['comment'] = preg_replace("#<br(( *)|( *)/)>#i","\n", $com);	
+		}
+		else{
+		$data['comment'] ="";
+		}
 
 		noticemail::send($data,USE_MB);
 	}
@@ -1382,12 +1385,12 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	}else{
 		$urlparameter = "";
 }
-	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1; URL=".PHP_SELF2.$urlparameter."\">\n";
+	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="'.CHARSET_HTML.'"></head>'."\n";
 	if(!isset($mes)){$mes="";}
-	$str.= "<body>".$mes." 画面を切り替えます</body></html>";
-	echo charconvert($str,4);
+	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
+	echo $str;
 }
 
 //ファイルmd5計算 php4.2.0未満用
@@ -1479,7 +1482,7 @@ function usrdel($del,$pwd){
 		rewind($fp);
 		$buf=fread($fp,2097152);
 		if($buf==''){error(MSG027);}
-		$buf = charconvert($buf,4);
+		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
 		$countline=count($line);
 		for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
@@ -1511,7 +1514,7 @@ function usrdel($del,$pwd){
 			set_file_buffer($fp, 0);
 			rewind($fp);
 			$newline = implode('', $line);
-			fputs($fp, charconvert($newline,4));
+			fputs($fp, charconvert($newline));
 		}
 		fclose($fp);
 	}
@@ -1542,7 +1545,7 @@ function admindel($pass){
 		rewind($fp);
 		$buf=fread($fp,2097152);
 		if($buf==''){error(MSG030);}
-		$buf = charconvert($buf,4);
+		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
 		$countline=count($line);
 		for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
@@ -1569,7 +1572,7 @@ function admindel($pass){
 			set_file_buffer($fp, 0);
 			rewind($fp);
 			$newline = implode('', $line);
-			fputs($fp, charconvert($newline,4));
+			fputs($fp, charconvert($newline));
 		}
 		fclose($fp);
 	}
@@ -1583,7 +1586,7 @@ function admindel($pass){
 	for($j = 0; $j < $countline; $j++){
 		$img_flag = FALSE;
 		list($no,$now,$name,$email,$sub,$com,$url,
-			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($line[$j],4));
+			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($line[$j]));
 		// フォーマット
 		//$now=preg_replace('#.{2}/(.*)$#','\1',$now);
 		//$now=preg_replace('/\(.*\)/',' ',$now);
@@ -1632,7 +1635,7 @@ function init(){
 			$time = time();
 			$tim = $time.substr(microtime(),2,3);
 			$testmes="1,".$now.",".DEF_NAME.",,".DEF_SUB.",".DEF_COM.",,,,,,,".$tim.",,,\n";
-			if($value==LOGFILE)fputs($fp,charconvert($testmes,4));
+			if($value==LOGFILE)fputs($fp,charconvert($testmes));
 			if($value==TREEFILE)fputs($fp,"1\n");
 			fclose($fp);
 			if(file_exists(realpath($value)))chmod($value,0666);
@@ -1830,7 +1833,7 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 	$dat['usercode'] = $usercode;
 
 	//差し換え時の認識コード追加
-	if($type=='rep'){
+	if($type==='rep'){
 //		$repcode = substr(crypt(md5($no.getenv("REMOTE_ADDR").$pwd.date("Ymd", time()))),-8);
 		$repcode = substr(crypt(md5($no.getenv("REMOTE_ADDR").$pwd.date("Ymd", time())),time()),-8);
 		//念の為にエスケープ文字があればアルファベットに変換
@@ -1845,7 +1848,7 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 	echo $buf1;
 	if(file_exists(SIIHELP_FILE)){
 		$help = implode('', file(SIIHELP_FILE));
-		echo charconvert($help,4);
+		echo charconvert($help);
 	}
 	echo $buf2;
 }
@@ -1858,7 +1861,7 @@ function paintcom($resto=''){
 		$lines = file(LOGFILE);
 		$flag = FALSE;
 		foreach($lines as $line){
-			list($cno,,,,$sub,,,,,,,,,,) = explode(",", charconvert($line,4));
+			list($cno,,,,$sub,,,,,,,,,,) = explode(",", charconvert($line));
 			if($cno == $resto){
 				$dat['sub'] = 'Re: '.$sub;
 				$flag = TRUE;
@@ -1989,7 +1992,7 @@ function incontinue($no){
 //	$countline=count($line);
 	$flag = FALSE;
 	foreach($lines as $line){
-		list($cno,,,,,,,,,$cext,$picw,$pich,$ctim,,$cptime,) = explode(",", rtrim(charconvert($line,4)));
+		list($cno,,,,,,,,,$cext,$picw,$pich,$ctim,,$cptime,) = explode(",", rtrim(charconvert($line)));
 		if($cno == $no){
 			$flag = TRUE;
 			break;
@@ -2049,7 +2052,7 @@ function usrchk($no,$pwd){
 //	$countline=count($line);
 	$flag = FALSE;
 	foreach($lines as $line){
-		list($cno,,,,,,,,$cpwd,) = explode(",", charconvert($line,4));
+		list($cno,,,,,,,,$cpwd,) = explode(",", charconvert($line));
 		if($cno == $no && substr(md5($pwd),2,8) == $cpwd){
 			$flag = TRUE;
 			break;
@@ -2073,7 +2076,7 @@ function editform($del,$pwd){
 		$buf=fread($fp,2097152);
 		fclose($fp);
 		if($buf==''){error(MSG019);}
-		$buf = charconvert($buf,4);
+		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
 		$countline=count($line);
 		for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
@@ -2127,11 +2130,11 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	// 時間
 	$time = time();
 
-	$name  = charconvert($name ,4);
-	$sub   = charconvert($sub  ,4);
-	$com   = charconvert($com  ,4);
-	$email = charconvert($email,4);
-	$url   = charconvert($url  ,4);
+	$name  = charconvert($name );
+	$sub   = charconvert($sub  );
+	$com   = charconvert($com  );
+	$email = charconvert($email);
+	$url   = charconvert($url  );
 
 	if(!isset($dest)){
 		$dest="";
@@ -2260,7 +2263,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	rewind($fp);
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019);}
-	$buf = charconvert($buf,4);
+	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
@@ -2289,7 +2292,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fputs($fp, charconvert($newline,4));
+	fputs($fp, charconvert($newline));
 	fclose($fp);
 
 	updatelog();
@@ -2300,12 +2303,12 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	}else{
 		$urlparameter = "";
 }
-	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1; URL=".PHP_SELF2.$urlparameter."\">\n";
+	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="'.CHARSET_HTML.'"></head>'."\n";
 	if(!isset($mes)){$mes="";}
-	$str.= "<body>".$mes." 画面を切り替えます</body></html>";
-	echo charconvert($str,4);
+	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
+	echo $str;
 }
 
 /* 画像差し換え */
@@ -2368,7 +2371,7 @@ function replace($no,$pwd,$stime){
 	//$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
 	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
 	$str.= '<body>画像が見当たりません。数秒待ってリロードしてください。<BR><BR>リロードしてもこの画面がでるなら投稿に失敗している可能性があります。<BR>※諦める前に「<A href="'.PHP_SELF.'?mode=piccom">アップロード途中の画像</A>」を見ましょう。もしかしたら画像が見つかるかもしれません。</body></html>';
-		echo charconvert($str,4);
+		echo charconvert($str);
 		exit;
 	}
 
@@ -2409,7 +2412,7 @@ function replace($no,$pwd,$stime){
 	rewind($fp);
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019);}
-	$buf = charconvert($buf,4);
+	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; ++$i){
@@ -2495,7 +2498,7 @@ function replace($no,$pwd,$stime){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fputs($fp, charconvert($newline,4));
+	fputs($fp, charconvert($newline));
 	fclose($fp);
 
 	updatelog();
@@ -2506,12 +2509,12 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	}else{
 		$urlparameter = "";
 }
-	$str = "<!DOCTYPE html>\n<html lang=\"ja\"><head><meta http-equiv=\"refresh\" content=\"1; URL=".PHP_SELF2.$urlparameter."\">\n";
+	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="'.CHARSET_HTML.'"></head>'."\n";
 	if(!isset($mes)){$mes="";}
-	$str.= "<body>".$mes." 画面を切り替えます</body></html>";
-	echo charconvert($str,4);
+	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
+	echo $str;
 }
 
 /* カタログ */
@@ -2542,8 +2545,8 @@ function catalog(){
 			$treeline = explode(",", rtrim($tree[$i]));
 			$disptree = $treeline[0];
 			$j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
-			if($line[$j]=="") continue; //$jが範囲外なら次の行
-			list($no,$now,$name,,$sub,,,,,$ext,$w,$h,$time,,) = explode(",", rtrim(charconvert($line[$j],4)));
+			if($line[$j]==="") continue; //$jが範囲外なら次の行
+			list($no,$now,$name,,$sub,,,,,$ext,$w,$h,$time,,) = explode(",", rtrim(charconvert($line[$j])));
 			// 画像ファイル名
 			$img = $path.$time.$ext;
 			// 画像系変数セット
@@ -2758,14 +2761,14 @@ function potitagview(){
 }
 
 /* 文字コード変換 */
-function charconvert($str,$charset){
+function charconvert($str){
 	mb_language(LANG);
 		return mb_convert_encoding($str, "UTF-8", "auto");
 }
 
 /* HTML出力 */
 function htmloutput($template,$dat,$buf_flag=''){
-	$buf = charconvert(HtmlTemplate::t_buffer($template,$dat),'utf-8');
+	$buf=mb_convert_encoding(HtmlTemplate::t_buffer($template,$dat), "UTF-8", "auto");
 	if($buf_flag){
 		return $buf;
 	}else{
@@ -2804,24 +2807,24 @@ unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picf
 
 	case 'admin':
 		valid($pass); 
-		if($admin=="del") admindel($pass);
-		if($admin=="post"){
+		if($admin==="del") admindel($pass);
+		if($admin==="post"){
 			$dat['post_mode'] = true;
 			$dat['regist'] = true;
 			head($dat);
 			form($dat,$res,1);
 			htmloutput(OTHERFILE,$dat);
 		}
-		if($admin=="update"){
+		if($admin==="update"){
 			updatelog();
-			echo "<meta http-equiv=\"refresh\" content=\"0; URL=".PHP_SELF2."\">";
+			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"></head>';
 		}
 		break;
 	case 'usrdel':
 		if(USER_DEL){
 			usrdel($del,$pwd);
 			updatelog();
-			echo "<meta http-equiv=\"refresh\" content=\"0; URL=".PHP_SELF2."\">";
+			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"></head>';
 		}else{error(MSG033);}
 		break;
 	case 'paint':
@@ -2840,7 +2843,7 @@ paintform($picw,$pich,$palette,$anime);
 		break;
 	case 'contpaint':
 //パスワードが必要なのは差し換えの時だけ
-		if(CONTINUE_PASS||$type=='rep') usrchk($no,$pwd);
+		if(CONTINUE_PASS||$type==='rep') usrchk($no,$pwd);
 		if(ADMIN_NEWPOST) $admin=$pwd;
 		$palette="";
 		paintform($picw,$pich,$palette,$anime,$pch);
@@ -2871,7 +2874,7 @@ paintform($picw,$pich,$palette,$anime);
 	if($res){
 			updatelog($res);
 		}else{
-			echo "<meta http-equiv=\"refresh\" content=\"0; URL=".PHP_SELF2."\">";
+			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"></head>';
 		}
 }
 
