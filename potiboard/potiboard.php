@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.0 lot.190617
+  * POTI-board改 v1.52.1 lot.190621
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -176,15 +176,15 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.0');
-define('POTI_VERLOT' , '改 v1.52.0 lot.190617');
+define('POTI_VER' , '改 v1.52.1');
+define('POTI_VERLOT' , '改 v1.52.1 lot.190621');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
 //アプレットヘルプのファイル名
 define('SIIHELP_FILE' , 'siihelp.php');
 
-define('CHARSET_HTML', 'UTF-8');
+//define('CHARSET_HTML', 'UTF-8');
 
 //タイムゾーン
 date_default_timezone_set('Asia/Tokyo');
@@ -369,7 +369,7 @@ function head(&$dat){
 	$dat['tver'] = TEMPLATE_VER;
 
 	$dat['userdel'] = USER_DEL;
-	$dat['charset'] = CHARSET_HTML;
+	$dat['charset'] = 'UTF-8';
 //OGPイメージ シェアボタン
 	$dat['rooturl'] = ROOT_URL;//設置場所url
 	if (defined ('SHARE_BUTTON') && SHARE_BUTTON){
@@ -479,8 +479,9 @@ function updatelog($resno=0){
 
 	$tree = file(TREEFILE);
 	$find = false;
+	$counttree = count($tree);//190619
 	if($resno){
-		$counttree=count($tree);
+//		$counttree=count($tree);
 		for($i = 0;$i<$counttree;++$i){
 			list($artno,)=explode(",",rtrim($tree[$i]));
 			if($artno==$resno){$st=$i;$find=true;break;} //レス先検索
@@ -494,7 +495,7 @@ function updatelog($resno=0){
 		$lineindex[$no]=$i + 1; //逆変換テーブル作成
 	}
 
-	$counttree = count($tree);
+//	$counttree = count($tree);
 	for($page=0;$page<$counttree;$page+=PAGE_DEF){
 		$oya = 0;	//親記事のメイン添字
 		head($dat);
@@ -575,7 +576,8 @@ function updatelog($resno=0){
 			if(USE_RESUB) $resub = 'Re: '.$sub;
 			// レス省略
 			if(!$resno){
-				$s=count($treeline) - DSP_RES;
+				$counttreeline = count($treeline);//190619
+				$s=$counttreeline - DSP_RES;
 				if(ADMIN_NEWPOST&&!DSP_RES) {$skipres = $s - 1;}
 				elseif($s<1 || !DSP_RES) {$s=1;}
 				elseif($s>1) {$skipres = $s - 1;}
@@ -583,7 +585,7 @@ function updatelog($resno=0){
 				if(RES_UPLOAD){
 					//画像テーブル作成
 					$imgline=array();
-					$counttreeline = count($treeline);
+//					$counttreeline = count($treeline);//190619
 					for($k = $s; $k < $counttreeline; $k++){
 						$disptree = $treeline[$k];
 						$j=$lineindex[$disptree] - 1;
@@ -1088,7 +1090,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$ptime = str_replace(",", "&#44;", $ptime);
 	//テキスト整形
 	$email=strip_tags($email);
-	$email= CleanStr($email); 
+	$email= CleanStr($email);
 	$email=preg_replace("/[\r\n]/","",$email);
 	$sub  = CleanStr($sub);
 	$sub  =preg_replace("/[\r\n]/","",$sub);
@@ -1232,7 +1234,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	// アップロード処理
 //	if(isset($dest)){
 	if($dest){//画像が無い時は処理しない
-	$countline=(count($line));
+//	$countline=(count($line));190619
 		if($countline >= 201){//存在する行数のみチェック
 		$chkline=200;
 	}
@@ -1379,7 +1381,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		noticemail::send($data,USE_MB);
 	}
 
-	header("Content-type: text/html; charset=".CHARSET_HTML);
+	header("Content-type: text/html; charset=UTF-8");
 if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
 	}else{
@@ -1387,7 +1389,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 }
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="'.CHARSET_HTML.'"></head>'."\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
 	if(!isset($mes)){$mes="";}
 	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
 	echo $str;
@@ -2270,7 +2272,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	// 記事上書き
 	$flag = FALSE;
-	$countline=count($line);
+//	$countline=count($line);190619
 	for($i = 0; $i<$countline; ++$i){
 		list($eno,,$ename,,$esub,$ecom,$eurl,$ehost,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$efcolor) = explode(",", rtrim($line[$i]));
 		if($eno == $no && ($pass == $epwd /*|| $ehost == $host*/ || ADMIN_PASS == $admin)){
@@ -2297,7 +2299,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	updatelog();
 
-	header("Content-type: text/html; charset=".CHARSET_HTML);
+	header("Content-type: text/html; charset=UTF-8");
 if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
 	}else{
@@ -2305,7 +2307,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 }
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="'.CHARSET_HTML.'"></head>'."\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
 	if(!isset($mes)){$mes="";}
 	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
 	echo $str;
@@ -2366,11 +2368,10 @@ function replace($no,$pwd,$stime){
 	}
 	closedir($handle);
 	if(!$find){
-		header("Content-type: text/html; charset=".CHARSET_HTML);
-		$str = "<!DOCTYPE html>\n<html><head><title>画像が見当たりません</title>\n";
-	//$str.= "<META HTTP-EQUIV=\"Content-type\" CONTENT=\"text/html; charset=".CHARSET_HTML."\"></head>\n";
-	$str.= "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0,minimum-scale=1.0\">\n<meta charset=\"".CHARSET_HTML."\"></head>\n";
-	$str.= '<body>画像が見当たりません。数秒待ってリロードしてください。<BR><BR>リロードしてもこの画面がでるなら投稿に失敗している可能性があります。<BR>※諦める前に「<A href="'.PHP_SELF.'?mode=piccom">アップロード途中の画像</A>」を見ましょう。もしかしたら画像が見つかるかもしれません。</body></html>';
+	header("Content-type: text/html; charset=UTF-8");
+		$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><title>画像が見当たりません</title>'."\n";
+		$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
+		$str.= '<body>画像が見当たりません。数秒待ってリロードしてください。<BR><BR>リロードしてもこの画面がでるなら投稿に失敗している可能性があります。<BR>※諦める前に「<A href="'.PHP_SELF.'?mode=piccom">アップロード途中の画像</A>」を見ましょう。もしかしたら画像が見つかるかもしれません。</body></html>';
 		echo charconvert($str);
 		exit;
 	}
@@ -2420,7 +2421,7 @@ function replace($no,$pwd,$stime){
 
 	// 記事上書き
 	$flag = false;
-	$countline = count($line);
+//	$countline = count($line);190619
 	for($i = 0; $i < $countline; ++$i){
 		list($eno,,$name,$email,$sub,$com,$url,$ehost,$epwd,$ext,$W,$H,$etim,,$eptime,$fcolor) = explode(",", rtrim($line[$i]));
 		if($eno == $no && ($pwd == $epwd /*|| $ehost == $host*/ || $pwd == substr(md5(ADMIN_PASS),2,8))){
@@ -2503,7 +2504,7 @@ function replace($no,$pwd,$stime){
 
 	updatelog();
 
-	header("Content-type: text/html; charset=".CHARSET_HTML);
+	header("Content-type: text/html; charset=UTF-8");
 if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
 	}else{
@@ -2511,7 +2512,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 }
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="'.CHARSET_HTML.'"></head>'."\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
 	if(!isset($mes)){$mes="";}
 	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
 	echo $str;
@@ -2772,7 +2773,7 @@ function htmloutput($template,$dat,$buf_flag=''){
 	if($buf_flag){
 		return $buf;
 	}else{
-		header("Content-type: text/html; charset=".CHARSET_HTML);
+	header("Content-type: text/html; charset=UTF-8");
 		echo $buf;
 	}
 }
