@@ -1,6 +1,6 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  POTI-board改 v1.45.1 lot.180923
+  POTI-board改
   by sakots >> https://sakots.red/poti/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -18,14 +18,6 @@
 
 
 ■ご注意
-
-　本体のみでは使えません。別途、テンプレートを用意して下さい。
-　（ただし、この本体のバージョンに対応している物であること）
-
-　人柱版では、しぃペインターの通常版(resフォルダが必要)を使ってましたが
-　正式版からは、オールインワンバージョンを使います。間違わないようにし
-　て下さい。
-
 
 　万が一、このスクリプトにより何らかの損害が発生しても、その責任を私は
 　負いません。自己の責任で利用して下さい。
@@ -109,7 +101,7 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
   ｜neo.js
   ｜neo.css
   ｜
-  ｜※テンプレート「nee」（別ファイル）
+  ｜※テンプレート「nee」
   ｜template_ini.php
   ｜nee_catalog.html
   ｜nee_main.html
@@ -120,7 +112,7 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
   ｜nee_main.css.map
   ｜nee_main.scss
   ｜siihelp.php
-  ｜meta.php
+  ｜_nee_conf.scss
   ｜
   ＋--./src/       (777) ディレクトリ
   ＋--./thumb/     (777) ディレクトリ
