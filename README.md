@@ -35,6 +35,9 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2019/06/21] v1.52.1 lot.190621</dt>
+	<dd class="con">文字コード変換の関数の整理 メール通知クラス整理 Notice修正。（by さとぴあ）</dd>
+	<dd class="con">readme整理。</dd>
 	<dt class="ver">[2019/06/17] v1.52.0 lot.190617</dt>
 	<dd class="con">文字コード変換の関数の整理 メール通知クラス整理 Notice修正。（by さとぴあ）</dd>
 	<dt class="ver">[2019/06/12] v1.51.9 lot.190612</dt>
