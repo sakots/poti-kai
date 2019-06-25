@@ -7,6 +7,7 @@
 ** https://sakots.red/poti/
 ** by sakots
 **
+** 2019/06/25 コード整理
 ** 2018/12/02 php7の静的コール警告エラー対応
 ** 2018/06/05 エラー対処
 ** 2018/01/15 php7対応改造
@@ -79,103 +80,61 @@ noticemail::send($data);
 class noticemail{
 
 	public static function send($data,$usemb="1"){
-		$name = $data['name'];
-		$from = $data['email'];
-		$line = "---------------------------------------------------------------------\n";
+	$name = $data['name'];
+	$from = $data['email'];
+	$line = "---------------------------------------------------------------------\n";
 
-		// ヘッダを指定
-		$MailHeaders  = "Mime-Version: 1.0\n";
-		$MailHeaders .= "Content-Type: text/plain; charset=ISO-2022-JP\n";
-		$MailHeaders .= "Content-Transfer-Encoding: 7bit\n";
-		$MailHeaders .= "X-Mailer: NoticeMail/PHP".phpversion()."\n";
+	// ヘッダを指定
+	$MailHeaders = "Mime-Version: 1.0\n";
+	$MailHeaders .= "Content-Type: text/plain; charset=ISO-2022-JP\n";
+	$MailHeaders .= "Content-Transfer-Encoding: 7bit\n";
+	$MailHeaders .= "X-Mailer: NoticeMail/PHP".phpversion()."\n";
 
-		// メール本文作成
-		$Message = "■".$data['subject']."\n";
-		$Message .= "Date: ".gmdate("Y/m/d H:i:s",time()+9*3600)."\n";
-		$Message .= "Host: ".@gethostbyaddr(getenv("REMOTE_ADDR"))."\n";
-		$Message .= "UserAgent: ".getenv("HTTP_USER_AGENT")."\n";
-		$Message .= $line;
-		$Message .= "Name: ".$name."\n";
-		$Message .= "e-Mail: ".$data['email']."\n";
-		$option = $data['option'];
-		if(is_array($option)){
-			for($i = 0; $i < count($option); $i++){
-				list($optitle,$opvalue) = explode(",", rtrim($option[$i]));
-				$Message .= $optitle.": ".$opvalue."\n";
-			}
-		}
-		$Message .= $line;
+	// メール本文作成
+	$Message = "■".$data['subject']."\n";
+	$Message .= "Date: ".gmdate("Y/m/d H:i:s",time()+9*3600)."\n";
+	$Message .= "Host: ".gethostbyaddr(getenv("REMOTE_ADDR"))."\n";
+	$Message .= "UserAgent: ".getenv("HTTP_USER_AGENT")."\n";
+	$Message .= $line;
+	$Message .= "Name: ".$name."\n";
+	$Message .= "e-Mail: ".$data['email']."\n";
+	$option = $data['option'];
+	if(is_array($option)){
+	$countoption=count($option);
+	for($i = 0; $i < $countoption; $i++){ list($optitle,$opvalue)=explode(",", rtrim($option[$i])); $Message .=$optitle.": ".$opvalue." \n"; } }		$Message .= $line;
 		if($data['comment']){
 			$com = str_replace("\r\n", "\n", $data['comment']);	// 改行文字の統一
 			$com = str_replace("\r", "\n", $com);
 			$com = preg_replace("/^(\n)+|(\n)+$/i", "", $com);	// 連続改行を消す
 			$Message .= $com;
 		}
-		if(get_magic_quotes_gpc()){	// \は取る
-			$Message = stripslashes($Message);
-			$name = stripslashes($name);
-			$from = stripslashes($from);
+		if($usemb){
+		mb_internal_encoding("UTF-8");
+		// 半角対応
+		$Message = mb_convert_kana($Message);
+		$name = mb_convert_kana($name);
+		$from = mb_convert_kana($from);
+		// 明らかにメールアドレスじゃない物は除外
+		if(preg_match("/[\x80-\xA0]/",$from)||stristr($from,'sage')||stristr($from,'http://')) $from = '';
+		// メールアドレスがなければ代替え
+		if(!$from) $from = 'nomail@'.getenv("HTTP_HOST");
+		// 日本語ならMIMEヘッド
+		if(preg_match("/[\x80-\xA0]/",$name)){
+		$name = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($name,"JIS","auto"))."?=";
 		}
-
-		// 漢字変換＆送信
-		if(function_exists("mb_internal_encoding")&&function_exists("mb_convert_encoding")&&function_exists("mb_convert_kana")
-		   &&$usemb){
-
-			mb_internal_encoding("UTF-8");
-			// 半角対応
-			$Message = mb_convert_kana($Message);
-			$name = mb_convert_kana($name);
-			$from = mb_convert_kana($from);
-			// 明らかにメールアドレスじゃない物は除外
-			if(preg_match("/[\x80-\xA0]/",$from)||stristr($from,'sage')||stristr($from,'http://'))	$from = '';
-			// メールアドレスがなければ代替え
-			if(!$from)	$from = 'nomail@'.getenv("HTTP_HOST");
-			// 日本語ならMIMEヘッド
-			if(preg_match("/[\x80-\xA0]/",$name)){
-				$name = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($name,"JIS","auto"))."?=";
-			}
-			// ヘッダにFrom追加
-			$MailHeaders .= "From: ".$name." <".$from.">\n";
+		// ヘッダにFrom追加
+		$MailHeaders .= "From: ".$name." <".$from.">\n";
 			// Subjectに日本語があればMIMEヘッド
 			if(preg_match("/[\x80-\xA0]/",$data['subject'])){
-				$data['subject'] = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($data['subject'],"JIS","auto"))."?=";
-			}
-			// メール送信
+			$data['subject'] = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($data['subject'],"JIS","auto"))."?=";
+			} // メール送信
 			mail($data['to'],
-				$data['subject'],
-				mb_convert_encoding($Message,"JIS","auto"), $MailHeaders);
+			$data['subject'],
+			mb_convert_encoding($Message,"JIS","auto"), $MailHeaders);
 
-		}elseif(@file_exists("jcode.phps")||@file_exists("jcode.php")){
-
-			if(@file_exists("jcode.phps")){ require_once('jcode.phps'); }
-			else{ require_once('jcode.php'); }
-			global $table_utf8_jis;
-			include_once('code_table.ucs2jis');
-			// 半角対応
-			$Message = HANtoZEN($Message,4);
-			$name = HANtoZEN($name,4);
-			$from = HANtoZEN($from,4);
-			// 明らかにメールアドレスじゃない物は除外
-			if(preg_match("/[\x80-\xA0]/",$from)||stristr($from,'sage')||stristr($from,'http://'))	$from = '';
-			// メールアドレスがなければ代替え
-			if(!$from)	$from = 'nomail@'.getenv("HTTP_HOST");
-			// 日本語ならMIMEヘッド
-			if(preg_match("/[\x80-\xA0]/",$name)){
-				$name = "=?iso-2022-jp?B?".base64_encode(JcodeConvert($name,0,3))."?=";
 			}
-			// ヘッダにFrom追加
-			$MailHeaders .= "From: ".$name." <".$from.">\n";
-			// Subjectに日本語があればMIMEヘッド
-			if(preg_match("/[\x80-\xA0]/",$data['subject'])){
-				$data['subject'] = "=?iso-2022-jp?B?".base64_encode(JcodeConvert($data['subject'],0,3))."?=";
+			else{ return false; }
+			return true;
 			}
-			// メール送信
-			mail($data['to'],
-				$data['subject'],
-				JcodeConvert($Message,0,3), $MailHeaders);
-
-		}else{ return false; }
-		return true;
-	}
-}
+			}
 ?>
