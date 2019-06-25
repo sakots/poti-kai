@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.1 lot.190621
+  * POTI-board改 v1.52.2 lot.190625
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -156,28 +156,28 @@ $upfile = ( isset( $_FILES["upfile"]["tmp_name"]) === true ) ? ($_FILES["upfile"
 
 }
 //設定の読み込み
-require("config.php");
+require(__DIR__.'/config.php');
 //HTMLテンプレートクラス(htmltemplate_oo 0.3.1)
-require("htmltemplate.inc");
+require(__DIR__.'/htmltemplate.inc');
 //Template設定ファイル
-require("template_ini.php");
+require(__DIR__.'/template_ini.php');
 
 $path = realpath("./").'/'.IMG_DIR;
 $temppath = realpath("./").'/'.TEMP_DIR;
 
 //サムネイルfunction
 if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
-	require("thumbnail_gd.php");
+	require(__DIR__.'/thumbnail_gd.php');
 }else{
-	require("thumbnail_re.php");
+	require(__DIR__.'/thumbnail_re.php');
 }
 
 //MB関数を使うか？ 使う:1 使わない:0
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.1');
-define('POTI_VERLOT' , '改 v1.52.1 lot.190621');
+define('POTI_VER' , '改 v1.52.2');
+define('POTI_VERLOT' , '改 v1.52.2 lot.190625');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -203,7 +203,7 @@ class tag_def2 extends ArrayTag{
 var $matchregexp='/<!--\{def ([^\}]+)\}-->/i';
 var $fromstring="<!--{def %s}-->";
 var $tostring="<?php
-if(@\$val%1\$s &&((gettype(\$val%1\$s)!='array' && \$val%1\$s!=\"\") or (gettype(\$val%1\$s)=='array' && count(\$val%1\$s)>0))){ ?>";
+if(@\$val%1\$s &&((gettype(\$val%1\$s)!=='array' && \$val%1\$s!==\"\") or (gettype(\$val%1\$s)==='array' && count(\$val%1\$s)>0))){ ?>";
 var $closestring="<!--{/def}-->";
 }
 //<!--{ndef hoge}-->～<!--{/ndef}-->
@@ -212,7 +212,7 @@ class tag_ndef2 extends ArrayTag{
 var $matchregexp='/<!--\{ndef ([^\}]+)\}-->/i';
 var $fromstring="<!--{ndef %s}-->";
 var $tostring="<?php
-if(!(@\$val%1\$s &&((gettype(\$val%1\$s)!='array' && \$val%1\$s!=\"\") or (gettype(\$val%1\$s)=='array' && count(\$val%1\$s)>0)))){ ?>";
+if(!(@\$val%1\$s &&((gettype(\$val%1\$s)!=='array' && \$val%1\$s!==\"\") or (gettype(\$val%1\$s)==='array' && count(\$val%1\$s)>0)))){ ?>";
 var $closestring="<!--{/ndef}-->";
 }
 //<!--{vdef hoge}-->～<!--{/vdef}-->
@@ -230,7 +230,7 @@ class tag_ifeq extends DataTag{
 var $matchregexp='/<!--\{ifeq ([^\}:]+):([^\}:]+)\}-->/i';
 var $fromstring="<!--{ifeq %1\$s:%2\$s}-->";
 var $tostring="<?php
-if(\$val%1\$s == '%3\$s'){ ?>";
+if(\$val%1\$s === '%3\$s'){ ?>";
 var $closestring="<!--{/ifeq}-->";
 }
 //<!--{ifne hoge:val}-->～<!--{/ifne}-->
@@ -239,7 +239,7 @@ class tag_ifne extends DataTag{
 var $matchregexp='/<!--\{ifne ([^\}:]+):([^\}:]+)\}-->/i';
 var $fromstring="<!--{ifne %1\$s:%2\$s}-->";
 var $tostring="<?php
-if(\$val%1\$s != '%3\$s'){ ?>";
+if(\$val%1\$s !== '%3\$s'){ ?>";
 var $closestring="<!--{/ifne}-->";
 }
 //<!--{iflt hoge:val}-->～<!--{/iflt}-->
@@ -788,10 +788,10 @@ function updatelog($resno=0){
 	if($counttree < PAGE_DEF*22||$i >= PAGE_DEF*22){
 
 			for($i = 0; $i < $counttree ; $i+=PAGE_DEF){
-				if($st==$i){
+				if($st===$i){
 					$pformat = str_replace("<PAGE>", $i/PAGE_DEF, NOW_PAGE);
 				}else{
-					if($i==0){
+					if($i===0){
 						$pno = str_replace("<PAGE>", "0", OTHER_PAGE);
 						$pformat = str_replace("<PURL>", PHP_SELF2, $pno);
 					}else{
@@ -807,14 +807,14 @@ function updatelog($resno=0){
 
 	elseif($i < PAGE_DEF*22 ){
 			for($i = 0; $i < PAGE_DEF*22 ; $i+=PAGE_DEF){
-				if($st==$i){
+				if($st===$i){
 					$pformat = str_replace("<PAGE>", $i/PAGE_DEF, NOW_PAGE);
 				}else{
-					if($i==0){
+					if($i===0){
 						$pno = str_replace("<PAGE>", "0", OTHER_PAGE);
 						$pformat = str_replace("<PURL>", PHP_SELF2, $pno);
 					}else{
-					if($i==PAGE_DEF*21){
+					if($i===PAGE_DEF*21){
 						$pno = str_replace("<PAGE>", "≫", OTHER_PAGE);
 //						$pformat = str_replace("<PURL>", PHP_SELF2, $pno);
 						$pformat = str_replace("<PURL>", ($i/PAGE_DEF).PHP_EXT, $pno);
@@ -847,7 +847,7 @@ function updatelog($resno=0){
 		set_file_buffer($fp, 0);
 		flock($fp, 2); //*
 		rewind($fp);
-		fputs($fp, $buf);
+		fwrite($fp, $buf);
 		fclose($fp);
 		//chmod($logfilename,0666);
 		//拡張子を.phpにした場合、↑で500エラーでるなら↓に変更
@@ -1138,7 +1138,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; ++$i){
-		if($line[$i]!=""){
+		if($line[$i]!==""){
 			list($artno,)=explode(",", rtrim($line[$i]));	//逆変換テーブル作成
 			$lineindex[$artno]=$i+1;
 			$line[$i].="\n";
@@ -1158,25 +1158,25 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
 			case 1:	//low
-				if($host==$lhost
-				|| substr(md5($pwd),2,8)==$lpwd
-				|| substr(md5($pwdc),2,8)==$lpwd
+				if($host===$lhost
+				|| substr(md5($pwd),2,8)===$lpwd
+				|| substr(md5($pwdc),2,8)===$lpwd
 				){$pchk=1;}
 				break;
 			case 2:	//middle
-				if($host==$lhost
-				|| substr(md5($pwd),2,8)==$lpwd
-				|| substr(md5($pwdc),2,8)==$lpwd
-				|| ($name==$lname)
-				|| ($email==$lemail)
-				|| ($url==$lurl)
-				|| ($sub==$lsub)
+				if($host===$lhost
+				|| substr(md5($pwd),2,8)===$lpwd
+				|| substr(md5($pwdc),2,8)===$lpwd
+				|| ($name===$lname)
+				|| ($email===$lemail)
+				|| ($url===$lurl)
+				|| ($sub===$lsub)
 				){$pchk=1;}
 				break;
 			case 3:	//high
-				if($host==$lhost
-				|| substr(md5($pwd),2,8)==$lpwd
-				|| substr(md5($pwdc),2,8)==$lpwd
+				if($host===$lhost
+				|| substr(md5($pwd),2,8)===$lpwd
+				|| substr(md5($pwdc),2,8)===$lpwd
 				|| (similar_str($name,$lname) > VALUE_LIMIT)
 				|| (similar_str($email,$lemail) > VALUE_LIMIT)
 				|| (similar_str($url,$lurl) > VALUE_LIMIT)
@@ -1196,9 +1196,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				if($textonly){//画像なしの時
 				$dest="";
 				}
-				switch(D_POST_CHECKLEVEL){
+				switch(D_POST_CHECKLEVEL){//190622
 					case 1:	//low
-						if($com == $lcom){error(MSG022,$dest);}
+						if($com === $lcom){error(MSG022,$dest);}
 						break;
 					case 2:	//middle
 						if(similar_str($com,$lcom) > COMMENT_LIMIT_MIDDLE){error(MSG022,$dest);}
@@ -1207,7 +1207,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 						if(similar_str($com,$lcom) > COMMENT_LIMIT_HIGH){error(MSG022,$dest);}
 						break;
 					default:
-						if($com == $lcom && !$upfile_name){error(MSG022,$dest);}
+						if($com === $lcom && !$upfile_name){error(MSG022,$dest);}
 				}
 			}
 		}
@@ -1263,7 +1263,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	ftruncate($fp,0);
 	set_file_buffer($fp, 0);
 	rewind($fp);
-	fputs($fp, charconvert($newline));
+	fwrite($fp, charconvert($newline));
 
 	//ツリー更新
 	$find = false;
@@ -1277,7 +1277,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; ++$i){
-		if($line[$i]!=""){
+		if($line[$i]!==""){
 			$line[$i].="\n";
 			$j=explode(",", rtrim($line[$i]));
 			if($lineindex[$j[0]]==0){
@@ -1301,7 +1301,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	ftruncate($tp,0);
 	set_file_buffer($tp, 0);
 	rewind($tp);
-	fputs($tp, $newline);
+	fwrite($tp, $newline);
 	fclose($tp);
 	fclose($fp);
 
@@ -1353,7 +1353,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	//メール通知
 	if(file_exists(NOTICEMAIL_FILE)	//メール通知クラスがある場合
 	&& !(NOTICE_NOADMIN && $pwd == ADMIN_PASS)){//管理者の投稿の場合メール出さない
-		require_once(NOTICEMAIL_FILE);
+		require(__DIR__.'/'.NOTICEMAIL_FILE);
 
 		$data['to'] = TO_MAIL;
 		$data['name'] = $name;
@@ -1395,17 +1395,10 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	echo $str;
 }
 
-//ファイルmd5計算 php4.2.0未満用
+//ファイルmd5計算 190622
 function md5_of_file($inFile) {
 	if (file_exists($inFile)){
-		if(function_exists('md5_file')){
 			return md5_file($inFile);
-		}else{
-			$fd = fopen($inFile, 'r');
-			$fileContents = fread($fd, filesize($inFile));
-			fclose ($fd);
-			return md5($fileContents);
-		}
 	}else{
 		return false;
 	}
@@ -1422,7 +1415,7 @@ function treedel($delno){
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	$find=false;
-	for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
+	for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
 	for($i = 0; $i < $countline; ++$i){
 		$treeline = explode(",", rtrim($line[$i]));
 		$counttreeline=count($treeline);
@@ -1449,7 +1442,7 @@ function treedel($delno){
 		ftruncate($fp,0);
 		set_file_buffer($fp, 0);
 		rewind($fp);
-		fputs($fp, implode('', $line));
+		fwrite($fp, implode('', $line));
 	}
 	fclose($fp);
 }
@@ -1516,7 +1509,7 @@ function usrdel($del,$pwd){
 			set_file_buffer($fp, 0);
 			rewind($fp);
 			$newline = implode('', $line);
-			fputs($fp, charconvert($newline));
+			fwrite($fp, charconvert($newline));
 		}
 		fclose($fp);
 	}
@@ -1550,7 +1543,7 @@ function admindel($pass){
 		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
+		for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
 		$find = false;
 		for($i = 0; $i < $countline; ++$i){
 		if($line[$i]){
@@ -1574,7 +1567,7 @@ function admindel($pass){
 			set_file_buffer($fp, 0);
 			rewind($fp);
 			$newline = implode('', $line);
-			fputs($fp, charconvert($newline));
+			fwrite($fp, charconvert($newline));
 		}
 		fclose($fp);
 	}
@@ -1637,8 +1630,8 @@ function init(){
 			$time = time();
 			$tim = $time.substr(microtime(),2,3);
 			$testmes="1,".$now.",".DEF_NAME.",,".DEF_SUB.",".DEF_COM.",,,,,,,".$tim.",,,\n";
-			if($value==LOGFILE)fputs($fp,charconvert($testmes));
-			if($value==TREEFILE)fputs($fp,"1\n");
+			if($value==LOGFILE)fwrite($fp,charconvert($testmes));
+			if($value==TREEFILE)fwrite($fp,"1\n");
 			fclose($fp);
 			if(file_exists(realpath($value)))chmod($value,0666);
 		}
@@ -1767,7 +1760,7 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 	elseif(!$useneo && $shi==2){ $dat['pro'] = true; }
 	else{ $dat['paintbbs'] = true; }
 
-	$dat['palettes'][0] = 'Palettes[0] = "#000000\n#FFFFFF\n#B47575\n#888888\n#FA9696\n#C096C0\n#FFB6FF\n#8080FF\n#25C7C9\n#E7E58D\n#E7962D\n#99CB7B\n#FCECE2\n#F9DDCF";'."\n";
+	$dat['palettes'][0] = 'Palettes[0] = "#000000\n#FFFFFF\n#B47575\n#888888\n#FA9696\n#C096C0\n#FFB6FF\n#8080FF\n#25C7C9\n#E7E58D\n#E7962D\n#99CB7B\n#FCECE2\n#F9DDCF";';
 	$pal=array();
 	$DynP=array();
 	$p_cnt=1;
@@ -1782,7 +1775,7 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 		foreach ( $pal as $p ) {
 			$palettes.='\n#'.$p;
 		}
-		$palettes.='";'."\n";
+		$palettes.='";';//190622
 		$dat['palettes'][$p_cnt] = $palettes;
 		$p_cnt++;
 		if($pid==$palette){
@@ -2081,7 +2074,7 @@ function editform($del,$pwd){
 		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
 		$countline=count($line);
-		for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
+		for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
 		$flag = FALSE;
 		for($i = 0; $i < $countline; ++$i){
 		if($line[$i]){
@@ -2268,7 +2261,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
 	$countline=count($line);
-	for($i = 0; $i < $countline; ++$i){if($line[$i]!=""){$line[$i].="\n";}}
+	for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
 
 	// 記事上書き
 	$flag = FALSE;
@@ -2294,7 +2287,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fputs($fp, charconvert($newline));
+	fwrite($fp, charconvert($newline));
 	fclose($fp);
 
 	updatelog();
@@ -2417,7 +2410,7 @@ function replace($no,$pwd,$stime){
 	$line = explode("\n",$buf);
 	$countline=count($line);
 	for($i = 0; $i < $countline; ++$i){
-		if($line[$i]!=""){$line[$i].="\n";}}
+		if($line[$i]!==""){$line[$i].="\n";}}
 
 	// 記事上書き
 	$flag = false;
@@ -2499,7 +2492,7 @@ function replace($no,$pwd,$stime){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fputs($fp, charconvert($newline));
+	fwrite($fp, charconvert($newline));
 	fclose($fp);
 
 	updatelog();
@@ -2637,7 +2630,7 @@ function catalog(){
 
 	if($counttree < $pagedef*22||$i >= $pagedef*22){
 			for($i = 0; $i < $counttree ; $i+=$pagedef){
-		if($page==$i){
+		if($page===$i){
 			$pformat = str_replace("<PAGE>", $i/$pagedef, NOW_PAGE);
 		}else{
 			$pno = str_replace("<PAGE>", $i/$pagedef, OTHER_PAGE);
@@ -2651,11 +2644,11 @@ function catalog(){
 
 		elseif($i < $pagedef*22 ){
 			for($i = 0; $i < $pagedef*22 ; $i+=$pagedef){
-		if($page==$i){
+		if($page===$i){
 			$pformat = str_replace("<PAGE>", $i/$pagedef, NOW_PAGE);
 		}
 
-		elseif($i==$pagedef*21){
+		elseif($i===$pagedef*21){
 			$pno = str_replace("<PAGE>", "≫", OTHER_PAGE);
 			$pformat = str_replace("<PURL>", PHP_SELF."?mode=catalog&amp;page=".$i, $pno);
 
@@ -2769,6 +2762,7 @@ function charconvert($str){
 
 /* HTML出力 */
 function htmloutput($template,$dat,$buf_flag=''){
+	mb_language(LANG);
 	$buf=mb_convert_encoding(HtmlTemplate::t_buffer($template,$dat), "UTF-8", "auto");
 	if($buf_flag){
 		return $buf;

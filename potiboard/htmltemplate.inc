@@ -77,13 +77,10 @@ class TagBasis{
 	function parse($str,$multilabels){
 		while(preg_match($this->matchregexp,$str,$match)){
 //未定義エラー対策
-			if(isset($match[1])){
+			if(!isset($match[1])){
+			$match[1]="";
+		}
 			$ind=$this->getIndex($match[1],$multilabels);
-			}
-			else{
-			$ind=$this->getIndex("",$multilabels);
-			}
-
 			$str=str_replace(
 				call_user_func_array("sprintf",array_merge(array($this->fromstring),array_slice($match,1))),
 				call_user_func_array("sprintf",array_merge(array($this->tostring),array($ind),array_slice($match,1))),
@@ -136,7 +133,7 @@ class ArrayTag extends TagBasis{
 		foreach($ar as $x){
 			array_push($rui,$x);
 			$ind.="[\"$x\"]";
-			if($mattan!=count($ar)-1 && in_array(join("/",$rui),$multilabels)) {
+			if($mattan!==count($ar)-1 && in_array(join("/",$rui),$multilabels)) {
 				$ind.="[\$cnt[\"".join("/",$rui)."\"]]";
 			}
 			$mattan++;
@@ -170,8 +167,10 @@ class TemplateParser{
 	}
 
 	function _remove($tagname,&$tags){
-		for($i=0;$i<count($tags);$i++){
-			if(get_class($tags[$i])==strtolower($tagname)){
+		for($i=0;$i<count($tags);++$i){
+			
+			
+			if(get_class($tags[$i])===strtolower($tagname)){
 				array_splice($tags,$i,1);
 				$i--;
 			}
@@ -242,7 +241,7 @@ class tag_vdef extends DataTag{
 	var $matchregexp='/<!--\{vdef ([^\}]+)\}-->/i';
 	var $fromstring="<!--{vdef %s}-->";
 	var $tostring="<?php
-		if(@\$val%1\$s && ((gettype(\$val%1\$s)!='array' && \$val%1\$s!=\"\") or (gettype(\$val%1\$s)=='array' && count(\$val%1\$s)>0))){ ?>";
+		if(@\$val%1\$s && ((gettype(\$val%1\$s)!=='array' && \$val%1\$s!==\"\") or (gettype(\$val%1\$s)==='array' && count(\$val%1\$s)>0))){ ?>";
 	var $closestring="<!--{/vdef}-->";
 	var $regardasarray=1;
 }
@@ -368,7 +367,7 @@ class htmltemplate{
 		$all="";
 		do {
 			$bytedata = fread($handle, FILE_READ_UNIT);
-			if (strlen($bytedata) == 0) {
+			if (strlen($bytedata) === 0) {
 				break;
 			}
 			$all .= $bytedata;
