@@ -130,10 +130,12 @@ class ArrayTag extends TagBasis{
 		$ind="";
 		$rui=array();
 		$mattan=0;
+		$countar= count($ar);//190629
 		foreach($ar as $x){
 			array_push($rui,$x);
 			$ind.="[\"$x\"]";
-			if($mattan!==count($ar)-1 && in_array(join("/",$rui),$multilabels)) {
+//			if($mattan!==count($ar)-1 && in_array(join("/",$rui),$multilabels)) {//190629
+			if($mattan!==$countar-1 && in_array(join("/",$rui),$multilabels)) {
 				$ind.="[\$cnt[\"".join("/",$rui)."\"]]";
 			}
 			$mattan++;
@@ -168,8 +170,6 @@ class TemplateParser{
 
 	function _remove($tagname,&$tags){
 		for($i=0;$i<count($tags);++$i){
-			
-			
 			if(get_class($tags[$i])===strtolower($tagname)){
 				array_splice($tags,$i,1);
 				$i--;
