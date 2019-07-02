@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.2 lot.190625
+  * POTI-board改 v1.52.3 lot.190701
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -176,8 +176,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.2');
-define('POTI_VERLOT' , '改 v1.52.2 lot.190625');
+define('POTI_VER' , '改 v1.52.3');
+define('POTI_VERLOT' , '改 v1.52.3 lot.190701');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -479,23 +479,21 @@ function updatelog($resno=0){
 
 	$tree = file(TREEFILE);
 	$find = false;
-	$counttree = count($tree);//190619
 	if($resno){
-//		$counttree=count($tree);
-		for($i = 0;$i<$counttree;++$i){
-			list($artno,)=explode(",",rtrim($tree[$i]));
+		foreach($tree as $i => $value){
+			list($artno,)=explode(",",rtrim($value));
 			if($artno==$resno){$st=$i;$find=true;break;} //レス先検索
 		}
+unset($value);
 		if(!$find) error(MSG001);
 	}
 	$line = file(LOGFILE);
-	$countline=count($line);
-	for($i = 0; $i < $countline; ++$i){
-		list($no,) = explode(",", $line[$i]);
+	foreach($line as $i =>$value){
+		list($no,) = explode(",", $value);
 		$lineindex[$no]=$i + 1; //逆変換テーブル作成
 	}
-
-//	$counttree = count($tree);
+unset($value);
+	$counttree = count($tree);//190619
 	for($page=0;$page<$counttree;$page+=PAGE_DEF){
 		$oya = 0;	//親記事のメイン添字
 		head($dat);
@@ -1136,13 +1134,14 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if($buf==''){error(MSG019,$dest);}
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
-	$countline=count($line);
-	for($i = 0; $i < $countline; ++$i){
-		if($line[$i]!==""){
-			list($artno,)=explode(",", rtrim($line[$i]));	//逆変換テーブル作成
+	$countline=count($line);//必要
+	foreach($line as $i =>&$value){//$i必要
+		if($value!==""){//190624
+			list($artno,)=explode(",", rtrim($value));	//逆変換テーブル作成
 			$lineindex[$artno]=$i+1;
-			$line[$i].="\n";
+			$value.="\n";
 		}
+	unset($value);
 	}
 
 	// 連続・二重投稿チェック (v1.32:仕様変更)
@@ -1219,7 +1218,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(!$sub) $sub=DEF_SUB;
 
 	// ログ行数オーバー
-	$countline = count($line);
+	$countline = count($line);//必要
 	if($countline >= LOG_MAX){
 		for($d = $countline-1; $d >= LOG_MAX-1; $d--){
 			list($dno,,,,,,,,,$dext,,,$dtime,) = explode(",", $line[$d]);
@@ -1275,17 +1274,18 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$buf=fread($tp,2097152);
 	if($buf==''){error(MSG023,$dest);}
 	$line = explode("\n",$buf);
-	$countline=count($line);
-	for($i = 0; $i < $countline; ++$i){
-		if($line[$i]!==""){
-			$line[$i].="\n";
-			$j=explode(",", rtrim($line[$i]));
+		foreach($line as &$value){
+		if($value!==""){
+			$value.="\n";
+			$j=explode(",", rtrim($value));
 			if($lineindex[$j[0]]==0){
-				$line[$i]='';
-	}	}	}
+				$value='';
+	}	}
+	unset($value);
+		}
 	if($resto){
-		for($i = 0; $i < $countline; ++$i){
-			$rtno = explode(",", rtrim($line[$i]));
+		foreach($line as $i =>$value){
+			$rtno = explode(",", rtrim($value));
 			if($rtno[0]==$resto){
 				$find = TRUE;
 				$line[$i]=rtrim($line[$i]).','.$no."\n";
@@ -1295,7 +1295,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 					$line[$i]='';
 				}
 				break;
-	}	}	}
+	}
+		}
+	unset($value);
+	}
 	if(!$find){if(!$resto){$newline="$no\n";}else{error(MSG025,$dest);}}
 	$newline.=implode('', $line);
 	ftruncate($tp,0);
@@ -1413,14 +1416,18 @@ function treedel($delno){
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG024);}
 	$line = explode("\n",$buf);
-	$countline=count($line);
+	$countline=count($line);//必要
 	$find=false;
-	for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
-	for($i = 0; $i < $countline; ++$i){
-		$treeline = explode(",", rtrim($line[$i]));
-		$counttreeline=count($treeline);
-		for($j = 0; $j < $counttreeline; $j++){
-			if($treeline[$j] == $delno){
+	foreach($line as &$value){
+		if($value!==""){
+			$value.="\n";
+		}
+	unset($value);
+	}
+	foreach($line as $i =>$value){
+		$treeline = explode(",", rtrim($value));
+		foreach($treeline as $j => $value){
+			if($value == $delno){
 				if($j==0){//スレ削除
 					if($countline<3){//スレが1つしかない場合、エラー防止の為に削除不可
 						fclose($fp);
@@ -1437,6 +1444,7 @@ function treedel($delno){
 				break 2;
 			}
 		}
+	unset($value);
 	}
 	if($find){//ツリー更新
 		ftruncate($fp,0);
@@ -1465,7 +1473,7 @@ function CleanCom($str){//コメントは管理者以外タグ禁止
 /* ユーザー削除 */
 function usrdel($del,$pwd){
 	global $path,$pwdc,$onlyimgdel;
-	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
+//	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
 
 	if(is_array($del)){
 		sort($del);
@@ -1479,18 +1487,21 @@ function usrdel($del,$pwd){
 		if($buf==''){error(MSG027);}
 		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
-		$countline=count($line);
-		for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
+		foreach($line as &$value){
+			if($value!==""){
+				$value.="\n";}
+		}
+		unset($value);
 		$flag = false;
 		$find = false;
-		for($i = 0; $i < $countline; ++$i){
-		if($line[$i]){
-			list($no,,,,,,,$dhost,$pass,$ext,,,$tim,,) = explode(",",$line[$i]);
+		foreach($line as &$value){//190701
+		if($value){
+			list($no,,,,,,,$dhost,$pass,$ext,,,$tim,,) = explode(",",$value);
 			
 			if(in_array($no,$del) && (substr(md5($pwd),2,8) == $pass /*|| $dhost == $host*/ || ADMIN_PASS == $pwd)){
 				if(!$onlyimgdel){	//記事削除
 					treedel($no);
-					if(USER_DEL > 2){$line[$i] = "";$find = true;}
+					if(USER_DEL > 2){$value = "";$find = true;}
 				}
 				if(USER_DEL > 1){
 					$delfile = $path.$tim.$ext;	//削除ファイル
@@ -1542,16 +1553,20 @@ function admindel($pass){
 		if($buf==''){error(MSG030);}
 		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
-		$countline=count($line);
-		for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
+		foreach($line as &$value){
+			if($value!==""){
+				$value.="\n";
+			}
+		}
+		unset($value);
 		$find = false;
-		for($i = 0; $i < $countline; ++$i){
-		if($line[$i]){
-			list($no,,,,,,,,,$ext,,,$tim,,) = explode(",",$line[$i]);
+		foreach($line as &$value){
+		if($value){
+			list($no,,,,,,,,,$ext,,,$tim,,) = explode(",",$value);
 			if(in_array($no,$del)){
 				if(!$onlyimgdel){	//記事削除
 					treedel($no);
-					$line[$i] = "";
+					$value = "";
 					$find = true;
 				}
 				$delfile = $path.$tim.$ext;	//削除ファイル
@@ -1562,6 +1577,7 @@ function admindel($pass){
 			}
 		}
 	}
+	unset($value);
 		if($find){//ログ更新
 			ftruncate($fp,0);
 			set_file_buffer($fp, 0);
@@ -1577,11 +1593,10 @@ function admindel($pass){
 	$dat['pass'] = $pass;
 
 	$line = file(LOGFILE);
-	$countline = count($line);
-	for($j = 0; $j < $countline; $j++){
+	foreach($line as $j => $value){
 		$img_flag = FALSE;
 		list($no,$now,$name,$email,$sub,$com,$url,
-			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($line[$j]));
+			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($value));
 		// フォーマット
 		//$now=preg_replace('#.{2}/(.*)$#','\1',$now);
 		//$now=preg_replace('/\(.*\)/',' ',$now);
@@ -1983,8 +1998,6 @@ function incontinue($no){
 	global $addinfo;
 
 	$lines = file(LOGFILE);
-//コンティニューの処理に関わっていない
-//	$countline=count($line);
 	$flag = FALSE;
 	foreach($lines as $line){
 		list($cno,,,,,,,,,$cext,$picw,$pich,$ctim,,$cptime,) = explode(",", rtrim(charconvert($line)));
@@ -2044,7 +2057,6 @@ function incontinue($no){
 /* コンティニュー認証 */
 function usrchk($no,$pwd){
 	$lines = file(LOGFILE);
-//	$countline=count($line);
 	$flag = FALSE;
 	foreach($lines as $line){
 		list($cno,,,,,,,,$cpwd,) = explode(",", charconvert($line));
@@ -2061,7 +2073,7 @@ function editform($del,$pwd){
 	global $pwdc,$addinfo;
 	global $fontcolors;
 
-	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
+//	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
 	if(is_array($del)){
 		sort($del);
 		reset($del);
@@ -2073,18 +2085,23 @@ function editform($del,$pwd){
 		if($buf==''){error(MSG019);}
 		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
-		$countline=count($line);
-		for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
+		foreach($line as &$value){
+			if($value!==""){
+				$value.="\n";
+			}
+		}
+		unset($value);
 		$flag = FALSE;
-		for($i = 0; $i < $countline; ++$i){
-		if($line[$i]){
-			list($no,,$name,$email,$sub,$com,$url,$ehost,$pass,,,,,,,$fcolor) = explode(",", rtrim($line[$i]));
-			if($no == $del[0] && (substr(md5($pwd),2,8) == $pass /*|| $ehost == $host*/ || ADMIN_PASS == $pwd)){
+		foreach($line as $value){
+		if($value){
+		list($no,,$name,$email,$sub,$com,$url,$ehost,$pass,,,,,,,$fcolor) = explode(",", rtrim($value));
+			 if($no == $del[0] && (substr(md5($pwd),2,8) == $pass /*|| $ehost == $host*/ || ADMIN_PASS == $pwd)){
 				$flag = TRUE;
 				break;
 			}
 		}
 	}
+	unset($value);
 		if(!$flag) error(MSG028);
 
 		head($dat);
@@ -2260,20 +2277,23 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if($buf==''){error(MSG019);}
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
-	$countline=count($line);
-	for($i = 0; $i < $countline; ++$i){if($line[$i]!==""){$line[$i].="\n";}}
+	foreach($line as &$value){
+		if($value!==""){
+		$value.="\n";
+		}
+	}
+	unset($value);
 
 	// 記事上書き
 	$flag = FALSE;
-//	$countline=count($line);190619
-	for($i = 0; $i<$countline; ++$i){
-		list($eno,,$ename,,$esub,$ecom,$eurl,$ehost,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$efcolor) = explode(",", rtrim($line[$i]));
+	foreach($line as &$value){
+		list($eno,,$ename,,$esub,$ecom,$eurl,$ehost,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$efcolor) = explode(",", rtrim($value));
 		if($eno == $no && ($pass == $epwd /*|| $ehost == $host*/ || ADMIN_PASS == $admin)){
 			if(!$name) $name = $ename;
 			if(!$sub)  $sub  = $esub;
 			if(!$com)  $com  = $ecom;
 			if(!$fcolor) $fcolor = $efcolor;
-			$line[$i] = "$no,$now,$name,$email,$sub,$com,$url,$host,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
+			$value = "$no,$now,$name,$email,$sub,$com,$url,$host,$epwd,$ext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
 			$flag = TRUE;
 			break;
 		}
@@ -2408,15 +2428,18 @@ function replace($no,$pwd,$stime){
 	if($buf==''){error(MSG019);}
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
-	$countline=count($line);
-	for($i = 0; $i < $countline; ++$i){
-		if($line[$i]!==""){$line[$i].="\n";}}
+	foreach($line as &$value){
+		if($value!==""){
+		$value.="\n";
+		}
+	}
+	unset($value);
 
 	// 記事上書き
 	$flag = false;
 //	$countline = count($line);190619
-	for($i = 0; $i < $countline; ++$i){
-		list($eno,,$name,$email,$sub,$com,$url,$ehost,$epwd,$ext,$W,$H,$etim,,$eptime,$fcolor) = explode(",", rtrim($line[$i]));
+	foreach($line as &$value){
+		list($eno,,$name,$email,$sub,$com,$url,$ehost,$epwd,$ext,$W,$H,$etim,,$eptime,$fcolor) = explode(",", rtrim($value));
 		if($eno == $no && ($pwd == $epwd /*|| $ehost == $host*/ || $pwd == substr(md5(ADMIN_PASS),2,8))){
 			$upfile = $temppath.$file_name.$imgext;
 			$dest = $path.$tim.$imgext;
@@ -2478,11 +2501,12 @@ function replace($no,$pwd,$stime){
 			$now = str_replace(",", "&#44;", $now);
 			$ptime = str_replace(",", "&#44;", $ptime);
 
-			$line[$i] = "$no,$now,".strip_tags($name).",$email,$sub,$com,$url,$host,$epwd,$imgext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
+			$value = "$no,$now,".strip_tags($name).",$email,$sub,$com,$url,$host,$epwd,$imgext,$W,$H,$tim,$chk,$ptime,$fcolor\n";
 			$flag = true;
 			break;
 		}
 	}
+	unset($value);
 	if(!$flag){
 		fclose($fp);
 		error(MSG028);
@@ -2516,11 +2540,11 @@ function catalog(){
 	global $path,$page;
 
 	$line = file(LOGFILE);
-	$countline=count($line);
-	for($i = 0; $i < $countline; ++$i){
-		list($no,) = explode(",", $line[$i]);
+	foreach($line as $i =>$value){
+		list($no,) = explode(",", $value);
 		$lineindex[$no]=$i + 1; //逆変換テーブル作成
 	}
+	unset($value);
 
 	$tree = file(TREEFILE);
 	$counttree = count($tree);
