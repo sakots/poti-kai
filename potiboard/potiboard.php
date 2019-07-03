@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.3 lot.190701
+  * POTI-board改 v1.52.4 lot.190703
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -176,8 +176,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.3');
-define('POTI_VERLOT' , '改 v1.52.3 lot.190701');
+define('POTI_VER' , '改 v1.52.4');
+define('POTI_VERLOT' , '改 v1.52.4 lot.190703');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -901,6 +901,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	global $path,$badstring,$badstring_and_url,$badfile,$badip,$pwdc,$textonly;
 	global $REQUEST_METHOD,$temppath,$ptime;
 	global $fcolor,$usercode;
+	global $admin;
 
 	// 時間
 	$time = time();
@@ -1026,7 +1027,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
+	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
@@ -1284,15 +1285,15 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	unset($value);
 		}
 	if($resto){
-		foreach($line as $i =>$value){
+		foreach($line as &$value){
 			$rtno = explode(",", rtrim($value));
 			if($rtno[0]==$resto){
 				$find = TRUE;
-				$line[$i]=rtrim($line[$i]).','.$no."\n";
-				$j=explode(",", rtrim($line[$i]));
+				$value=rtrim($value).','.$no."\n";
+				$j=explode(",", rtrim($value));
 				if(!(stristr($email,'sage') || (count($j)>MAX_RES))){
-					$newline=$line[$i];
-					$line[$i]='';
+					$newline=$value;
+					$value='';
 				}
 				break;
 	}
@@ -2180,7 +2181,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	}
 
 	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
+	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
