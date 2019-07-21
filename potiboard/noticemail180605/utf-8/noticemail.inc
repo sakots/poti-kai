@@ -1,12 +1,13 @@
 <?php
 /*
-** メール通知クラス(UTF-8) lot.181202
+** メール通知クラス(UTF-8) lot.190721
 **
 ** http://www.punyu.net/php/
 ** by SakaQ
 ** https://sakots.red/poti/
 ** by sakots
 **
+** 2019/07/21 コード整理
 ** 2019/06/25 コード整理
 ** 2018/12/02 php7の静的コール警告エラー対応
 ** 2018/06/05 エラー対処
@@ -92,7 +93,7 @@ class noticemail{
 
 	// メール本文作成
 	$Message = "■".$data['subject']."\n";
-	$Message .= "Date: ".gmdate("Y/m/d H:i:s",time()+9*3600)."\n";
+	$Message .= "Date: ".date("Y/m/d H:i:s",time())."\n";
 	$Message .= "Host: ".gethostbyaddr(getenv("REMOTE_ADDR"))."\n";
 	$Message .= "UserAgent: ".getenv("HTTP_USER_AGENT")."\n";
 	$Message .= $line;
@@ -100,8 +101,10 @@ class noticemail{
 	$Message .= "e-Mail: ".$data['email']."\n";
 	$option = $data['option'];
 	if(is_array($option)){
-	$countoption=count($option);
-	for($i = 0; $i < $countoption; $i++){ list($optitle,$opvalue)=explode(",", rtrim($option[$i])); $Message .=$optitle.": ".$opvalue." \n"; } }		$Message .= $line;
+	foreach($option as $value){ list($optitle,$opvalue)=explode(",", rtrim($value)); $Message .=$optitle.": ".$opvalue." \n"; }
+	}
+	unset($value);
+		$Message .= $line;
 		if($data['comment']){
 			$com = str_replace("\r\n", "\n", $data['comment']);	// 改行文字の統一
 			$com = str_replace("\r", "\n", $com);
