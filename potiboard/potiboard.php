@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.4 lot.190703
+  * POTI-board改 v1.52.5 lot.190721
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -176,8 +176,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.4');
-define('POTI_VERLOT' , '改 v1.52.4 lot.190703');
+define('POTI_VER' , '改 v1.52.5');
+define('POTI_VERLOT' , '改 v1.52.5 lot.190721');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -847,9 +847,9 @@ unset($value);
 		rewind($fp);
 		fwrite($fp, $buf);
 		fclose($fp);
-		//chmod($logfilename,0666);
+		//chmod($logfilename,0606);
 		//拡張子を.phpにした場合、↑で500エラーでるなら↓に変更
-		if(PHP_EXT!='.php'){chmod($logfilename,0666);}
+		if(PHP_EXT!='.php'){chmod($logfilename,0606);}
 		unset($dat); //クリア
 	}
 	if(!$resno&&is_file(($page/PAGE_DEF+1).PHP_EXT)){unlink(($page/PAGE_DEF+1).PHP_EXT);}
@@ -868,8 +868,8 @@ function auto_link($proto){
 /* 日付 */
 function now_date($time){
 	$youbi = array('日','月','火','水','木','金','土');
-	$yd = $youbi[gmdate("w", $time+9*60*60)] ;
-	$now = gmdate(DATE_FORMAT, $time+9*60*60);
+	$yd = $youbi[date("w", $time)] ;
+	$now = date(DATE_FORMAT, $time);
 	$now = str_replace("<1>", $yd, $now); //漢字の曜日セット1
 	$now = str_replace("<2>", $yd.'曜', $now); //漢字の曜日セット2
 	return $now;
@@ -952,7 +952,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		foreach($badfile as $value){if(preg_match("/^$value/",$chk)){
 			error(MSG005,$dest); //拒絶画像
 		}}
-		chmod($dest,0666);
+		chmod($dest,0606);
 		$W = $size[0];
 		$H = $size[1];
 
@@ -1081,7 +1081,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($email&&DISP_ID==1){
 			$now .= " ID:???";
 		}else{
-			$now .= " ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.gmdate("Ymd", $time+9*60*60)),'id'),-8);
+			$now .= " ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", $time)),'id'),-8);
 		}
 	}
 	//カンマを変換
@@ -1338,7 +1338,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if(file_exists($pchtemp)){
 			copy($pchtemp, PCH_DIR.$tim.'.pch');
 			if(file_exists(PCH_DIR.$tim.'.pch')){
-				chmod(PCH_DIR.$tim.'.pch',0666);
+				chmod(PCH_DIR.$tim.'.pch',0606);
 				unlink($pchtemp);
 			}
 		}
@@ -1347,7 +1347,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if(file_exists($pchtemp)){
 			copy($pchtemp, PCH_DIR.$tim.'.spch');
 			if(file_exists(PCH_DIR.$tim.'.spch')){
-				chmod(PCH_DIR.$tim.'.spch',0666);
+				chmod(PCH_DIR.$tim.'.spch',0606);
 				unlink($pchtemp);
 			}
 		}
@@ -1649,20 +1649,20 @@ function init(){
 			if($value==LOGFILE)fwrite($fp,charconvert($testmes));
 			if($value==TREEFILE)fwrite($fp,"1\n");
 			fclose($fp);
-			if(file_exists(realpath($value)))chmod($value,0666);
+			if(file_exists(realpath($value)))chmod($value,0606);
 		}
 		if(!is_writable(realpath($value)))$err.=$value."を書けません<br>";
 		if(!is_readable(realpath($value)))$err.=$value."を読めません<br>";
 	}
 	if(!is_dir(realpath(IMG_DIR))){
-		mkdir(IMG_DIR,0777);chmod(IMG_DIR,0777);
+		mkdir(IMG_DIR,0707);chmod(IMG_DIR,0707);
 	}
 	if(!is_dir(realpath(IMG_DIR)))$err.=IMG_DIR."がありません<br>";
 	if(!is_writable(realpath(IMG_DIR)))$err.=IMG_DIR."を書けません<br>";
 	if(!is_readable(realpath(IMG_DIR)))$err.=IMG_DIR."を読めません<br>";
 	if(USE_THUMB){
 		if(!is_dir(realpath(THUMB_DIR))){
-		mkdir(THUMB_DIR,0777);chmod(THUMB_DIR,0777);
+		mkdir(THUMB_DIR,0707);chmod(THUMB_DIR,0707);
 	}
 		if(!is_dir(realpath(THUMB_DIR)))$err.=THUMB_DIR."がありません<br>";
 		if(!is_writable(realpath(THUMB_DIR)))$err.=THUMB_DIR."を書けません<br>";
@@ -1670,7 +1670,7 @@ function init(){
 	}
 	if(USE_PAINT){
 	if(!is_dir(realpath(TEMP_DIR))){
-		mkdir(TEMP_DIR,0777);chmod(TEMP_DIR,0777);
+		mkdir(TEMP_DIR,0707);chmod(TEMP_DIR,0707);
 	}
 		if(!is_dir(realpath(TEMP_DIR)))$err.=TEMP_DIR."がありません<br>";
 		if(!is_writable(realpath(TEMP_DIR)))$err.=TEMP_DIR."を書けません<br>";
@@ -1932,7 +1932,7 @@ function paintcom($resto=''){
 		foreach($tmp as $tmpfile){
 			$src = TEMP_DIR.$tmpfile;
 			$srcname = $tmpfile;
-			$date = gmdate("Y/m/d H:i", filemtime($src)+9*60*60);
+			$date = date("Y/m/d H:i", filemtime($src));
 			$dat['tmp'][] = compact('src','srcname','date');
 		}
 	}
@@ -2226,7 +2226,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($email&&DISP_ID==1){
 			$now .= " ID:???";
 		}else{
-			$now.=" ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.gmdate("Ymd", $time+9*60*60)),'id'),-8);
+			$now.=" ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", $time)),'id'),-8);
 		}
 	}
 	$now = str_replace(",", "&#44;", $now);//カンマを変換
@@ -2454,7 +2454,7 @@ function replace($no,$pwd,$stime){
 			foreach($badfile as $value){if(preg_match("/^$value/",$chk)){
 				error(MSG005,$dest); //拒絶画像
 			}}
-			chmod($dest,0666);
+			chmod($dest,0606);
 			$mes = "画像のアップロードが成功しました<br><br>";
 			}
 		else{
@@ -2470,7 +2470,7 @@ function replace($no,$pwd,$stime){
 			if(file_exists($pchtemp)){
 				copy($pchtemp, PCH_DIR.$tim.'.pch');
 				if(file_exists(PCH_DIR.$tim.'.pch')){
-					chmod(PCH_DIR.$tim.'.pch',0666);
+					chmod(PCH_DIR.$tim.'.pch',0606);
 					unlink($pchtemp);
 				}
 			}
@@ -2479,7 +2479,7 @@ function replace($no,$pwd,$stime){
 			if(file_exists($pchtemp)){
 				copy($pchtemp, PCH_DIR.$tim.'.spch');
 				if(file_exists(PCH_DIR.$tim.'.spch')){
-					chmod(PCH_DIR.$tim.'.spch',0666);
+					chmod(PCH_DIR.$tim.'.spch',0606);
 					unlink($pchtemp);
 				}
 			}
@@ -2493,7 +2493,7 @@ function replace($no,$pwd,$stime){
 				if($email&&DISP_ID==1){
 					$now .= " ID:???";
 				}else{
-					$now.=" ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.gmdate("Ymd", $time+9*60*60)),'id'),-8);
+					$now.=" ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", $time)),'id'),-8);
 				}
 			}
 			//描画時間追加
@@ -2804,7 +2804,7 @@ deltemp();
 //user-codeの発行
 //if(!isset($usercode)){
 if(!$usercode){//falseなら発行
-	$usercode = substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.gmdate("Ymd", time()+9*60*60)),'id'),-12);
+	$usercode = substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", time())),'id'),-12);
 	//念の為にエスケープ文字があればアルファベットに変換
 	$usercode = strtr($usercode,"!\"#$%&'()+,/:;<=>?@[\\]^`/{|}~","ABCDEFGHIJKLMNOabcdefghijklmn");
 }
