@@ -35,6 +35,8 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2019/07/03] v1.52.5 lot.190721</dt>
+	<dd class="con">date_default_timezone_set('Asia/Tokyo');と設定しているにもかかわらず、GMT+9時間のままだったのを修正しました。メール通知クラスのコードを整理しました。（by さとぴあ）</dd>
 	<dt class="ver">[2019/07/03] v1.52.4 lot.190703</dt>
 	<dd class="con">管理者は設定にかかわらずURL書き込み可。（by さとぴあ）</dd>
 	<dt class="ver">[2019/06/21] v1.52.1 lot.190621</dt>
