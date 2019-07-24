@@ -1,12 +1,13 @@
 <?php
 /*
-** メール通知クラス(UTF-8) lot.190721
+** メール通知クラス(UTF-8) lot.190724
 **
 ** http://www.punyu.net/php/
 ** by SakaQ
 ** https://sakots.red/poti/
 ** by sakots
 **
+** 2019/07/24 変換元のエンコードをutf-8に。コード整理。
 ** 2019/07/21 コード整理
 ** 2019/06/25 コード整理
 ** 2018/12/02 php7の静的コール警告エラー対応
@@ -80,28 +81,27 @@ noticemail::send($data);
 
 class noticemail{
 
-	public static function send($data,$usemb="1"){
+	public static function send($data){
 	$name = $data['name'];
 	$from = $data['email'];
 	$line = "---------------------------------------------------------------------\n";
 
 	// ヘッダを指定
-	$MailHeaders = "Mime-Version: 1.0\n";
-	$MailHeaders .= "Content-Type: text/plain; charset=ISO-2022-JP\n";
-	$MailHeaders .= "Content-Transfer-Encoding: 7bit\n";
-	$MailHeaders .= "X-Mailer: NoticeMail/PHP".phpversion()."\n";
+	$MailHeaders = 'Mime-Version: 1.0'."\n";
+	$MailHeaders .= 'Content-Type: text/plain; charset=ISO-2022-JP'."\n";
+	$MailHeaders .= 'Content-Transfer-Encoding: 7bit'."\n";
 
 	// メール本文作成
-	$Message = "■".$data['subject']."\n";
-	$Message .= "Date: ".date("Y/m/d H:i:s",time())."\n";
-	$Message .= "Host: ".gethostbyaddr(getenv("REMOTE_ADDR"))."\n";
-	$Message .= "UserAgent: ".getenv("HTTP_USER_AGENT")."\n";
+	$Message = '■'.$data['subject']."\n";
+	$Message .= 'Date: '.date("Y/m/d H:i:s",time())."\n";
+	$Message .= 'Host: '.gethostbyaddr(getenv("REMOTE_ADDR"))."\n";
+	$Message .= 'UserAgent: '.getenv("HTTP_USER_AGENT")."\n";
 	$Message .= $line;
-	$Message .= "Name: ".$name."\n";
-	$Message .= "e-Mail: ".$data['email']."\n";
+	$Message .= 'Name: '.$name."\n";
+	$Message .= 'e-Mail: '.$data['email']."\n";
 	$option = $data['option'];
 	if(is_array($option)){
-	foreach($option as $value){ list($optitle,$opvalue)=explode(",", rtrim($value)); $Message .=$optitle.": ".$opvalue." \n"; }
+	foreach($option as $value){ list($optitle,$opvalue)=explode(",", rtrim($value)); $Message .=$optitle.': '.$opvalue." \n"; }
 	}
 	unset($value);
 		$Message .= $line;
@@ -111,7 +111,6 @@ class noticemail{
 			$com = preg_replace("/^(\n)+|(\n)+$/i", "", $com);	// 連続改行を消す
 			$Message .= $com;
 		}
-		if($usemb){
 		mb_internal_encoding("UTF-8");
 		// 半角対応
 		$Message = mb_convert_kana($Message);
@@ -123,20 +122,18 @@ class noticemail{
 		if(!$from) $from = 'nomail@'.getenv("HTTP_HOST");
 		// 日本語ならMIMEヘッド
 		if(preg_match("/[\x80-\xA0]/",$name)){
-		$name = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($name,"JIS","auto"))."?=";
+		$name = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($name,"JIS","utf-8"))."?=";
 		}
 		// ヘッダにFrom追加
-		$MailHeaders .= "From: ".$name." <".$from.">\n";
+		$MailHeaders .= 'From: '.$name.' <'.$from.'>'."\n";
 			// Subjectに日本語があればMIMEヘッド
 			if(preg_match("/[\x80-\xA0]/",$data['subject'])){
-			$data['subject'] = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($data['subject'],"JIS","auto"))."?=";
+			$data['subject'] = "=?iso-2022-jp?B?".base64_encode(mb_convert_encoding($data['subject'],"JIS","utf-8"))."?=";
 			} // メール送信
 			mail($data['to'],
 			$data['subject'],
-			mb_convert_encoding($Message,"JIS","auto"), $MailHeaders);
+			mb_convert_encoding($Message,"JIS","utf-8"), $MailHeaders);
 
-			}
-			else{ return false; }
 			return true;
 			}
 			}
