@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.5 lot.190721
+  * POTI-board改 v1.52.6 lot.190724
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -176,8 +176,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.5');
-define('POTI_VERLOT' , '改 v1.52.5 lot.190721');
+define('POTI_VER' , '改 v1.52.6');
+define('POTI_VERLOT' , '改 v1.52.6 lot.190724');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -193,111 +193,111 @@ date_default_timezone_set('Asia/Tokyo');
 //{$hoge}
 //rvalじゃ長いので$で定義
 class tag_rval2 extends DataTag{
-var $matchregexp='/\{\$([^\}]+)\}/i';
-var $fromstring="{\$%s}";
-var $tostring="<?php @print \$val%1\$s; ?>\n";
+public $matchregexp='/\{\$([^\}]+)\}/i';
+public $fromstring="{\$%s}";
+public $tostring="<?php @print \$val%1\$s; ?>\n";
 }
 //<!--{def hoge}-->～<!--{/def}-->
 //旧タイプに再定義
 class tag_def2 extends ArrayTag{
-var $matchregexp='/<!--\{def ([^\}]+)\}-->/i';
-var $fromstring="<!--{def %s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{def ([^\}]+)\}-->/i';
+public $fromstring="<!--{def %s}-->";
+public $tostring="<?php
 if(@\$val%1\$s &&((gettype(\$val%1\$s)!=='array' && \$val%1\$s!==\"\") or (gettype(\$val%1\$s)==='array' && count(\$val%1\$s)>0))){ ?>";
-var $closestring="<!--{/def}-->";
+public $closestring="<!--{/def}-->";
 }
 //<!--{ndef hoge}-->～<!--{/ndef}-->
 //再定義(hogeが空(0も含む)の場合に、タグの間の～部分を表示する。defの逆)
 class tag_ndef2 extends ArrayTag{
-var $matchregexp='/<!--\{ndef ([^\}]+)\}-->/i';
-var $fromstring="<!--{ndef %s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{ndef ([^\}]+)\}-->/i';
+public $fromstring="<!--{ndef %s}-->";
+public $tostring="<?php
 if(!(@\$val%1\$s &&((gettype(\$val%1\$s)!=='array' && \$val%1\$s!==\"\") or (gettype(\$val%1\$s)==='array' && count(\$val%1\$s)>0)))){ ?>";
-var $closestring="<!--{/ndef}-->";
+public $closestring="<!--{/ndef}-->";
 }
 //<!--{vdef hoge}-->～<!--{/vdef}-->
 //新タイプ(0もある物とみなす)で再定義
 class tag_vdef2 extends ArrayTag{
-var $matchregexp='/<!--\{vdef ([^\}]+)\}-->/i';
-var $fromstring="<!--{vdef %s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{vdef ([^\}]+)\}-->/i';
+public $fromstring="<!--{vdef %s}-->";
+public $tostring="<?php
 if(@count(\$val%1\$s) && (is_array(\$val%1\$s) || strlen(\$val%1\$s))){ ?>";
-var $closestring="<!--{/vdef}-->";
+public $closestring="<!--{/vdef}-->";
 }
 //<!--{ifeq hoge:val}-->～<!--{/ifeq}-->
 // hoge = val の場合、タグの間の～部分を表示する
 class tag_ifeq extends DataTag{
-var $matchregexp='/<!--\{ifeq ([^\}:]+):([^\}:]+)\}-->/i';
-var $fromstring="<!--{ifeq %1\$s:%2\$s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{ifeq ([^\}:]+):([^\}:]+)\}-->/i';
+public $fromstring="<!--{ifeq %1\$s:%2\$s}-->";
+public $tostring="<?php
 if(\$val%1\$s === '%3\$s'){ ?>";
-var $closestring="<!--{/ifeq}-->";
+public $closestring="<!--{/ifeq}-->";
 }
 //<!--{ifne hoge:val}-->～<!--{/ifne}-->
 // hoge != val の場合、タグの間の～部分を表示する
 class tag_ifne extends DataTag{
-var $matchregexp='/<!--\{ifne ([^\}:]+):([^\}:]+)\}-->/i';
-var $fromstring="<!--{ifne %1\$s:%2\$s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{ifne ([^\}:]+):([^\}:]+)\}-->/i';
+public $fromstring="<!--{ifne %1\$s:%2\$s}-->";
+public $tostring="<?php
 if(\$val%1\$s !== '%3\$s'){ ?>";
-var $closestring="<!--{/ifne}-->";
+public $closestring="<!--{/ifne}-->";
 }
 //<!--{iflt hoge:val}-->～<!--{/iflt}-->
 // hoge < val の場合、タグの間の～部分を表示する
 class tag_iflt extends DataTag{
-var $matchregexp='/<!--\{iflt ([^\}:]+):([^\}:]+)\}-->/i';
-var $fromstring="<!--{iflt %1\$s:%2\$s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{iflt ([^\}:]+):([^\}:]+)\}-->/i';
+public $fromstring="<!--{iflt %1\$s:%2\$s}-->";
+public $tostring="<?php
 if(\$val%1\$s < '%3\$s'){ ?>";
-var $closestring="<!--{/iflt}-->";
+public $closestring="<!--{/iflt}-->";
 }
 //<!--{ifgt hoge:val}-->～<!--{/ifgt}-->
 // hoge > val の場合、タグの間の～部分を表示する
 class tag_ifgt extends DataTag{
-var $matchregexp='/<!--\{ifgt ([^\}:]+):([^\}:]+)\}-->/i';
-var $fromstring="<!--{ifgt %1\$s:%2\$s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{ifgt ([^\}:]+):([^\}:]+)\}-->/i';
+public $fromstring="<!--{ifgt %1\$s:%2\$s}-->";
+public $tostring="<?php
 if(\$val%1\$s > '%3\$s'){ ?>";
-var $closestring="<!--{/ifgt}-->";
+public $closestring="<!--{/ifgt}-->";
 }
 //<!--{ifle hoge:val}-->～<!--{/ifle}-->
 // hoge <= val の場合、タグの間の～部分を表示する
 class tag_ifle extends DataTag{
-var $matchregexp='/<!--\{ifle ([^\}:]+):([^\}:]+)\}-->/i';
-var $fromstring="<!--{ifle %1\$s:%2\$s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{ifle ([^\}:]+):([^\}:]+)\}-->/i';
+public $fromstring="<!--{ifle %1\$s:%2\$s}-->";
+public $tostring="<?php
 if(\$val%1\$s <= '%3\$s'){ ?>";
-var $closestring="<!--{/ifle}-->";
+public $closestring="<!--{/ifle}-->";
 }
 //<!--{ifge hoge:val}-->～<!--{/ifge}-->
 // hoge >= val の場合、タグの間の～部分を表示する
 class tag_ifge extends DataTag{
-var $matchregexp='/<!--\{ifge ([^\}:]+):([^\}:]+)\}-->/i';
-var $fromstring="<!--{ifge %1\$s:%2\$s}-->";
-var $tostring="<?php
+public $matchregexp='/<!--\{ifge ([^\}:]+):([^\}:]+)\}-->/i';
+public $fromstring="<!--{ifge %1\$s:%2\$s}-->";
+public $tostring="<?php
 if(\$val%1\$s >= '%3\$s'){ ?>";
-var $closestring="<!--{/ifge}-->";
+public $closestring="<!--{/ifge}-->";
 }
 //{?}
 //通常はエスケープさせないでスルー
 class q_escape extends DataTag{
-var $matchregexp='/\{\?\}/i';
-var $fromstring="{?}";
-var $tostring="?";
+public $matchregexp='/\{\?\}/i';
+public $fromstring="{?}";
+public $tostring="?";
 }
 //メインの書込み時のみエスケープ
 class q_escape2 extends DataTag{
-var $matchregexp='/\{\?\}/i';
-var $fromstring="{?}";
-var $tostring="<?php @print '?'; ?>";
+public $matchregexp='/\{\?\}/i';
+public $fromstring="{?}";
+public $tostring="<?php @print '?'; ?>";
 }
 //<!--(～)-->
 //～部分を表示しない
 class tag_comment2 extends ArrayTag{
-var $matchregexp='/<!--\(/i';
-var $fromstring="<!--(";
-var $tostring="<?php if(FALSE){?>";
-var $closestring=")-->";
+public $matchregexp='/<!--\(/i';
+public $fromstring="<!--(";
+public $tostring="<?php if(FALSE){?>";
+public $closestring=")-->";
 }
 
 htmltemplate::removeTag("tag_rval");
@@ -1370,19 +1370,19 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if(file_exists(PCH_DIR.$tim.'.spch')) $data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.spch';
 		if($resto){
 			$data['subject'] = '['.TITLE.'] No.'.$resto.'へのレスがありました';
-			$data['option'][] = "\n記事URL,".ROOT_URL.PHP_SELF.'?res='.$resto;
+			$data['option'][] = "\n".'記事URL,'.ROOT_URL.PHP_SELF.'?res='.$resto;
 		}else{
 			$data['subject'] = '['.TITLE.'] 新規投稿がありました';
-			$data['option'][] = "\n記事URL,".ROOT_URL.PHP_SELF.'?res='.$no;
+			$data['option'][] = "\n".'記事URL,'.ROOT_URL.PHP_SELF.'?res='.$no;
 		}
 		if(SEND_COM){
-		$data['comment'] = preg_replace("#<br(( *)|( *)/)>#i","\n", $com);	
+		$data['comment'] = preg_replace("#<br(( *)|( *)/)>#i","\n", $com);
 		}
 		else{
 		$data['comment'] ="";
 		}
 
-		noticemail::send($data,USE_MB);
+		noticemail::send($data);
 	}
 
 	header("Content-type: text/html; charset=UTF-8");
@@ -1687,6 +1687,101 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 
 	global $useneo; //NEOを使う
 	if ($useneo) $dat['useneo'] = true; //NEOを使う
+
+//pchファイルアップロードペイント
+	if($admin===ADMIN_PASS){
+if(isset($_FILES['pch_upload']['name'])){
+	$pchup=$_FILES['pch_upload']['name'];
+	if($pchup!==""){//空文字でなければ続行
+	$pchtmp=$_FILES['pch_upload']['tmp_name'];
+$pchup=CleanStr($pchup);
+if (strpos($pchup, '/') !== false) {//ファイル名に/がなければ続行
+	echo "不正なファイルです。";
+$pchup="";
+$pchtmp="";
+	}
+	else{//チェック通過
+//拡張子チェック
+$tim = time().substr(microtime(),2,3);
+$ext=pathinfo($pchup, PATHINFO_EXTENSION);
+$ext=strtolower($ext);//すべて小文字に
+if($ext==="pch"){
+$type_pch=true;
+$pchup = TEMP_DIR.'tmp-'.$tim.'.pch';//アップロードされるファイル名
+}
+elseif($ext==="spch"){
+$type_spch=true;
+$type_pch=false;
+$pchup = TEMP_DIR.'tmp-'.$tim.'.spch';//アップロードされるファイル名
+}
+else{//拡張子が一致しなかったら
+$pchup="";
+$pchtmp="";
+echo "アニメファイルをアップしてください。";
+}
+unset($ext);
+if(move_uploaded_file($pchtmp, $pchup)){//アップロード成功なら続行
+$pchup=TEMP_DIR.basename($pchup);//ファイルを開くディレクトリを固定
+if(mime_content_type($pchup)==="application/octet-stream"){//mimetypeが正しければ続行
+//	var_dump(mime_content_type($pchup));
+$fp = fopen("$pchup", "rb");
+$line = bin2hex(fgets($fp ,4096)) ;
+//	var_dump()
+//var_dump($line);
+//var_dump(mime_content_type($pchup));
+if($type_pch){
+	$line = substr($line,0,6);
+	if($line==="4e454f"){
+	$useneo=true;
+	$dat['useneo'] = true;
+	}
+	else{//NEOのpchでなければ
+	echo"NEOのPCHではありません。";
+//		var_dump($line);
+		unlink($pchup);
+	}
+}
+elseif($type_spch){
+	$line = substr($line,0,24);
+//	$line2 = substr($line,0,30);
+	if($line==="6c617965725f636f756e743d"||$line==="000d0a"){
+	$useneo=false;
+	$dat['useneo'] = false;
+		}else{//しぃぺのspchでなければ
+	echo"しぃペインターのSPCHではありません。";
+		unlink($pchup);
+	}
+//		var_dump($line);
+	
+}
+else{
+	unlink($pchup);
+	echo"アニメファイルをアップしてください。";
+}
+	fclose($fp);
+	$dat['pchfile'] = $pchup;
+}
+else{//mime_content_typeが違ったら
+	unlink($pchup);
+	echo"アニメファイルをアップしてください。";
+//	error(MSG001);
+}
+
+//var_dump(pathinfo($pchup, PATHINFO_EXTENSION));
+//var_dump($line);
+	}
+	}//不正なファイルでは無い時は
+	}//空文字列でなければ処理続行。
+else{
+$pchup="";
+$pchtmp="";
+}
+	}
+	else{//未定義なら
+		$_FILES['pch_upload']['tmp_name']="";
+	}
+}
+//pchファイルアップロードペイントここまで
 
 	if($picw < 100) $picw = 100;
 	if($pich < 100) $pich = 100;
