@@ -59,11 +59,11 @@ define('FILE_READ_UNIT',8192);
 
 /* the origine class of all tags */
 class TagBasis{
-	var $matchregexp;
-	var $fromstring;
-	var $tostring;
-	var $closestring;
-	var $regardasarray=false;
+	public $matchregexp;
+	public $fromstring;
+	public $tostring;
+	public $closestring;
+	public $regardasarray=false;
 
 	function getLabelArray($str){
 		$ans=array();
@@ -207,53 +207,53 @@ class TemplateParser{
 */
 
 class tag_val extends DataTag{
-	var $matchregexp='/\{val ([^\}]+)\}/i';
-	var $fromstring="{val %s}";
-	var $tostring="<?php @print nl2br(\$val%1\$s); ?>\n";
+	public $matchregexp='/\{val ([^\}]+)\}/i';
+	public $fromstring="{val %s}";
+	public $tostring="<?php @print nl2br(\$val%1\$s); ?>\n";
 }
 
 class tag_rval extends DataTag{
-	var $matchregexp='/\{rval ([^\}]+)\}/i';
-	var $fromstring="{rval %s}";
-	var $tostring="<?php @print \$val%1\$s; ?>\n";
+	public $matchregexp='/\{rval ([^\}]+)\}/i';
+	public $fromstring="{rval %s}";
+	public $tostring="<?php @print \$val%1\$s; ?>\n";
 }
 
 // contributed by Osamu Shigematsu
 class tag_def extends ArrayTag{
-	var $matchregexp='/<!--\{def ([^\}]+)\}-->/i';
-	var $fromstring="<!--{def %s}-->";
-	var $tostring="<?php
+	public $matchregexp='/<!--\{def ([^\}]+)\}-->/i';
+	public $fromstring="<!--{def %s}-->";
+	public $tostring="<?php
 		if(@count(\$val%1\$s) && (is_array(\$val%1\$s) || strlen(\$val%1\$s))){ ?>";
-	var $closestring="<!--{/def}-->";
+	public $closestring="<!--{/def}-->";
 }
 
 //contributed by Ahiru,FB,masao,,,,
 class tag_ndef extends ArrayTag{
-	var $matchregexp='/<!--\{ndef ([^\}]+)\}-->/i';
-	var $fromstring="<!--{ndef %s}-->";
-	var $tostring="<?php
+	public $matchregexp='/<!--\{ndef ([^\}]+)\}-->/i';
+	public $fromstring="<!--{ndef %s}-->";
+	public $tostring="<?php
 		if(!(@count(\$val%1\$s) && (is_array(\$val%1\$s) || strlen(\$val%1\$s)))){ ?>";
-	var $closestring="<!--{/ndef}-->";
+	public $closestring="<!--{/ndef}-->";
 }
 
 // this vdef is an experimental tag.
 class tag_vdef extends DataTag{
-	var $matchregexp='/<!--\{vdef ([^\}]+)\}-->/i';
-	var $fromstring="<!--{vdef %s}-->";
-	var $tostring="<?php
+	public $matchregexp='/<!--\{vdef ([^\}]+)\}-->/i';
+	public $fromstring="<!--{vdef %s}-->";
+	public $tostring="<?php
 		if(@\$val%1\$s && ((gettype(\$val%1\$s)!=='array' && \$val%1\$s!==\"\") or (gettype(\$val%1\$s)==='array' && count(\$val%1\$s)>0))){ ?>";
-	var $closestring="<!--{/vdef}-->";
-	var $regardasarray=1;
+	public $closestring="<!--{/vdef}-->";
+	public $regardasarray=1;
 }
 
 class tag_each extends ArrayTag{
-	var $matchregexp='/<!--\{each ([^\}]+)\}-->/i';
-	var $fromstring="<!--{each %s}-->";
-	var $tostring="<?php
+	public $matchregexp='/<!--\{each ([^\}]+)\}-->/i';
+	public $fromstring="<!--{each %s}-->";
+	public $tostring="<?php
 			for(@\$cnt[\"%2\$s\"]=0;@\$cnt[\"%2\$s\"]<count(@\$val%1\$s);@\$cnt[\"%2\$s\"]++){
 				?>";
-	var $closestring="<!--{/each}-->";
-	var $regardasarray=true;
+	public $closestring="<!--{/each}-->";
+	public $regardasarray=true;
 }
 
 /*<!--{comment}--> *** <!--{/comment}-->
@@ -261,10 +261,10 @@ class tag_each extends ArrayTag{
 * remove all characters between these tags.
 */
 class tag_comment extends ArrayTag{
-var $matchregexp='/<!--\{comment\}-->/i';
-var $fromstring="<!--{comment}-->";
-var $tostring="<?php if(FALSE){?>";
-var $closestring="<!--{/comment}-->";
+public $matchregexp='/<!--\{comment\}-->/i';
+public $fromstring="<!--{comment}-->";
+public $tostring="<?php if(FALSE){?>";
+public $closestring="<!--{/comment}-->";
 }
 
 /*
@@ -302,10 +302,7 @@ class htmltemplate{
 
 	// the static method to get the singleton instance
 
-//ここから下のfunctionにpublic staticを追加しstatic宣言。
-//PHP7のE_DEPRECATEDの非推奨のエラーはでなくなったが
-//PHP4の文法でインスタンスを使用しているので
-//可能であれば修正したほうが良い。
+//functionにpublic staticを追加しstatic宣言。
 //PHP マニュアル
 //http://jp2.php.net/manual/ja/language.oop5.static.php
 //2018.09.22
