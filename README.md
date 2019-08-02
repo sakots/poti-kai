@@ -35,6 +35,8 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2019/08/01] v1.52.7 lot.190801</dt>
+	<dd class="con">日本語広告スパム対策。config.phpに新規設定項目を追加（by さとぴあ）</dd>
 	<dt class="ver">[2019/07/03] v1.52.5 lot.190721</dt>
 	<dd class="con">date_default_timezone_set('Asia/Tokyo');と設定しているにもかかわらず、GMT+9時間のままだったのを修正しました。メール通知クラスのコードを整理しました。（by さとぴあ）</dd>
 	<dt class="ver">[2019/07/03] v1.52.4 lot.190703</dt>
