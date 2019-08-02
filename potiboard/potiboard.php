@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.6 lot.190724
+  * POTI-board改 v1.52.7 lot.190801
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -176,8 +176,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.6');
-define('POTI_VERLOT' , '改 v1.52.6 lot.190724');
+define('POTI_VER' , '改 v1.52.7');
+define('POTI_VERLOT' , '改 v1.52.7 lot.190801');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -898,10 +898,11 @@ function similar_str($str1,$str2){
 
 /* 記事書き込み */
 function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picfile){
-	global $path,$badstring,$badstring_and_url,$badfile,$badip,$pwdc,$textonly;
+	global $path,$badstring,$badfile,$badip,$pwdc,$textonly;
 	global $REQUEST_METHOD,$temppath,$ptime;
 	global $fcolor,$usercode;
-	global $admin;
+	global $admin,$badstr_A,$badstr_B;
+	
 
 	// 時間
 	$time = time();
@@ -993,8 +994,17 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
 	if($REQUEST_METHOD !== "POST") error(MSG006,$dest);
 
-//指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);}}
+//指定文字列が2つあると拒絶
+	if(isset($badstr_A,$badstr_B)){
+	foreach($badstr_A as $v_a){
+	foreach($badstr_B as $v_b){
+		if($v_a===''||$v_b===''){
+			break;
+		}
+	if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)){error(MSG032,$dest);}
+	}
+	}
+}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
@@ -1152,9 +1162,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	else{
 	$chkline=$countline-1;
 	}
-//	for($i=0;$i<20;++$i){ 
-	for($i=0;$i<$chkline;++$i){
-		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $line[$i]);
+	$i=1;
+//	for($i=0;$i<$chkline;++$i){
+	foreach($line as $key=> $value){
+		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $value);
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
 			case 1:	//low
@@ -1211,7 +1222,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				}
 			}
 		}
-	}
+		if($i>=$chkline){break;}
+		++$i;
+	}//ここまで
+	unset($value);
 
 	// 移動(v1.32)
 	if(!$name) $name=DEF_NAME;
@@ -1243,14 +1257,17 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 	if($dest&&file_exists($dest)){
 //		for($i=0;$i<200;++$i){ //画像重複チェック
-		for($i=0;$i<$chkline;++$i){ //画像重複チェック
-			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $line[$i]);
+		$i=1;
+		foreach($line as $value){ //画像重複チェック
+			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $value);
 			if($chkp==$chk&&file_exists($path.$timep.$extp)){
 				error(MSG005,$dest);
 			}
-		}
+		if($i>=$chkline){break;}
+		++$i;
 		}
 	}
+		}
 	else{//画像が無い時
 	$ext=$W=$H=$chk="";
 	}
@@ -2231,9 +2248,9 @@ function editform($del,$pwd){
 
 /* 記事上書き */
 function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
-	global $badstring,$badstring_and_url,$badip;
+	global $badstring,$badip;
 	global $REQUEST_METHOD;
-	global $fcolor;
+	global $fcolor,$badstr_A,$badstr_B;;
 
 	// 時間
 	$time = time();
@@ -2251,8 +2268,17 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
-//指定文字列+本文へのURL書き込みで拒絶
-	foreach($badstring_and_url as $value){if(preg_match("/$value/i",$com) && preg_match('/:\/\//i', $com)||preg_match("/$value/i",$sub) && preg_match('/:\/\//i', $com)){error(MSG032,$dest);}}
+//指定文字列が2つあると拒絶
+	if(isset($badstr_A,$badstr_B)){
+	foreach($badstr_A as $v_a){
+	foreach($badstr_B as $v_b){
+		if($v_a===''||$v_b===''){
+			break;
+		}
+	if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)){error(MSG032,$dest);}
+	}
+	}
+}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
