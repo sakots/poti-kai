@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.52.7 lot.190801
+  * POTI-board改 v1.52.8 lot.190806
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -176,8 +176,8 @@ if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.52.7');
-define('POTI_VERLOT' , '改 v1.52.7 lot.190801');
+define('POTI_VER' , '改 v1.52.8');
+define('POTI_VERLOT' , '改 v1.52.8 lot.190806');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1164,7 +1164,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 	$i=1;
 //	for($i=0;$i<$chkline;++$i){
-	foreach($line as $key=> $value){
+	foreach($line as $value){
 		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $value);
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
@@ -1410,7 +1410,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 }
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"><title></title></head>'."\n";
 	if(!isset($mes)){$mes="";}
 	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
 	echo $str;
@@ -1708,19 +1708,19 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 //pchファイルアップロードペイント
 	if($admin===ADMIN_PASS){
 if(isset($_FILES['pch_upload']['name'])){
-	$pchup=$_FILES['pch_upload']['name'];
-	if($pchup!==""){//空文字でなければ続行
+	$pchfilename=$_FILES['pch_upload']['name'];
+	if($pchfilename!==""){//空文字でなければ続行
 	$pchtmp=$_FILES['pch_upload']['tmp_name'];
-$pchup=CleanStr($pchup);
-if (strpos($pchup, '/') !== false) {//ファイル名に/がなければ続行
+$pchfilename=CleanStr($pchfilename);
+if (strpos($pchfilename, '/') !== false) {//ファイル名に/がなければ続行
 	echo "不正なファイルです。";
-$pchup="";
+$pchfilename="";
 $pchtmp="";
 	}
 	else{//チェック通過
 //拡張子チェック
 $tim = time().substr(microtime(),2,3);
-$ext=pathinfo($pchup, PATHINFO_EXTENSION);
+$ext=pathinfo($pchfilename, PATHINFO_EXTENSION);
 $ext=strtolower($ext);//すべて小文字に
 if($ext==="pch"){
 $type_pch=true;
@@ -1732,11 +1732,12 @@ $type_pch=false;
 $pchup = TEMP_DIR.'tmp-'.$tim.'.spch';//アップロードされるファイル名
 }
 else{//拡張子が一致しなかったら
+$pchfilename="";
 $pchup="";
 $pchtmp="";
 echo "アニメファイルをアップしてください。";
 }
-unset($ext);
+unset($pchfilename,$ext);//元のファル名の情報を残さない
 if(move_uploaded_file($pchtmp, $pchup)){//アップロード成功なら続行
 $pchup=TEMP_DIR.basename($pchup);//ファイルを開くディレクトリを固定
 if(mime_content_type($pchup)==="application/octet-stream"){//mimetypeが正しければ続行
@@ -1790,6 +1791,7 @@ else{//mime_content_typeが違ったら
 	}//不正なファイルでは無い時は
 	}//空文字列でなければ処理続行。
 else{
+$pchfilename="";
 $pchup="";
 $pchtmp="";
 }
@@ -2442,7 +2444,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 }
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"><title></title></head>'."\n";
 	if(!isset($mes)){$mes="";}
 	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
 	echo $str;
@@ -2651,7 +2653,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 }
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'">'."\n";
 	
-	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
+	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"><title></title></head>'."\n";
 	if(!isset($mes)){$mes="";}
 	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
 	echo $str;
@@ -2958,14 +2960,14 @@ unset($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pictmp,$picf
 		}
 		if($admin==="update"){
 			updatelog();
-			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"></head>';
+			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"><title></title></head>';
 		}
 		break;
 	case 'usrdel':
 		if(USER_DEL){
 			usrdel($del,$pwd);
 			updatelog();
-			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"></head>';
+			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"><title></title></head>';
 		}else{error(MSG033);}
 		break;
 	case 'paint':
@@ -3015,7 +3017,7 @@ paintform($picw,$pich,$palette,$anime);
 	if($res){
 			updatelog($res);
 		}else{
-			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"></head>';
+			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"><title></title></head>';
 		}
 }
 
