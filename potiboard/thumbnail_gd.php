@@ -26,7 +26,7 @@ function thumb($path,$tim,$ext,$max_w,$max_h){
 			// 2004/11/22: gif2png を破棄。repng2jpeg1.0.4 を使用
 			if(!is_executable(realpath("./")."/repng2jpeg")||!function_exists("ImageCreateFromPNG"))return;
 			@system(realpath("./")."/repng2jpeg $fname ".$path.$tim.'.png Z 1 P');
-			if(!file_exists($path.$tim.'.png'))return;
+			if(!is_file($path.$tim.'.png'))return;
 			$im_in = @ImageCreateFromPNG($path.$tim.'.png');
 			unlink($path.$tim.'.png');
 			if(!$im_in)return;
