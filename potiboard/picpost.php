@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.180713  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.190823  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2019/08/23 コード整理。
 // 2018/07/13 動画が記録できなくなっていたのを修正
 // 2018/06/14 軽微なエラー修正
 // 2018/01/12 php7対応
@@ -23,7 +24,7 @@
 // 2003/07/11 perl版初公開
 
 //設定
-include("config.php");
+include(__DIR__.'/config.php');
 //容量違反チェックをする する:1 しない:0
 define('SIZE_CHECK', '1');
 
@@ -45,17 +46,10 @@ function error($error){
 		fputs($ep, $lines[$i]);
 	fclose($ep);
 }
-//ファイルmd5計算 php4.2.0未満用
+//ファイルmd5計算 
 function md5_of_file($inFile){
-	if(@file_exists($inFile)){
-		if(function_exists('md5_file')){
+	if(@is_file($inFile)){
 			return md5_file($inFile);
-		}else{
-			$fd = fopen($inFile, 'r');
-			$fileContents = fread($fd, filesize($inFile));
-			fclose($fd);
-			return md5($fileContents);
-		}
 	}else{
 		return false;
 	}
@@ -81,7 +75,7 @@ if(!$buffer){
 	@fclose($stdin);
 }
 if(!$buffer){
-	error("raw POST データの取得に失敗しました。お絵かき画像は保存されません。");
+	error("データの取得に失敗しました。お絵かき画像は保存されません。");
 	exit;
 }
 
@@ -106,7 +100,7 @@ if($imgh=="PNG\r\n"){
 }
 $full_imgfile = TEMP_DIR.$imgfile.$imgext;
 // 同名のファイルが存在しないかチェック
-if(file_exists($full_imgfile)){
+if(is_file($full_imgfile)){
 	error("同名の画像ファイルが存在します。上書きします。");
 }
 // 画像データをファイルに書き込む
@@ -161,7 +155,7 @@ if($pchLength!=0){
 	// PCHイメージを取り出す
 	$PCHdata = substr($buffer, 1 + 8 + $headerLength + 8 + 2 + $imgLength + 8, $pchLength);
 	// 同名のファイルが存在しないかチェック
-	if(file_exists(TEMP_DIR.$imgfile.$ext)){
+	if(is_file(TEMP_DIR.$imgfile.$ext)){
 		error("同名のPCHファイルが存在します。上書きします。");
 	}
 	// PCHデータをファイルに書き込む
@@ -191,7 +185,7 @@ if($sendheader){
 	$userdata .= "\t$usercode\t$repcode";
 }
 $userdata .= "\n";
-if(file_exists(TEMP_DIR.$imgfile.".dat")){
+if(is_file(TEMP_DIR.$imgfile.".dat")){
 	error("同名の情報ファイルが存在します。上書きします。");
 }
 // 情報データをファイルに書き込む
