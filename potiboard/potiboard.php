@@ -35,7 +35,7 @@
 「ふたば★ちゃんねる」「ぷにゅねっと」に問い合わせないでください。
 ご質問は、<https://sakots.red/nee/>までどうぞ。
 */
-if(phpversion()>="5.4.0"){
+if(phpversion()>="5.5.0"){
 //スパム無効化関数
 function newstring($string) {
 	$string = htmlspecialchars($string,ENT_QUOTES,'utf-8');
@@ -519,7 +519,7 @@ unset($value);
 			$j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
 			if($line[$j]==="") continue;   //$jが範囲外なら次の行
 			list($no,$now,$name,$email,$sub,$com,$url,
-				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j])));
+				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim($line[$j]));
 			// URLとメールにリンク
 			//if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 			if(AUTOLINK) $com = auto_link($com);
@@ -664,7 +664,7 @@ unset($value);
 				$j=$lineindex[$disptree] - 1;
 				if($line[$j]==="") continue;
 				list($no,$now,$name,$email,$sub,$com,$url,
-						 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim(charconvert($line[$j])));
+						 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim($line[$j]));
 				// URLとメールにリンク
 				//if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 				if(AUTOLINK) $com = auto_link($com);
@@ -1094,7 +1094,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	$c_pass = $pwd;
 //	$pass = ($pwd) ? substr(md5($pwd),2,8) : "*";
-	$pass = ($pwd) ? password_hash($pwd, PASSWORD_DEFAULT) : "*";
+	$pass = ($pwd) ? password_hash($pwd,PASSWORD_BCRYPT,['cost' => 5]) : "*";
 	$now = now_date($time);//日付取得
 	if(DISP_ID){
 		if($email&&DISP_ID==1){
@@ -1628,7 +1628,7 @@ function admindel($pass){
 	foreach($line as $j => $value){
 		$img_flag = FALSE;
 		list($no,$now,$name,$email,$sub,$com,$url,
-			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",charconvert($value));
+			 $host,$pw,$ext,$w,$h,$time,$chk,) = explode(",",$value);
 		// フォーマット
 		//$now=preg_replace('#.{2}/(.*)$#','\1',$now);
 		//$now=preg_replace('/\(.*\)/',' ',$now);
@@ -1680,7 +1680,7 @@ function init(){
 			if($value==LOGFILE)fwrite($fp,charconvert($testmes));
 			if($value==TREEFILE)fwrite($fp,"1\n");
 			fclose($fp);
-			if(file_exists(realpath($value)))chmod($value,0606);
+			if(file_exists(realpath($value)))chmod($value,0600);
 		}
 		if(!is_writable(realpath($value)))$err.=$value."を書けません<br>";
 		if(!is_readable(realpath($value)))$err.=$value."を読めません<br>";
@@ -2133,7 +2133,7 @@ function incontinue($no){
 	$lines = file(LOGFILE);
 	$flag = FALSE;
 	foreach($lines as $line){
-		list($cno,,,,,,,,,$cext,$picw,$pich,$ctim,,$cptime,) = explode(",", rtrim(charconvert($line)));
+		list($cno,,,,,,,,,$cext,$picw,$pich,$ctim,,$cptime,) = explode(",", rtrim($line));
 		if($cno == $no){
 			$flag = TRUE;
 			break;
@@ -2192,7 +2192,7 @@ function usrchk($no,$pwd){
 	$lines = file(LOGFILE);
 	$flag = FALSE;
 	foreach($lines as $line){
-		list($cno,,,,,,,,$cpwd,) = explode(",", charconvert($line));
+		list($cno,,,,,,,,$cpwd,) = explode(",", $line);
 		if($cno == $no && (password_verify($pwd,$cpwd)||substr(md5($pwd),2,8) === $cpwd)){
 			$flag = TRUE;
 			break;
@@ -2362,7 +2362,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	// パスと時間とURLフォーマット
 //	$pass = ($pwd) ? substr(md5($pwd),2,8) : "*";
-	$pass = ($pwd) ? password_hash($pwd, PASSWORD_DEFAULT) : "*";
+	$pass = ($pwd) ? password_hash($pwd,PASSWORD_BCRYPT,['cost' => 5]) : "*";
 	$now = now_date($time);//日付取得
 	$now .= UPDATE_MARK;
 	if(DISP_ID){
@@ -2530,7 +2530,7 @@ function replace($no,$pwd,$stime){
 		$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta name="robots" content="noindex,nofollow"><title>画像が見当たりません</title>'."\n";
 		$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"></head>'."\n";
 		$str.= '<body>画像が見当たりません。数秒待ってリロードしてください。<BR><BR>リロードしてもこの画面がでるなら投稿に失敗している可能性があります。<BR>※諦める前に「<A href="'.PHP_SELF.'?mode=piccom">アップロード途中の画像</A>」を見ましょう。もしかしたら画像が見つかるかもしれません。</body></html>';
-		echo charconvert($str);
+		echo $str;
 		exit;
 	}
 
@@ -2713,7 +2713,7 @@ function catalog(){
 			$disptree = $treeline[0];
 			$j=$lineindex[$disptree] - 1; //該当記事を探して$jにセット
 			if($line[$j]==="") continue; //$jが範囲外なら次の行
-			list($no,$now,$name,,$sub,,,,,$ext,$w,$h,$time,,) = explode(",", rtrim(charconvert($line[$j])));
+			list($no,$now,$name,,$sub,,,,,$ext,$w,$h,$time,,) = explode(",", rtrim($line[$j]));
 			// 画像ファイル名
 			$img = $path.$time.$ext;
 			// 画像系変数セット
