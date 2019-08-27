@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.0 lot.190823
+  * POTI-board改 v1.53.1 lot.190827
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -49,7 +49,6 @@ function newstring($string) {
 //var_dump($_POST);
 $mode = newstring(filter_input(INPUT_POST, 'mode'));
 $resto = filter_input(INPUT_POST, 'resto',FILTER_VALIDATE_INT);
-$MAX_FILE_SIZE = newstring(filter_input(INPUT_POST, 'MAX_FILE_SIZE'));
 $name = filter_input(INPUT_POST, 'name');
 $email = filter_input(INPUT_POST, 'email');
 $url = filter_input(INPUT_POST, 'url',FILTER_VALIDATE_URL);
@@ -57,7 +56,6 @@ $sub = filter_input(INPUT_POST, 'sub');
 $com = filter_input(INPUT_POST, 'com');
 $pwd = filter_input(INPUT_POST, 'pwd');
 $textonly = filter_input(INPUT_POST, 'textonly',FILTER_VALIDATE_BOOLEAN);
-$submit = newstring(filter_input(INPUT_POST, 'submit'));
 $shi = filter_input(INPUT_POST, 'shi',FILTER_VALIDATE_INT);
 $picw = filter_input(INPUT_POST, 'picw',FILTER_VALIDATE_INT);
 $pich = filter_input(INPUT_POST, 'pich',FILTER_VALIDATE_INT);
@@ -184,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.53.0');
-define('POTI_VERLOT' , '改 v1.53.0 lot.190823');
+define('POTI_VER' , '改 v1.53.1');
+define('POTI_VERLOT' , '改 v1.53.1 lot.190827');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -430,17 +428,17 @@ function form(&$dat,$resno,$admin="",$tmp=""){
 		if($stime){
 			$psec = time()-$stime;
 			if($psec >= 86400){
-				$D = intval($psec/86400);
+				$D=($psec - ($psec % 86400)) / 86400;
 				$ptime .= $D.PTIME_D;
 				$psec -= $D*86400;
 			}
 			if($psec >= 3600){
-				$H = intval($psec/3600);
+				$H=($psec - ($psec % 3600)) / 3600;
 				$ptime .= $H.PTIME_H;
 				$psec -= $H*3600;
 			}
 			if($psec >= 60){
-				$M = intval($psec/60);
+				$M=($psec - ($psec % 60)) / 60;
 				$ptime .= $M.PTIME_M;
 				$psec -= $M*60;
 			}
@@ -791,7 +789,7 @@ unset($value);
 
 //表示しているページが20ページ以上または投稿数が少ない時はページ番号のリンクを制限しない
 
-	if($counttree < PAGE_DEF*22||$i >= PAGE_DEF*22){
+	if($counttree <= PAGE_DEF*21||$i >= PAGE_DEF*22){
 
 			for($i = 0; $i < $counttree ; $i+=PAGE_DEF){
 				if($st===$i){
@@ -1179,14 +1177,14 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		switch(POST_CHECKLEVEL){
 			case 1:	//low
 				if($host===$lhost
-				|| password_verify($pwd,$lpwd)
-				|| password_verify($pwdc,$lpwd)
+//				|| password_verify($pwd,$lpwd)
+//				|| password_verify($pwdc,$lpwd)
 				){$pchk=1;}
 				break;
 			case 2:	//middle
 				if($host===$lhost
-				|| password_verify($pwd,$lpwd)
-				|| password_verify($pwdc,$lpwd)
+//				|| password_verify($pwd,$lpwd)
+//				|| password_verify($pwdc,$lpwd)
 				|| ($name===$lname)
 				|| ($email===$lemail)
 				|| ($url===$lurl)
@@ -1659,7 +1657,7 @@ function admindel($pass){
 		$dat['del'][$j] = compact('bg','no','now','sub','name','com','host','clip','size','chk');
 	}
 			if(!isset($all)){$all=0;}
-	$dat['all'] = (int)($all / 1024);
+	$dat['all'] = ($all - ($all % 1024)) / 1024;
 	htmloutput(OTHERFILE,$dat);
 	exit;
 }
@@ -2545,17 +2543,17 @@ function replace($no,$pwd,$stime){
 		if($stime){
 			$psec = $time-$stime;
 			if($psec >= 86400){
-				$D = intval($psec/86400);
+				$D=($psec - ($psec % 86400)) / 86400;
 				$ptime .= $D.PTIME_D;
 				$psec -= $D*86400;
 			}
 			if($psec >= 3600){
-				$H = intval($psec/3600);
+				$H=($psec - ($psec % 3600)) / 3600;
 				$ptime .= $H.PTIME_H;
 				$psec -= $H*3600;
 			}
 			if($psec >= 60){
-				$M = intval($psec/60);
+				$M=($psec - ($psec % 60)) / 60;
 				$ptime .= $M.PTIME_M;
 				$psec -= $M*60;
 			}
@@ -2801,7 +2799,7 @@ function catalog(){
 
 //表示しているページが20ページ以上または投稿数が少ない時はページ番号のリンクを制限しない
 
-	if($counttree < $pagedef*22||$i >= $pagedef*22){
+	if($counttree <= $pagedef*21||$i >= $pagedef*22){
 			for($i = 0; $i < $counttree ; $i+=$pagedef){
 		if($page===$i){
 			$pformat = str_replace("<PAGE>", $i/$pagedef, NOW_PAGE);
