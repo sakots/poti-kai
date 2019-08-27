@@ -35,6 +35,8 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2019/08/27] v1.53.1 lot.190827</dt>
+	<dd class="con">二重投稿のチェックをするしないの判定処理でpassword_verify()が40回実行されていたのを修正ほか（by さとぴあ）</dd>
 	<dt class="ver">[2019/08/23] v1.53.0 lot.190823</dt>
 	<dd class="con">セキュリティ強化。config.phpに新規設定項目を追加（by さとぴあ）</dd>
 	<dt class="ver">[2019/08/01] v1.52.7 lot.190801</dt>
