@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.1 lot.190827
+  * POTI-board改 v1.53.2 lot.190831
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.53.1');
-define('POTI_VERLOT' , '改 v1.53.1 lot.190827');
+define('POTI_VER' , '改 v1.53.2');
+define('POTI_VERLOT' , '改 v1.53.2 lot.190831');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -923,7 +923,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$picfile = $picfile['filename']; //拡張子除去 190616
 		$tim = KASIRA.$tim;
 		//選択された絵が投稿者の絵か再チェック
-		if(is_file($temppath.$picfile.".dat")){
+		if($picfile && is_file($temppath.$picfile.".dat")){
 			$fp = fopen($temppath.$picfile.".dat", "r");
 			$userdata = fread($fp, 1024);
 			fclose($fp);
@@ -2146,7 +2146,7 @@ function incontinue($no){
 	$dat['passflag'] = true;
 //新規投稿で削除キー不要の時 true
 	if(! CONTINUE_PASS) $dat['newpost_nopassword'] = true;
-	if(is_file(IMG_DIR.$ctim.$cext)){//画像が無い時は処理しない
+	if($cext && is_file(IMG_DIR.$ctim.$cext)){//画像が無い時は処理しない
 	$dat['picfile'] = IMG_DIR.$ctim.$cext;
 	$size = getimagesize($dat['picfile']);
 	$dat['picw'] = $size[0];
@@ -2156,7 +2156,6 @@ function incontinue($no){
 	$dat['ext'] = $cext;
 	//描画時間
 	if(DSP_PAINTTIME) $dat['painttime'] = $cptime;
-	}
 	if(is_file(PCH_DIR.$ctim.'.pch')){
 		$dat['applet'] = false;
 		$dat['ctype_pch'] = true;
@@ -2164,12 +2163,23 @@ function incontinue($no){
 		$dat['applet'] = true;
 		$dat['usepbbs'] = false;
 		$dat['ctype_pch'] = true;
-	}elseif(is_file(IMG_DIR.$ctim.$cext)){
+	}else{//画像しか無かった時
 		$dat['applet'] = true;
 		$dat['usepbbs'] = true;
 	}
-	//if(is_file(IMG_DIR.$ctim.'.jpg')) $dat['ctype_jpg'] = true;
+	}else{//画像が無かった時
+	$dat['picfile'] = '';
+	$dat['picw'] = '';
+	$dat['pich'] = '';
+	$dat['no'] = '';
+	$dat['pch'] = '';
+	$dat['ext'] = '';
+	$dat['applet'] = false;
+	$dat['usepbbs'] = false;
+	$dat['ctype_pch'] = false;
+	}
 	$dat['ctype_img'] = true;
+	$dat['addinfo'] = $addinfo;
 
 //v1.32のMONO WHITEでコメントアウト、対応テンプレートが無いパレット選択用データ(selectタグ用option配列)
 //	$lines = file(PALETTEFILE);
@@ -2181,7 +2191,6 @@ function incontinue($no){
 //}
 //	}
 
-	$dat['addinfo'] = $addinfo;
 	htmloutput(PAINTFILE,$dat);
 }
 
@@ -2519,7 +2528,7 @@ function replace($no,$pwd,$stime){
 			list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode) = explode("\t", rtrim($userdata)."\t");//区切りの"\t"を行末に190610
 			$file_name = preg_replace("/\.(dat)$/i","",$file);
 			//画像があり、認識コードがhitすれば抜ける
-			if(is_file(TEMP_DIR.$file_name.$imgext) && $urepcode === $repcode){$find=true;break;}
+			if($file_name && is_file(TEMP_DIR.$file_name.$imgext) && $urepcode === $repcode){$find=true;break;}
 		}
 	}
 	closedir($handle);
