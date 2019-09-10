@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.2 lot.190831
+  * POTI-board改 v1.53.3 lot.190910
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.53.2');
-define('POTI_VERLOT' , '改 v1.53.2 lot.190831');
+define('POTI_VER' , '改 v1.53.3');
+define('POTI_VERLOT' , '改 v1.53.3 lot.190910');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -340,18 +340,8 @@ function gd_check(){
 
 //gdのバージョンを調べる
 function get_gd_ver(){
-//	if(function_exists("gd_info")){
-		$gdver=gd_info();
-		$phpinfo=$gdver["GD Version"];
-//	}else{ //php4.3.0未満用
-//		ob_start();
-//		phpinfo(8);
-//		$phpinfo=ob_get_contents();
-//		ob_end_clean();
-//		$phpinfo=strip_tags($phpinfo);
-//		$phpinfo=stristr($phpinfo,"gd version");
-//		$phpinfo=stristr($phpinfo,"version");
-//	}
+	$gdver=gd_info();
+	$phpinfo=$gdver["GD Version"];
 	$end=strpos($phpinfo,".");
 	$phpinfo=substr($phpinfo,0,$end);
 	$length = strlen($phpinfo)-1;
@@ -563,7 +553,6 @@ unset($value);
 					}
 				//コンティニュー
 				if(USE_CONTINUE){
-					//if(is_file(PCH_DIR.$time.'.pch')||is_file(PCH_DIR.$time.'.spch')||$ext=='.jpg')
 						$continue = $no;
 				}else{$continue="";}
 			}
@@ -1152,7 +1141,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if($buf==''){error(MSG019,$dest);}
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
-	$countline=count($line);//必要
+//	$countline=count($line);
 	foreach($line as $i =>&$value){//$i必要
 		if($value!==""){//190624
 			list($artno,)=explode(",", rtrim($value));	//逆変換テーブル作成
@@ -1163,15 +1152,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	// 連続・二重投稿チェック (v1.32:仕様変更)
-	if($countline >= 21){//存在する行数のみチェック
-		$chkline=20;
-	}
-	else{
-	$chkline=$countline-1;
-	}
+	$chkline=20;//チェックする最大行数
 	$i=1;
-//	for($i=0;$i<$chkline;++$i){
 	foreach($line as $value){
+		if($value!==""){
 		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $value);
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
@@ -1193,8 +1177,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				break;
 			case 3:	//high
 				if($host===$lhost
-				|| password_verify($pwd,$lpwd)
-				|| password_verify($pwdc,$lpwd)
+//				|| password_verify($pwd,$lpwd)
+//				|| password_verify($pwdc,$lpwd)
 				|| (similar_str($name,$lname) > VALUE_LIMIT)
 				|| (similar_str($email,$lemail) > VALUE_LIMIT)
 				|| (similar_str($url,$lurl) > VALUE_LIMIT)
@@ -1205,7 +1189,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				$pchk=1;
 		}
 		if($pchk){
-//			if(strlen($ltime)>10){$ltime=substr($ltime,0,-3);}
 //KASIRAが入らない10桁のUNIX timeを取り出す
 			if(strlen($ltime)>10){$ltime=substr($ltime,-13,-3);}
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
@@ -1229,6 +1212,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				}
 			}
 		}
+	}
 		if($i>=$chkline){break;}
 		++$i;
 	}//ここまで
@@ -1255,34 +1239,30 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}
 	}
 	// アップロード処理
-//	if(isset($dest)){
 	if($dest){//画像が無い時は処理しない
-//	$countline=(count($line));190619
-		if($countline >= 201){//存在する行数のみチェック
-		$chkline=200;
-	}
-	else{
-	$chkline=$countline-1;
-	}
-	if($dest&&is_file($dest)){
-//		for($i=0;$i<200;++$i){ //画像重複チェック
-		$i=1;
+	$chkline=200;//チェックする最大行数
+	if(is_file($dest)){
+		$i=1;$j=1;
 		foreach($line as $value){ //画像重複チェック
+		if($value!==""){
 			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $value);
 			if($extp){//拡張子があったら
 			if($chkp===$chk&&is_file($path.$timep.$extp)){
 				error(MSG005,$dest);
+				}
+		if($j>=20){break;}//画像を20枚チェックしたら
+			++$j;
 			}
-			}
-		if($i>=$chkline){break;}
-		++$i;
 		}
+		if($i>=$chkline){break;}
+			++$i;
+	}
 	}
 		}
 	else{//画像が無い時
 	$ext=$W=$H=$chk="";
 	}
-		
+	unset($value,$i,$j);
 		
 	list($lastno,) = explode(",", $line[0]);
 	$no = $lastno + 1;
@@ -1837,6 +1817,22 @@ $pchtmp="";
 
 	$dat['paint_mode'] = true;
 	head($dat);
+//ピンチイン
+$ipad = ((bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPad'));
+$mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
+	if($picw>=500){//横幅500以上だったら
+	if(isset($ipad)&&!$ipad){//iPadじゃなかったら
+//		echo "iPadじゃないよ";
+		if(isset($mobile)&&$mobile){//スマートフォンだったら
+		
+			$dat['pinchin']=true;
+//		echo 'ピンチインが有効みたい。';
+		}
+		else{//タブレットだったら
+			$dat['pinchin']=false;
+		}
+	}
+}
 	form($dat,$resto);
 	$dat['mode2'] = $mode;
 	if($mode=="contpaint"){
