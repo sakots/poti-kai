@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.190823  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.190921  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -58,7 +58,7 @@ function md5_of_file($inFile){
 /* ■■■■■ メイン処理 ■■■■■ */
 
 $u_ip = getenv("HTTP_CLIENT_IP");
-if(!$u_ip) $u_ip = getenv("HTTP_X_FORWARDED_FOR");
+//if(!$u_ip) $u_ip = getenv("HTTP_X_FORWARDED_FOR");
 if(!$u_ip) $u_ip = getenv("REMOTE_ADDR");
 $u_host = gethostbyaddr($u_ip);
 $u_agent = getenv("HTTP_USER_AGENT");

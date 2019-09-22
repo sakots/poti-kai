@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.3 lot.190910
+  * POTI-board改 v1.53.5 lot.190921
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.53.3');
-define('POTI_VERLOT' , '改 v1.53.3 lot.190910');
+define('POTI_VER' , '改 v1.53.5');
+define('POTI_VERLOT' , '改 v1.53.5 lot.190921');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -918,7 +918,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			fclose($fp);
 			list($uip,$uhost,,,$ucode,) = explode("\t", rtrim($userdata));
 			$userip = getenv("HTTP_CLIENT_IP");
-			if(!$userip) $userip = getenv("HTTP_X_FORWARDED_FOR");
+//			if(!$userip) $userip = getenv("HTTP_X_FORWARDED_FOR");
 			if(!$userip) $userip = getenv("REMOTE_ADDR");
 			if(($ucode != $usercode) && (IP_CHECK && $uip != $userip)){error(MSG007);}
 		}else{error(MSG007);}
@@ -1245,9 +1245,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$i=1;$j=1;
 		foreach($line as $value){ //画像重複チェック
 		if($value!==""){
-			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $value);
+			list(,,,,,,,,,$extp,,,,$chkp,) = explode(",", $value);
 			if($extp){//拡張子があったら
-			if($chkp===$chk&&is_file($path.$timep.$extp)){
+			if($chkp===$chk){
 				error(MSG005,$dest);
 				}
 		if($j>=20){break;}//画像を20枚チェックしたら
@@ -1820,10 +1820,14 @@ $pchtmp="";
 //ピンチイン
 $ipad = ((bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPad'));
 $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
-	if($picw>=500){//横幅500以上だったら
-	if(isset($ipad)&&!$ipad){//iPadじゃなかったら
+	if($picw>=700){//横幅700以上だったら
+			$dat['pinchin']=true;
+//		echo 'ピンチインが有効みたい。';
+	}
+	elseif($picw>=500){//横幅500以上だったら
+	if(!$ipad){//iPadじゃなかったら
 //		echo "iPadじゃないよ";
-		if(isset($mobile)&&$mobile){//スマートフォンだったら
+		if($mobile){//スマートフォンだったら
 		
 			$dat['pinchin']=true;
 //		echo 'ピンチインが有効みたい。';
@@ -1831,8 +1835,8 @@ $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 		else{//タブレットだったら
 			$dat['pinchin']=false;
 		}
+		}
 	}
-}
 	form($dat,$resto);
 	$dat['mode2'] = $mode;
 	if($mode=="contpaint"){
@@ -2034,7 +2038,7 @@ function paintcom($resto=''){
 		//user-codeでhitしなければIPで再チェック
 		if(count($tmp)==0){
 			$userip = getenv("HTTP_CLIENT_IP");
-			if(!$userip) $userip = getenv("HTTP_X_FORWARDED_FOR");
+//			if(!$userip) $userip = getenv("HTTP_X_FORWARDED_FOR");
 			if(!$userip) $userip = getenv("REMOTE_ADDR");
 			foreach($tmplist as $tmpimg){
 				list($ucode,$uip,$ufilename) = explode("\t", $tmpimg);
