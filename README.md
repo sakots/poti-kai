@@ -35,6 +35,8 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2019/10/24] v1.53.6 lot.191024</dt>
+	<dd class="con">コード整理（by さとぴあ）</dd>
 	<dt class="ver">[2019/09/26] v1.53.6 lot.190926</dt>
 	<dd class="con">文法エラー修正ほか（by さとぴあ）</dd>
 	<dt class="ver">[2019/08/27] v1.53.1 lot.190827</dt>
