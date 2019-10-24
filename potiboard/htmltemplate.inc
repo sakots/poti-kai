@@ -169,8 +169,15 @@ class TemplateParser{
 	}
 
 	function _remove($tagname,&$tags){
-		for($i=0;$i<count($tags);++$i){
-			if(get_class($tags[$i])===strtolower($tagname)){
+		// for($i=0;$i<count($tags);++$i){
+			
+		// 	if(get_class($tags[$i])===strtolower($tagname)){
+		// 		array_splice($tags,$i,1);
+		// 		$i--;
+		// 	}
+		// }
+		foreach($tags as $i => $val){
+			if(get_class($val)===strtolower($tagname)){
 				array_splice($tags,$i,1);
 				$i--;
 			}
