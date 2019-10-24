@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.6 lot.190926
+  * POTI-board改 v1.53.6 lot.191024
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ define('USE_MB' , '1');
 
 //バージョン
 define('POTI_VER' , '改 v1.53.6');
-define('POTI_VERLOT' , '改 v1.53.6 lot.190926');
+define('POTI_VERLOT' , '改 v1.53.6 lot.191024');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1153,22 +1153,17 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	// 連続・二重投稿チェック (v1.32:仕様変更)
 	$chkline=20;//チェックする最大行数
-	$i=1;
-	foreach($line as $value){
+	foreach($line as $i => $value){
 		if($value!==""){
 		list($lastno,,$lname,$lemail,$lsub,$lcom,$lurl,$lhost,$lpwd,,,,$ltime,) = explode(",", $value);
 		$pchk=0;
 		switch(POST_CHECKLEVEL){
 			case 1:	//low
 				if($host===$lhost
-//				|| password_verify($pwd,$lpwd)
-//				|| password_verify($pwdc,$lpwd)
 				){$pchk=1;}
 				break;
 			case 2:	//middle
 				if($host===$lhost
-//				|| password_verify($pwd,$lpwd)
-//				|| password_verify($pwdc,$lpwd)
 				|| ($name===$lname)
 				|| ($email===$lemail)
 				|| ($url===$lurl)
@@ -1177,8 +1172,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				break;
 			case 3:	//high
 				if($host===$lhost
-//				|| password_verify($pwd,$lpwd)
-//				|| password_verify($pwdc,$lpwd)
 				|| (similar_str($name,$lname) > VALUE_LIMIT)
 				|| (similar_str($email,$lemail) > VALUE_LIMIT)
 				|| (similar_str($url,$lurl) > VALUE_LIMIT)
@@ -1188,8 +1181,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			case 4:	//full
 				$pchk=1;
 		}
-		if($pchk){
-//KASIRAが入らない10桁のUNIX timeを取り出す
+			if($pchk){
+			//KASIRAが入らない10桁のUNIX timeを取り出す
 			if(strlen($ltime)>10){$ltime=substr($ltime,-13,-3);}
 			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
 			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
@@ -1197,24 +1190,23 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				if($textonly){//画像なしの時
 				$dest="";
 				}
-				switch(D_POST_CHECKLEVEL){//190622
-					case 1:	//low
-						if($com === $lcom){error(MSG022,$dest);}
-						break;
-					case 2:	//middle
-						if(similar_str($com,$lcom) > COMMENT_LIMIT_MIDDLE){error(MSG022,$dest);}
-						break;
-					case 3:	//high
-						if(similar_str($com,$lcom) > COMMENT_LIMIT_HIGH){error(MSG022,$dest);}
-						break;
-					default:
-						if($com === $lcom && !$upfile_name){error(MSG022,$dest);}
+					switch(D_POST_CHECKLEVEL){//190622
+						case 1:	//low
+							if($com === $lcom){error(MSG022,$dest);}
+							break;
+						case 2:	//middle
+							if(similar_str($com,$lcom) > COMMENT_LIMIT_MIDDLE){error(MSG022,$dest);}
+							break;
+						case 3:	//high
+							if(similar_str($com,$lcom) > COMMENT_LIMIT_HIGH){error(MSG022,$dest);}
+							break;
+						default:
+							if($com === $lcom && !$upfile_name){error(MSG022,$dest);}
+					}
 				}
 			}
 		}
-	}
-		if($i>=$chkline){break;}
-		++$i;
+		if($i>=$chkline){break;}//チェックする最大行数
 	}//ここまで
 	unset($value);
 
@@ -1240,26 +1232,25 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 	// アップロード処理
 	if($dest){//画像が無い時は処理しない
-	$chkline=200;//チェックする最大行数
-	if(is_file($dest)){
-		$i=1;$j=1;
-		foreach($line as $value){ //画像重複チェック
-		if($value!==""){
-			list(,,,,,,,,,$extp,,,,$chkp,) = explode(",", $value);
-			if($extp){//拡張子があったら
-			if($chkp===$chk){
-				error(MSG005,$dest);
+		$chkline=200;//チェックする最大行数
+		if(is_file($dest)){
+			$j=1;
+			foreach($line as $i => $value){ //画像重複チェック
+				if($value!==""){
+				list(,,,,,,,,,$extp,,,,$chkp,) = explode(",", $value);
+					if($extp){//拡張子があったら
+					if($chkp===$chk){
+					error(MSG005,$dest);
+					}
+					if($j>=20){break;}//画像を20枚チェックしたら
+					++$j;
+					}
 				}
-		if($j>=20){break;}//画像を20枚チェックしたら
-			++$j;
+				if($i>=$chkline){break;}//チェックする最大行数
 			}
 		}
-		if($i>=$chkline){break;}
-			++$i;
 	}
-	}
-		}
-	else{//画像が無い時
+		else{//画像が無い時
 	$ext=$W=$H=$chk="";
 	}
 	unset($value,$i,$j);
@@ -3055,5 +3046,3 @@ paintform($picw,$pich,$palette,$anime);
 			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"><title></title></head>';
 		}
 }
-
-?>
