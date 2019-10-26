@@ -8,7 +8,6 @@
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css">
 		<script type="text/javascript" src="loadcookie.js"></script>
-		<?php echo "\n"; include('meta.php'); echo "\n"; ?>
 		<title>{$title}</title>
 	</head>
 	<body>
@@ -16,12 +15,12 @@
 			<h1>{$title}</h1>
 			<hr>
 			<section>
-				<p>
-					<a href="{$home}" target="_top"><i class="fas fa-home fa-fw fa-lg" title="ホーム"></i></a>
-					<a href="{$self}?mode=newpost"><i class="fas fa-pen-square fa-fw fa-lg" title="投稿"></i></a>
-					<a href="{$self}?mode=admin"><i class="fas fa-cog fa-fw fa-lg" title="管理"></i></a>
-					<a href="{$self2}"><i class="fas fa-list fa-fw fa-lg" title="標準モード"></i></a>
-				</p>
+				<ul class="menu">
+					<li><a href="{$home}" target="_top"><i class="fas fa-home fa-fw fa-lg" title="ホーム"></i>ホーム</a></li>
+					<li><a href="{$self}?mode=newpost"><i class="fas fa-pen-square fa-fw fa-lg" title="新規投稿"></i>新規投稿</a></li>
+					<li><a href="{$self}?mode=admin"><i class="fas fa-cog fa-fw fa-lg" title="管理モード"></i>管理モード</a></li>
+					<li><a href="{$self2}"><i class="fas fa-list fa-fw fa-lg" title="標準モード"></i>標準モード</a></li>
+				</ul>
 				<hr>
 				<h2>カタログモード</h2>
 				<hr>
@@ -41,6 +40,7 @@
 							<!--{/def}--><?php echo "\n"; ?>
 							<input type="hidden" name="mode" value="paint">
 							<input class="button" type="submit" value="お絵かき">
+							<!--{def anime}--><br><input type="checkbox" value="true" name="anime" title="動画記録" {$animechk}>アニメーション記録<!--{/def}--><?php echo "\n"; ?>
 						</p>
 					</form>
 					<!--{/def}--><?php echo "\n"; ?>

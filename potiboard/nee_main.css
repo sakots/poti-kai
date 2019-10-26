@@ -6,42 +6,42 @@
 }
 
 body {
-  background-color: #9CF;
-  color: #000;
+  background-color: #222;
+  color: #FFF;
   font-family: sans-serif;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
 a:link {
-  color: #00C;
+  color: #FFF;
 }
 
 a:visited {
-  color: #666;
+  color: #999;
 }
 
 a:active {
-  color: #C00;
+  color: #FFF;
 }
 
 a:hover {
-  color: #C00;
+  color: #FFF;
 }
 
 a i {
-  color: #000;
+  color: #FFF;
 }
 
 hr {
   border-style: solid;
   border-width: 1px;
-  border-color: #9CF;
+  border-color: #222;
   margin: 1ex auto;
 }
 
 header, main, footer, footer {
-  background-color: #FFF;
+  background-color: #333;
   border-radius: 8px;
   padding: 8px;
 }
@@ -51,15 +51,11 @@ header {
   position: fixed;
   margin: 12px;
   top: 0px;
-  -webkit-box-shadow: 0px 2px 2px 0px;
-          box-shadow: 0px 2px 2px 0px;
 }
 
 main, footer {
   display: block;
   margin: 12px 12px 12px 340px;
-  -webkit-box-shadow: 0px 2px 2px 0px;
-          box-shadow: 0px 2px 2px 0px;
 }
 
 footer {
@@ -67,13 +63,11 @@ footer {
 }
 
 input, select, em.thispage, .se, textarea, button, .button, .oyano, .oyaresno {
-  border-style: solid;
-  border-width: 1px;
+  border-style: none;
   border-radius: 4px;
-  border-color: #000;
   padding: 4px;
   color: #000;
-  background-color: #EEF;
+  background-color: #FFF;
 }
 
 select {
@@ -94,15 +88,15 @@ input[name="upfile"], select[name="upfile"], em.thispage[name="upfile"], .se[nam
 }
 
 em.thispage {
-  background-color: #9CF;
-  color: #000;
+  background-color: #222;
+  color: #FFF;
   font-style: normal;
   font-weight: bold;
 }
 
 .se {
-  background-color: #9CF;
-  color: #000;
+  background-color: #222;
+  color: #FFF;
   font-style: normal;
 }
 
@@ -125,6 +119,18 @@ ul {
   font-size: smaller;
 }
 
+ul.menu {
+  font-size: medium;
+}
+
+ul.menu li {
+  line-height: 200%;
+}
+
+ul.menu li a {
+  text-decoration: none;
+}
+
 .res section {
   display: table;
 }
@@ -139,7 +145,7 @@ ul {
 }
 
 .resma {
-  color: #666;
+  color: #999;
 }
 
 .thfoot {
@@ -162,13 +168,9 @@ ul {
   color: #FFF;
 }
 
-a .button i {
-  color: #FFF;
-}
-
 .oyano, .oyaresno {
-  background-color: #9CF;
-  color: #000;
+  background-color: #222;
+  color: #FFF;
   display: inline-block;
   text-align: center;
   min-width: 2em;
@@ -195,27 +197,27 @@ a .button i {
 }
 
 .NEO .color_bk {
-  color: #69C;
+  color: #333;
 }
 
 .NEO .color_bk2 {
-  color: #9CF;
+  color: #222;
 }
 
 .NEO .color_tool_icon {
-  color: #6C9;
+  color: #396;
 }
 
 .NEO .color_icon {
-  color: #9FC;
+  color: #063;
 }
 
 .NEO .color_iconselect {
-  color: #9FC;
+  color: #063;
 }
 
 .NEO .color_text {
-  color: #000;
+  color: #FFF;
 }
 
 .NEO .color_bar {
@@ -235,11 +237,11 @@ a .button i {
 }
 
 .NEO .tool_color_bar {
-  color: #EEE;
+  color: #333;
 }
 
 .NEO .tool_color_frame {
-  color: #000;
+  color: #222;
 }
 
 .palette {
@@ -286,7 +288,7 @@ a .button i {
 }
 
 .delfo th, .delfo td {
-  border: 1px solid #9CF;
+  border: 1px solid #222;
 }
 
 @media screen and (max-width: 1024px) {
