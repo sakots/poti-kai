@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.6 lot.191024
+  * POTI-board改 v1.53.8 lot.191126
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.53.6');
-define('POTI_VERLOT' , '改 v1.53.6 lot.191024');
+define('POTI_VER' , '改 v1.53.8');
+define('POTI_VERLOT' , '改 v1.53.8 lot.191126');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -996,7 +996,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($v_a===''||$v_b===''){
 			break;
 		}
-	if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)){error(MSG032,$dest);}
+		if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$name) && preg_match("/$v_b/u", $name)){error(MSG032,$dest);}
 	}
 	}
 }
@@ -1071,8 +1071,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	// No.とパスと時間とURLフォーマット
 	srand((double)microtime()*1000000);
-	if($pwd==""){
-		if($pwdc==""){
+	// if($pwd==""){
+	// 	if($pwdc==""){
+	if(!$pwd){//nullでも8桁のパスをセット
+		if(!$pwdc){
 			$pwd=rand();$pwd=substr($pwd,0,8);
 		}else{
 			$pwd=$pwdc;
@@ -1364,7 +1366,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$data['email'] = $email;
 		$data['option'][] = 'URL,'.$url;
 		$data['option'][] = '記事題名,'.$sub;
-		if(is_file($path.$tim.$ext)) $data['option'][] = '投稿画像,'.ROOT_URL.IMG_DIR.$tim.$ext;
+		if($ext) $data['option'][] = '投稿画像,'.ROOT_URL.IMG_DIR.$tim.$ext;//拡張子があったら
 		if(is_file(THUMB_DIR.$tim.'s.jpg')) $data['option'][] = 'サムネイル画像,'.ROOT_URL.THUMB_DIR.$tim.'s.jpg';
 		if(is_file(PCH_DIR.$tim.'.pch')) $data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.pch';
 		if(is_file(PCH_DIR.$tim.'.spch')) $data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.spch';
@@ -1640,7 +1642,7 @@ function init(){
 	$chkfile=array(LOGFILE,TREEFILE);
 	if(!is_writable(realpath("./")))error("カレントディレクトリに書けません<br>");
 	foreach($chkfile as $value){
-		if(!file_exists(realpath($value))){
+		if(!is_file(realpath($value))){
 			$fp = fopen($value, "w");
 			set_file_buffer($fp, 0);
 			$now = now_date(time());//日付取得
@@ -1651,7 +1653,7 @@ function init(){
 			if($value==LOGFILE)fwrite($fp,charconvert($testmes));
 			if($value==TREEFILE)fwrite($fp,"1\n");
 			fclose($fp);
-			if(file_exists(realpath($value)))chmod($value,0600);
+			if(is_file(realpath($value)))chmod($value,0600);
 		}
 		if(!is_writable(realpath($value)))$err.=$value."を書けません<br>";
 		if(!is_readable(realpath($value)))$err.=$value."を読めません<br>";
@@ -1679,7 +1681,7 @@ function init(){
 		if(!is_readable(realpath(TEMP_DIR)))$err.=TEMP_DIR."を読めません<br>";
 	}
 	if($err)error($err);
-	if(!file_exists(realpath(PHP_SELF2)))updatelog();
+	if(!is_file(realpath(PHP_SELF2)))updatelog();
 }
 
 /* お絵描き画面 */
@@ -2296,7 +2298,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($v_a===''||$v_b===''){
 			break;
 		}
-	if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)){error(MSG032,$dest);}
+		if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$name) && preg_match("/$v_b/u", $name)){error(MSG032,$dest);}
 	}
 	}
 }
@@ -2360,9 +2362,9 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		}
 	}
 
-	// パスと時間とURLフォーマット
+	// 時間とURLフォーマット
 //	$pass = ($pwd) ? substr(md5($pwd),2,8) : "*";
-	$pass = ($pwd) ? password_hash($pwd,PASSWORD_BCRYPT,['cost' => 5]) : "*";
+	// $pass = ($pwd) ? password_hash($pwd,PASSWORD_BCRYPT,['cost' => 5]) : "*";
 	$now = now_date($time);//日付取得
 	$now .= UPDATE_MARK;
 	if(DISP_ID){
@@ -2595,7 +2597,7 @@ function replace($no,$pwd,$stime){
 			$dest = $path.$tim.$imgext;
 			copy($upfile, $dest);
 			if(!is_file($dest)) error(MSG003,$dest);
-			$size = getimagesize($dest);
+			// $size = getimagesize($dest);
 			//			if(!is_array($size)) error(MSG004,$dest);
 		$img_type=mime_content_type($dest);//190603
 		if($img_type==="image/gif"||$img_type==="image/jpeg"||$img_type==="image/png"){//190603
