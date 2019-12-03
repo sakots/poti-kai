@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.8 lot.191126
+  * POTI-board改 v1.53.9 lot.191203
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.53.8');
-define('POTI_VERLOT' , '改 v1.53.8 lot.191126');
+define('POTI_VER' , '改 v1.53.9');
+define('POTI_VERLOT' , '改 v1.53.9 lot.191203');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -499,8 +499,9 @@ unset($value);
 		}
 		for($i = $st; $i < $st+PAGE_DEF; ++$i){
 //			if($tree[$i]=="") continue;
-			if(isset($tree[$i])){//未定義エラー対策
-			}else{continue;} 
+			if(!isset($tree[$i])){
+			continue;
+			}
 
 			$treeline = explode(",", rtrim($tree[$i]));
 			$disptree = $treeline[0];
@@ -928,20 +929,33 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$dest = $path.$tim.'.tmp';
 		if($pictmp==2){
 			copy($upfile, $dest);
-		}else{
-	if(!preg_match('/\A(jpe?g|gif|png)\z/i', pathinfo($upfile_name, PATHINFO_EXTENSION))){//もとのファイル名の拡張子190606
-	$dest="";
-		error(MSG004,$dest);
-	}
-			move_uploaded_file($upfile, $dest);
+		}
+		else{
+			if(!preg_match('/\A(jpe?g|gif|png)\z/i', pathinfo($upfile_name, PATHINFO_EXTENSION))){//もとのファイル名の拡張子190606
+			$dest="";
+			error(MSG004,$dest);
+			}
+			if(move_uploaded_file($upfile, $dest)){
+				$upfile_name = CleanStr($upfile_name);
+			}
+			else{
+				$upfile_name="";
+				$dest="";
+				error(MSG003,$dest);
+			}
+
 			//↑でエラーなら↓に変更
 			//copy($upfile, $dest);
 		}
-		$upfile_name = CleanStr($upfile_name);
-		if(!is_file($dest)) error(MSG003,$dest);
+
+		if(!is_file($dest)){
+			error(MSG003,$dest);
+		}
+		else{
+			$is_file_dest=true;
+		} 
 		if(filesize($dest) > MAX_KB * 1024){error(MSG034,$dest);} 	//追加(v1.32)
 		$size = getimagesize($dest);
-//		if(!is_array($size)) error(MSG004,$dest);
 		$img_type=mime_content_type($dest);//190603
 		if($img_type==="image/gif"||$img_type==="image/jpeg"||$img_type==="image/png"){//190603
 		$chk = md5_of_file($dest);
@@ -974,17 +988,17 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		error(MSG004,$dest);
 		}
 	}
-
-	$name  = charconvert($name );
-	$sub   = charconvert($sub  );
-	$com   = charconvert($com  );
-	$email = charconvert($email);
-	$url   = charconvert($url  );
-	$ptime = charconvert($ptime);
-
-	if(!isset($dest)){
+	else{
 		$dest="";
+		$is_file_dest=false;//is_file($dest）の変数化
 	}
+
+	// $name  = charconvert($name );
+	// $sub   = charconvert($sub  );
+	// $com   = charconvert($com  );
+	// $email = charconvert($email);
+	// $url   = charconvert($url  );
+	// $ptime = charconvert($ptime);
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
 	if($REQUEST_METHOD !== "POST") error(MSG006,$dest);
@@ -1007,10 +1021,10 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
 	if(preg_match("/&lt;|</",$email))   $email="";//190602
 	if(!$url||!preg_match("/^ *?https?:\/\//",$url)||preg_match("/&lt;|</",$url))   $url="";
-	if(!$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
-	if(RES_UPLOAD&&$resto&&!$textonly&&!is_file($dest)) error(MSG007,$dest);
+	if(!$resto&&!$textonly&&!$is_file_dest) error(MSG007,$dest);
+	if(RES_UPLOAD&&$resto&&!$textonly&&!$is_file_dest) error(MSG007,$dest);
 
-	if(!$com&&!is_file($dest)) error(MSG008,$dest);
+	if(!$com&&!$is_file_dest) error(MSG008,$dest);
 
 	if(USE_NAME&&!$name) error(MSG009,$dest);
 	if(USE_COM&&!$com) error(MSG008,$dest);
@@ -1233,23 +1247,21 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		}
 	}
 	// アップロード処理
-	if($dest){//画像が無い時は処理しない
+	if($dest&&$is_file_dest){//画像が無い時は処理しない
 		$chkline=200;//チェックする最大行数
-		if(is_file($dest)){
-			$j=1;
-			foreach($line as $i => $value){ //画像重複チェック
-				if($value!==""){
-				list(,,,,,,,,,$extp,,,,$chkp,) = explode(",", $value);
-					if($extp){//拡張子があったら
-					if($chkp===$chk){
-					error(MSG005,$dest);
-					}
-					if($j>=20){break;}//画像を20枚チェックしたら
-					++$j;
-					}
+		$j=1;
+		foreach($line as $i => $value){ //画像重複チェック
+			if($value!==""){
+			list(,,,,,,,,,$extp,,,,$chkp,) = explode(",", $value);
+				if($extp){//拡張子があったら
+				if($chkp===$chk){
+				error(MSG005,$dest);
 				}
-				if($i>=$chkline){break;}//チェックする最大行数
+				if($j>=20){break;}//画像を20枚チェックしたら
+				++$j;
+				}
 			}
+			if($i>=$chkline){break;}//チェックする最大行数
 		}
 	}
 		else{//画像が無い時
@@ -1327,7 +1339,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		setcookie ($c_name, $c_cookie,time()+SAVE_COOKIE*24*3600);
 	}
 
-	if($dest&&is_file($dest)){
+	if($dest&&$is_file_dest){
 		rename($dest,$path.$tim.$ext);
 		if(USE_THUMB){thumb($path,$tim,$ext,$max_w,$max_h);}
 
@@ -1693,101 +1705,102 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 	if ($useneo) $dat['useneo'] = true; //NEOを使う
 
 //pchファイルアップロードペイント
-	if($admin===ADMIN_PASS){
+if($admin===ADMIN_PASS){
 	if(isset($_FILES['pch_upload']['name'])){
 		$pchfilename=$_FILES['pch_upload']['name'];
 		if($pchfilename!==""){//空文字でなければ続行
-			$pchtmp=$_FILES['pch_upload']['tmp_name'];
 			$pchfilename=CleanStr($pchfilename);
 			if (strpos($pchfilename, '/') !== false) {//ファイル名に/がなければ続行
 				echo "不正なファイルです。";
-			$pchfilename="";
-			$pchtmp="";
-				}
-				else{//チェック通過
-			//拡張子チェック
-			$tim = time().substr(microtime(),2,3);
-			$ext=pathinfo($pchfilename, PATHINFO_EXTENSION);
-			$ext=strtolower($ext);//すべて小文字に
-			if($ext==="pch"){
-			$type_pch=true;
-			$pchup = TEMP_DIR.'tmp-'.$tim.'.pch';//アップロードされるファイル名
-			}
-			elseif($ext==="spch"){
-				$type_spch=true;
-				$type_pch=false;
-				$pchup = TEMP_DIR.'tmp-'.$tim.'.spch';//アップロードされるファイル名
-				}
-			else{//拡張子が一致しなかったら
 				$pchfilename="";
-				$pchup="";
 				$pchtmp="";
-				echo "アニメファイルをアップしてください。";
+			}
+		else{//チェック通過
+				//拡張子チェック
+				$tim = time().substr(microtime(),2,3);
+				$ext=pathinfo($pchfilename, PATHINFO_EXTENSION);
+				$ext=strtolower($ext);//すべて小文字に
+				if($ext==="pch"){
+					$type_pch=true;
+					$type_spch=false;
+					$pchup = TEMP_DIR.'pchup-'.$tim.'-tmp.pch';//アップロードされるファイル名
+					$pchtmp=$_FILES['pch_upload']['tmp_name'];
 				}
+				elseif($ext==="spch"){
+					$type_pch=false;
+					$type_spch=true;
+					$pchup = TEMP_DIR.'pchup-'.$tim.'-tmp.spch';//アップロードされるファイル名
+					$pchtmp=$_FILES['pch_upload']['tmp_name'];
+			}
+			else{//拡張子が一致しなかったら
+			$pchfilename="";
+			$pchup="";
+			$pchtmp="";
+			$type_pch=false;
+			$type_spch=false;
+			echo "アニメファイルをアップしてください。";
+			}
 			unset($pchfilename,$ext);//元のファル名の情報を残さない
 			if(move_uploaded_file($pchtmp, $pchup)){//アップロード成功なら続行
-				$pchup=TEMP_DIR.basename($pchup);//ファイルを開くディレクトリを固定
+			$pchup=TEMP_DIR.basename($pchup);//ファイルを開くディレクトリを固定
 			if(mime_content_type($pchup)==="application/octet-stream"){//mimetypeが正しければ続行
-				//	var_dump(mime_content_type($pchup));
-				$fp = fopen("$pchup", "rb");
-				$line = bin2hex(fgets($fp ,4096)) ;
-				//	var_dump()
-				//var_dump($line);
-				//var_dump(mime_content_type($pchup));
+			// var_dump(mime_content_type($pchup));
+			$fp = fopen("$pchup", "rb");
+			$line = bin2hex(fgets($fp ,4096)) ;
+			//var_dump($line);
+			//var_dump(mime_content_type($pchup));
 				if($type_pch){
-					$line = substr($line,0,6);
-					if($line==="4e454f"){
-					$useneo=true;
-					$dat['useneo'] = true;
-					}
-					else{//NEOのpchでなければ
-					echo"NEOのPCHではありません。";
-				//		var_dump($line);
-						unlink($pchup);
+			$line = substr($line,0,6);
+			if($line==="4e454f"){
+			$useneo=true;
+			$dat['useneo'] = true;
+			}
+			else{//NEOのpchでなければ
+			echo"NEOのPCHではありません。";
+			// var_dump($line);
+			unlink($pchup);
+			}
+			}
+			elseif($type_spch){
+			$line = substr($line,0,24);
+			// $line2 = substr($line,0,30);
+			if($line==="6c617965725f636f756e743d"||$line==="000d0a"){
+			$useneo=false;
+			$dat['useneo'] = false;
+			}else{//しぃぺのspchでなければ
+			echo"しぃペインターのSPCHではありません。";
+			unlink($pchup);
+			}
+			// var_dump($line);
+
 				}
-				}
-				elseif($type_spch){
-					$line = substr($line,0,24);
-				//	$line2 = substr($line,0,30);
-					if($line==="6c617965725f636f756e743d"||$line==="000d0a"){
-					$useneo=false;
-					$dat['useneo'] = false;
-						}else{//しぃぺのspchでなければ
-					echo"しぃペインターのSPCHではありません。";
-						unlink($pchup);
-					}
-				//		var_dump($line);
-					
-				}
-				else{
-					unlink($pchup);
-					echo"アニメファイルをアップしてください。";
-				}
-					fclose($fp);
-					$dat['pchfile'] = $pchup;
-				}
+			else{
+			unlink($pchup);
+			echo"アニメファイルをアップしてください。";
+			}
+			fclose($fp);
+			$dat['pchfile'] = $pchup;
+			}
 			else{//mime_content_typeが違ったら
-				unlink($pchup);
-				echo"アニメファイルをアップしてください。";
-			//	error(MSG001);
+			unlink($pchup);
+			echo"アニメファイルをアップしてください。";
+			// error(MSG001);
 			}
 
-			//var_dump(pathinfo($pchup, PATHINFO_EXTENSION));
-			//var_dump($line);
-					}
-			}//不正なファイルでは無い時は
-		}//空文字列でなければ処理続行。
+			}
+		}//不正なファイルでは無い時は
+	}//空文字列でなければ処理続行。
 		else{
 		$pchfilename="";
 		$pchup="";
 		$pchtmp="";
-			}
 		}
-		else{//未定義なら
-			$_FILES['pch_upload']['tmp_name']="";
 		}
+	else{//未定義なら
+	$_FILES['pch_upload']['tmp_name']="";
 	}
-//pchファイルアップロードペイントここまで
+}
+	//pchファイルアップロードペイントここまで
 
 	if($picw < 100) $picw = 100;
 	if($pich < 100) $pich = 100;
@@ -2114,10 +2127,20 @@ function deltemp(){
 			if($lapse > (TEMP_LIMIT*24*3600)){
 				unlink(TEMP_DIR.$file);
 			}
+			//pchアップロードペイントファイル削除
+			if(preg_match("/\A(pchup-.*-tmp\.s?pch)\z/i",$file)) {
+				$lapse = time() - filemtime(TEMP_DIR.$file);
+				if($lapse > (300)){//5分
+					unlink(TEMP_DIR.$file);
+				}
+			}
 		}
 	}
+	
 	closedir($handle);
+
 }
+
 
 /* コンティニュー前画面 */
 function incontinue($no){
@@ -2745,6 +2768,7 @@ function catalog(){
 				else{
 						$pch="";
 					}
+				$txt=false;
 			}
 			else{//画像が無い時
 				$txt=true;
@@ -2770,9 +2794,6 @@ function catalog(){
 				$name=preg_replace("/(◆.*)/","",$name);
 			}else{$trip='';}
 
-	if(!isset($txt)){
-		$txt="";
-	}
 
 			// 記事格納
 			$dat['y'][$y]['x'][$x] = compact('imgsrc','w','no','sub','name','now','pch','txt','id','updatemark','trip');
@@ -2953,7 +2974,6 @@ init();		//←■■初期設定後は不要なので削除可■■
 deltemp();
 
 //user-codeの発行
-//if(!isset($usercode)){
 if(!$usercode){//falseなら発行
 	$usercode = substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", time())),'id'),-12);
 	//念の為にエスケープ文字があればアルファベットに変換
