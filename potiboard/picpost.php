@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.190921  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.191203  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -8,7 +8,8 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
-// 2019/08/23 コード整理。
+// 2019/12/03 軽微なエラー修正。datファイルのパーミッションを600に
+// 2019/08/23 コード整理
 // 2018/07/13 動画が記録できなくなっていたのを修正
 // 2018/06/14 軽微なエラー修正
 // 2018/01/12 php7対応
@@ -38,17 +39,21 @@ function error($error){
 	$youbi = array('日','月','火','水','木','金','土');
 	$yd = $youbi[gmdate("w", $time+9*60*60)] ;
 	$now = gmdate("y/m/d",$time+9*60*60)."(".(string)$yd.")".gmdate("H:i",$time+9*60*60);
-	if(@is_file($syslog)) $lines = file($syslog);
+	if(is_file($syslog)) $lines = file($syslog);
 	$ep = @fopen($syslog , "w") or die($syslog."が開けません");
 	flock($ep, 2);
-	fputs($ep, $imgfile."  ".$error." [".$now."]\n");
-	for($i = 0; $i < $syslogmax; $i++)
-		fputs($ep, $lines[$i]);
+	fwrite($ep, $imgfile."  ".$error." [".$now."]\n");//最新のエラー情報
+	foreach($lines as $i=>$val){//これまでのエラー情報
+		if($i<$syslogmax){//記録行数上限
+		fwrite($ep, $val);
+		}	
+	}
+	unset($val);
 	fclose($ep);
 }
 //ファイルmd5計算 
 function md5_of_file($inFile){
-	if(@is_file($inFile)){
+	if(is_file($inFile)){
 			return md5_file($inFile);
 	}else{
 		return false;
@@ -197,6 +202,7 @@ if(!$fp){
 	flock($fp, 2);
 	fwrite($fp, $userdata);
 	fclose($fp);
+	chmod(TEMP_DIR.$imgfile.'.dat',0600);
 }
 
 die("ok");
