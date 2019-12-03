@@ -10,7 +10,6 @@
 		<script type="text/javascript" src="loadcookie.js"></script>
 		<title>{$title}</title>
 		<!--{def notres}--><?php echo "\n"; ?>
-		<?php echo "\n"; include('meta.php'); echo "\n"; ?>
 		<meta name="twitter:card" content="summary">
 		<meta name="twitter:site" content="">
 		<meta property="og:site_name" content="">
@@ -35,16 +34,16 @@
 			<h1>{$title}</h1>
 			<hr>
 			<section>
-				<p class="menu">
+				<ul class="menu">
 					<!--{def resno}--><?php echo "\n"; ?>
-					<a href="{$self2}"><i class="fas fa-star fa-fw fa-lg" title="トップ"></i></a>
+					<li><a href="{$self2}"><i class="fas fa-star fa-fw fa-lg" title="トップ"></i>トップ</a></li>
 					<!--{/def}--><?php echo "\n"; ?>
-					<a href="{$home}" target="_top"><i class="fas fa-home fa-fw fa-lg" title="ホーム"></i></a>
-					<a href="{$self}?mode=newpost"><i class="fas fa-pen-square fa-fw fa-lg" title="投稿"></i></a>
-					<a href="{$self}?mode=admin"><i class="fas fa-cog fa-fw fa-lg" title="管理"></i></a>
-					<a href="{$self}?mode=catalog"><i class="fas fa-table fa-fw fa-lg" title="カタログ"></i></a>
-					<a href="{$self}?mode=piccom<!--{def resno}-->&amp;resto={$resno}<!--{/def}-->"><i class="fas fa-paste fa-fw fa-lg" title="投稿途中の絵"></i></a>
-				</p>
+					<li><a href="{$home}" target="_top"><i class="fas fa-home fa-fw fa-lg" title="ホーム"></i>ホーム</a></li>
+					<li><a href="{$self}?mode=newpost"><i class="fas fa-pen-square fa-fw fa-lg" title="新規投稿"></i>新規投稿</a></li>
+					<li><a href="{$self}?mode=admin"><i class="fas fa-cog fa-fw fa-lg" title="管理モード"></i>管理モード</a></li>
+					<li><a href="{$self}?mode=catalog"><i class="fas fa-table fa-fw fa-lg" title="カタログ"></i>カタログ</a></li>
+					<li><a href="{$self}?mode=piccom<!--{def resno}-->&amp;resto={$resno}<!--{/def}-->"><i class="fas fa-paste fa-fw fa-lg" title="投稿途中の絵"></i>投稿途中の絵</a></li>
+				</ul>
 				<hr>
 				<!--{def resno}--><?php echo "\n"; ?>
 				<p class="resm">レス送信モード</p>
@@ -71,7 +70,7 @@
 							<!--{/def}--><?php echo "\n"; ?>
 							<input type="hidden" name="mode" value="paint">
 							<input class="button" type="submit" value="お絵かき">
-							<!--{def anime}--><input type="checkbox" value="true" name="anime" title="動画記録" {$animechk}><!--{/def}--><?php echo "\n"; ?>
+							<!--{def anime}--><br><label><input type="checkbox" value="true" name="anime" title="動画記録" {$animechk}>アニメーション記録</label><!--{/def}--><?php echo "\n"; ?>
 						</p>
 					</form>
 				</section>
