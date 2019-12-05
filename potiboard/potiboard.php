@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.53.9 lot.191203
+  * POTI-board改 v1.54.0 lot.191205
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.53.9');
-define('POTI_VERLOT' , '改 v1.53.9 lot.191203');
+define('POTI_VER' , '改 v1.54.0');
+define('POTI_VERLOT' , '改 v1.54.0 lot.191205');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -873,7 +873,7 @@ function now_date($time){
 
 /* エラー画面 */
 function error($mes,$dest=''){
-	if(is_file($dest)) unlink($dest);
+	if($dest&&is_file($dest)) unlink($dest);
 	$dat['err_mode'] = true;
 	head($dat);
 	$dat['mes'] = $mes;
@@ -931,7 +931,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			copy($upfile, $dest);
 		}
 		else{
-			if(!preg_match('/\A(jpe?g|gif|png)\z/i', pathinfo($upfile_name, PATHINFO_EXTENSION))){//もとのファイル名の拡張子190606
+			if(!preg_match('/\A(jpe?g|jfif|gif|png)\z/i', pathinfo($upfile_name, PATHINFO_EXTENSION))){//もとのファイル名の拡張子190606
 			$dest="";
 			error(MSG004,$dest);
 			}
@@ -958,7 +958,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$size = getimagesize($dest);
 		$img_type=mime_content_type($dest);//190603
 		if($img_type==="image/gif"||$img_type==="image/jpeg"||$img_type==="image/png"){//190603
-		$chk = md5_of_file($dest);
+		$chk = md5_file($dest);
 		foreach($badfile as $value){if(preg_match("/^$value/",$chk)){
 			error(MSG005,$dest); //拒絶画像
 		}}
@@ -1356,13 +1356,15 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				unlink($pchtemp);
 			}
 		}
+		else{//pchファイルが無かったら
 		//SPCHファイルアップロード
 		$pchtemp = $temppath.$picfile.'.spch';
-		if(is_file($pchtemp)){
+			if(is_file($pchtemp)){
 			copy($pchtemp, PCH_DIR.$tim.'.spch');
 			if(is_file(PCH_DIR.$tim.'.spch')){
 				chmod(PCH_DIR.$tim.'.spch',0606);
 				unlink($pchtemp);
+				}
 			}
 		}
 	}
@@ -1380,8 +1382,12 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$data['option'][] = '記事題名,'.$sub;
 		if($ext) $data['option'][] = '投稿画像,'.ROOT_URL.IMG_DIR.$tim.$ext;//拡張子があったら
 		if(is_file(THUMB_DIR.$tim.'s.jpg')) $data['option'][] = 'サムネイル画像,'.ROOT_URL.THUMB_DIR.$tim.'s.jpg';
-		if(is_file(PCH_DIR.$tim.'.pch')) $data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.pch';
-		if(is_file(PCH_DIR.$tim.'.spch')) $data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.spch';
+		if(is_file(__DIR__.'/'.PCH_DIR.$tim.'.pch')) {
+			$data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.pch';
+		}
+		elseif(is_file(__DIR__.'/'.PCH_DIR.$tim.'.spch')) {
+			$data['option'][] = 'アニメファイル,'.ROOT_URL.PCH_DIR.$tim.'.spch';
+		}
 		if($resto){
 			$data['subject'] = '['.TITLE.'] No.'.$resto.'へのレスがありました';
 			$data['option'][] = "\n".'記事URL,'.ROOT_URL.PHP_SELF.'?res='.$resto;
@@ -1413,14 +1419,14 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	echo $str;
 }
 
-//ファイルmd5計算 190622
-function md5_of_file($inFile) {
-	if (is_file($inFile)){
-			return md5_file($inFile);
-	}else{
-		return false;
-	}
-}
+//ファイルmd5計算
+// function md5_of_file($inFile) {
+// 	if (is_file($inFile)){
+// 			return md5_file($inFile);
+// 	}else{
+// 		return false;
+// 	}
+// }
 
 //ツリー削除
 function treedel($delno){
@@ -1950,8 +1956,12 @@ $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 	$dat['animeform'] = true;
 	$dat['anime'] = ($anime) ? true : false;
 	if($ctype=='pch'){
-		if(is_file(PCH_DIR.$pch.'.pch')) $dat['pchfile'] = './'.PCH_DIR.$pch.'.pch';
-		if(is_file(PCH_DIR.$pch.'.spch')) $dat['pchfile'] = './'.PCH_DIR.$pch.'.spch';
+		if(is_file(__DIR__.'/'.PCH_DIR.$pch.'.pch')){
+			$dat['pchfile'] = './'.PCH_DIR.$pch.'.pch';
+		} 
+		elseif(is_file(__DIR__.'/'.PCH_DIR.$pch.'.spch')){
+			$dat['pchfile'] = './'.PCH_DIR.$pch.'.spch';
+		}
 	}
 	if($ctype=='img'){
 		$dat['animeform'] = false;
@@ -2624,7 +2634,7 @@ function replace($no,$pwd,$stime){
 			//			if(!is_array($size)) error(MSG004,$dest);
 		$img_type=mime_content_type($dest);//190603
 		if($img_type==="image/gif"||$img_type==="image/jpeg"||$img_type==="image/png"){//190603
-			$chk = md5_of_file($dest);
+			$chk = md5_file($dest);
 			foreach($badfile as $value){if(preg_match("/^$value/",$chk)){
 				error(MSG005,$dest); //拒絶画像
 			}}
@@ -2648,20 +2658,28 @@ function replace($no,$pwd,$stime){
 					unlink($pchtemp);
 				}
 			}
+			else{//pchファイルが無かったら
+
 			//SPCHファイルアップロード
 			$pchtemp = $temppath.$file_name.'.spch';
-			if(is_file($pchtemp)){
+				if(is_file($pchtemp)){
 				copy($pchtemp, PCH_DIR.$tim.'.spch');
 				if(is_file(PCH_DIR.$tim.'.spch')){
 					chmod(PCH_DIR.$tim.'.spch',0606);
 					unlink($pchtemp);
+					}
 				}
 			}
 			//旧ファイル削除
 			if(is_file($path.$etim.$ext)) unlink($path.$etim.$ext);
 			if(is_file(THUMB_DIR.$etim.'s.jpg')) unlink(THUMB_DIR.$etim.'s.jpg');
-			if(is_file(PCH_DIR.$etim.'.pch')) unlink(PCH_DIR.$etim.'.pch');
-			if(is_file(PCH_DIR.$etim.'.spch')) unlink(PCH_DIR.$etim.'.spch');
+			if(is_file(PCH_DIR.$etim.'.pch')){
+				unlink(PCH_DIR.$etim.'.pch');
+			}
+			elseif(is_file(PCH_DIR.$etim.'.spch')){
+				unlink(PCH_DIR.$etim.'.spch');
+			} 
+			
 			//ID付加
 			if(DISP_ID){
 				if($email&&DISP_ID==1){
