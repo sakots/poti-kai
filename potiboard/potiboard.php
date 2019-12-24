@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.54.0 lot.191205
+  * POTI-board改 v1.54.1 lot.191224
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,8 +182,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.0');
-define('POTI_VERLOT' , '改 v1.54.0 lot.191205');
+define('POTI_VER' , '改 v1.54.1');
+define('POTI_VERLOT' , '改 v1.54.1 lot.191224');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -839,9 +839,11 @@ unset($value);
 			else{$logfilename=$page/PAGE_DEF.PHP_EXT;}
 		$fp = fopen($logfilename, "w");
 		set_file_buffer($fp, 0);
-		flock($fp, 2); //*
+		flock($fp, LOCK_EX); //*
 		rewind($fp);
 		fwrite($fp, $buf);
+		fflush($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 		//chmod($logfilename,0606);
 		//拡張子を.phpにした場合、↑で500エラーでるなら↓に変更
@@ -853,7 +855,7 @@ unset($value);
 
 /* オートリンク */
 function auto_link($proto){
-	if(!stristr($proto,"script")){//scriptがなければ続行
+	if(!(stripos($proto,"script")!==false)){//scriptがなければ続行
 	$proto = preg_replace("{(https?|ftp)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)}","<a href=\"\\1\\2\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">\\1\\2</a>",$proto);
 	return $proto;
 	}else{
@@ -1151,7 +1153,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	//ログ読み込み
 	$fp=fopen(LOGFILE,"r+");
-	flock($fp, 2);
+	flock($fp, LOCK_EX);
 	rewind($fp);
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019,$dest);}
@@ -1252,9 +1254,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$j=1;
 		foreach($line as $i => $value){ //画像重複チェック
 			if($value!==""){
-			list(,,,,,,,,,$extp,,,,$chkp,) = explode(",", $value);
+			list(,,,,,,,,,$extp,,,$timep,$chkp,) = explode(",", $value);
 				if($extp){//拡張子があったら
-				if($chkp===$chk){
+				if($chkp===$chk&&is_file($path.$timep.$extp)){
 				error(MSG005,$dest);
 				}
 				if($j>=20){break;}//画像を20枚チェックしたら
@@ -1283,7 +1285,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$newline = '';
 	$tp=fopen(TREEFILE,"r+");
 	set_file_buffer($tp, 0);
-	flock($tp, 2); //*
+	flock($tp, LOCK_EX); //*
 	rewind($tp);
 	$buf=fread($tp,2097152);
 	if($buf==''){error(MSG023,$dest);}
@@ -1305,7 +1307,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 				$find = TRUE;
 				$value=rtrim($value).','.$no."\n";
 				$j=explode(",", rtrim($value));
-				if(!(stristr($email,'sage') || (count($j)>MAX_RES))){
+				if(!(stripos($email,'sage')!==false || (count($j)>MAX_RES))){
 					$newline=$value;
 					$value='';
 				}
@@ -1320,7 +1322,11 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	set_file_buffer($tp, 0);
 	rewind($tp);
 	fwrite($tp, $newline);
+	fflush($tp);
+	flock($tp, LOCK_UN);
 	fclose($tp);
+	fflush($fp);
+	flock($fp, LOCK_UN);
 	fclose($fp);
 
 	//-- クッキー保存 --
@@ -1432,7 +1438,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 function treedel($delno){
 	$fp=fopen(TREEFILE,"r+");
 	set_file_buffer($fp, 0);
-	flock($fp, 2);
+	flock($fp, LOCK_EX);
 	rewind($fp);
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG024);}
@@ -1451,6 +1457,8 @@ function treedel($delno){
 			if($value == $delno){
 				if($j==0){//スレ削除
 					if($countline<3){//スレが1つしかない場合、エラー防止の為に削除不可
+						fflush($fp);
+						flock($fp, LOCK_UN);
 						fclose($fp);
 						error(MSG026);
 					}else{$line[$i]='';}
@@ -1473,6 +1481,8 @@ function treedel($delno){
 		rewind($fp);
 		fwrite($fp, implode('', $line));
 	}
+	fflush($fp);
+	flock($fp, LOCK_UN);
 	fclose($fp);
 }
 
@@ -1502,7 +1512,7 @@ function usrdel($del,$pwd){
 		if($pwd==""&&$pwdc!="") $pwd=$pwdc;
 		$fp=fopen(LOGFILE,"r+");
 		set_file_buffer($fp, 0);
-		flock($fp, 2);
+		flock($fp, LOCK_EX);
 		rewind($fp);
 		$buf=fread($fp,2097152);
 		if($buf==''){error(MSG027);}
@@ -1545,6 +1555,8 @@ function usrdel($del,$pwd){
 			$newline = implode('', $line);
 			fwrite($fp, charconvert($newline));
 		}
+		fflush($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
 }
@@ -1570,7 +1582,7 @@ function admindel($pass){
 		reset($del);
 		$fp=fopen(LOGFILE,"r+");
 		set_file_buffer($fp, 0);
-		flock($fp, 2);
+		flock($fp, LOCK_EX);
 		rewind($fp);
 		$buf=fread($fp,2097152);
 		if($buf==''){error(MSG030);}
@@ -1608,6 +1620,8 @@ function admindel($pass){
 			$newline = implode('', $line);
 			fwrite($fp, charconvert($newline));
 		}
+		fflush($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
 	// 削除画面を表示
@@ -2247,8 +2261,10 @@ function editform($del,$pwd){
 		reset($del);
 		if($pwd==""&&$pwdc!="") $pwd=$pwdc;
 		$fp=fopen(LOGFILE,"r");
-		flock($fp, 2);
+		flock($fp, LOCK_EX);
 		$buf=fread($fp,2097152);
+		fflush($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 		if($buf==''){error(MSG019);}
 		$buf = charconvert($buf);
@@ -2450,7 +2466,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	//ログ読み込み
 	$fp=fopen(LOGFILE,"r+");
-	flock($fp, 2);
+	flock($fp, LOCK_EX);
 	rewind($fp);
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019);}
@@ -2480,6 +2496,8 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	}
 	unset($value);
 	if(!$flag){
+		fflush($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 		error(MSG028);
 	}
@@ -2489,6 +2507,8 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	rewind($fp);
 	$newline = implode('', $line);
 	fwrite($fp, charconvert($newline));
+	fflush($fp);
+	flock($fp, LOCK_UN);
 	fclose($fp);
 
 	updatelog();
@@ -2603,7 +2623,7 @@ function replace($no,$pwd,$stime){
 
 	//ログ読み込み
 	$fp=fopen(LOGFILE,"r+");
-	flock($fp, 2);
+	flock($fp, LOCK_EX);
 	rewind($fp);
 	$buf=fread($fp,2097152);
 	if($buf==''){error(MSG019);}
@@ -2701,6 +2721,8 @@ function replace($no,$pwd,$stime){
 	}
 	unset($value);
 	if(!$flag){
+		fflush($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 		error(MSG028);
 	}
@@ -2710,6 +2732,8 @@ function replace($no,$pwd,$stime){
 	rewind($fp);
 	$newline = implode('', $line);
 	fwrite($fp, charconvert($newline));
+	fflush($fp);
+	flock($fp, LOCK_UN);
 	fclose($fp);
 
 	updatelog();
