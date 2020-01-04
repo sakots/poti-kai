@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.54.1 lot.191224
+  * POTI-board改 v1.54.2 lot.200105
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -166,8 +166,6 @@ $temppath = realpath("./").'/'.TEMP_DIR;
 //サムネイルfunction
 if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 	require(__DIR__.'/thumbnail_gd.php');
-}else{
-	require(__DIR__.'/thumbnail_re.php');
 }
 
 //ペイント画面の$pwdの暗号化
@@ -182,8 +180,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.1');
-define('POTI_VERLOT' , '改 v1.54.1 lot.191224');
+define('POTI_VER' , '改 v1.54.2');
+define('POTI_VERLOT' , '改 v1.54.2 lot.200105');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -338,8 +336,10 @@ function gd_check(){
 	return $flag;
 }
 
+
 //gdのバージョンを調べる
 function get_gd_ver(){
+	if(function_exists("gd_info")){
 	$gdver=gd_info();
 	$phpinfo=$gdver["GD Version"];
 	$end=strpos($phpinfo,".");
@@ -347,6 +347,10 @@ function get_gd_ver(){
 	$length = strlen($phpinfo)-1;
 	$phpinfo=substr($phpinfo,$length);
 	return $phpinfo;
+	}
+	else{
+	return false;
+	}
 }
 
 /* ヘッダ */
@@ -995,12 +999,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$is_file_dest=false;//is_file($dest）の変数化
 	}
 
-	// $name  = charconvert($name );
-	// $sub   = charconvert($sub  );
-	// $com   = charconvert($com  );
-	// $email = charconvert($email);
-	// $url   = charconvert($url  );
-	// $ptime = charconvert($ptime);
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
 	if($REQUEST_METHOD !== "POST") error(MSG006,$dest);

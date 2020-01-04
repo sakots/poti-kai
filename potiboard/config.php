@@ -330,7 +330,7 @@ $badip = array("addr.dummy.com","addr2.dummy.com");
 //サムネイルを作成する する:1 しない:0
 define('USE_THUMB', '1');
 
-//サムネイルルーチンの指定 自動判別:0 GD版:1 repng2jpeg版:2
+//サムネイルルーチンの指定 自動判別:0 GD版:1 
 //自動判別は万能じゃありません
 //なるべくチェックスクリプトで調べてから直に指定して下さい
 define('THUMB_SELECT', '0');
