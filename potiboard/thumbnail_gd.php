@@ -25,17 +25,23 @@ function thumb($path,$tim,$ext,$max_w,$max_h){
 				$im_in = @ImageCreateFromGIF($fname);
 				if(!$im_in)return;
 			}
-			break;
+			else{
+				return;
+			}
+		break;
 		case 2 :
 			$im_in = @ImageCreateFromJPEG($fname);//jpg
 			if(!$im_in)return;
-			break;
+		break;
 		case 3 :
 			if(function_exists("ImageCreateFromPNG")){//png
 				$im_in = @ImageCreateFromPNG($fname);
 				if(!$im_in)return;
 			}
-			break;
+			else{
+				return;
+			}
+		break;
 		default : return;
 	}
 	// 出力画像（サムネイル）のイメージを作成
