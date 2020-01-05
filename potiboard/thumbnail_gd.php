@@ -23,8 +23,8 @@ function thumb($path,$tim,$ext,$max_w,$max_h){
 		case 1 :
 			if(function_exists("ImageCreateFromGIF")){//gif
 				$im_in = @ImageCreateFromGIF($fname);
+				if(!$im_in)return;
 			}
-			if(!$im_in)return;
 			break;
 		case 2 :
 			$im_in = @ImageCreateFromJPEG($fname);//jpg
@@ -33,8 +33,8 @@ function thumb($path,$tim,$ext,$max_w,$max_h){
 		case 3 :
 			if(function_exists("ImageCreateFromPNG")){//png
 				$im_in = @ImageCreateFromPNG($fname);
+				if(!$im_in)return;
 			}
-			if(!$im_in)return;
 			break;
 		default : return;
 	}
