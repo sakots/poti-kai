@@ -35,6 +35,8 @@
 </p>
 <h2>履歴</h2>
 <dl>
+	<dt class="ver">[2020/01/06] v1.54.3 lot.200106</dt>
+	<dd class="con">thumbnail_gd.phpが使えないときに発生するエラーの修正（by さとぴあ）</dd>
 	<dt class="ver">[2020/01/05] v1.54.2 lot.200105</dt>
 	<dd class="con">HTMLの幅と高さとサムネイルの実際のサイズが違う問題を修正（by さとぴあ）</dd>
 	<dd class="con">GDがインストールされていないサーバで発生する致命的エラーを修正（by さとぴあ）</dd>
