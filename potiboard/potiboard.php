@@ -1,7 +1,7 @@
 <?php
 /*
   *
-  * POTI-board改 v1.54.2 lot.200105
+  * POTI-board改 v1.54.3 lot.200106
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -167,6 +167,12 @@ $temppath = realpath("./").'/'.TEMP_DIR;
 if((THUMB_SELECT==0 && gd_check()) || THUMB_SELECT==1){
 	require(__DIR__.'/thumbnail_gd.php');
 }
+else{
+	function thumb(){
+		return;
+	}
+}
+
 
 //ペイント画面の$pwdの暗号化
 if(!defined('crypt_pass')){//config.phpで未定義なら初期値が入る
@@ -180,8 +186,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.2');
-define('POTI_VERLOT' , '改 v1.54.2 lot.200105');
+define('POTI_VER' , '改 v1.54.3');
+define('POTI_VERLOT' , '改 v1.54.3 lot.200106');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
