@@ -1,6 +1,6 @@
 <?php
 /*
-  * POTI-board改 v1.45.3 lot.181122
+  * POTI-board改 v1.53.0 lot.190823
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。

@@ -1,7 +1,8 @@
 <?php
+// ini_set('error_reporting', E_ALL);
 /*
   *
-  * POTI-board改 v1.54.3 lot.200106
+  * POTI-board改 v1.54.4 lot.200114
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -173,7 +174,6 @@ else{
 	}
 }
 
-
 //ペイント画面の$pwdの暗号化
 if(!defined('crypt_pass')){//config.phpで未定義なら初期値が入る
 define('crypt_pass','qRyFfhV6nyUggSb');//暗号鍵初期値
@@ -181,13 +181,12 @@ define('crypt_pass','qRyFfhV6nyUggSb');//暗号鍵初期値
 define('crypt_method','aes-128-cbc');
 define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 
-
 //MB関数を使うか？ 使う:1 使わない:0
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.3');
-define('POTI_VERLOT' , '改 v1.54.3 lot.200106');
+define('POTI_VER' , '改 v1.54.4');
+define('POTI_VERLOT' , '改 v1.54.4 lot.200114');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -577,7 +576,12 @@ unset($value);
 				$limit ="";
 				}
 			// ミニフォーム用
-			if(USE_RESUB) $resub = 'Re: '.$sub;
+			if(USE_RESUB){
+				$resub = 'Re: '.$sub;
+			}
+			else{
+				$resub = '';
+			}
 			// レス省略
 			if(!$resno){
 				$counttreeline = count($treeline);//190619
