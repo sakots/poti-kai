@@ -27,7 +27,7 @@ potiboard.zip がスクリプト一式です。
 
 ## サンプル/サポート掲示板
 
-サンプルとして[「nee」](https://sakots.red/nee/)[「5u」](https://sakots.red/5u/")[「5r」](https://sakots.red/5r/")をオープンしました。質問や動作確認にご利用ください。
+サンプルとして[「nee」](https://sakots.red/nee/)[「5u」](https://sakots.red/5u/)[「5r」](https://sakots.red/5r/)をオープンしました。質問や動作確認にご利用ください。
 
 ---
 
