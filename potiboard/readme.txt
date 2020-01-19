@@ -70,7 +70,7 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 
 
-■設置方法
+■設置方法（旧）
 
 　詳しくは設置手順書( http://www.punyu.net/php/readme.php?txt=potisetup )
 を御覧下さい。
@@ -191,12 +191,11 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 　PaintBBS(test by v2.22_8)
 　しぃペインター(test by v1.071all)
 　PCH Viewer(test by v1.12)          (C)しぃちゃん「しぃ堂」
-　WCS 動的パレットコントロールセット (C)のらネコ「WonderCatStudio」
-                                        <http://wondercatstudio.com/>
+　WCS 動的パレットコントロールセット (C)のらネコ「WonderCatStudio」<http://wondercatstudio.com/>
 
 
 　
-■変更履歴
+■変更履歴(新しいのはgithub参照のこと)
 [2018/09/23] v1.45.1 lot.180923
 【仕様変更】
 　・config.phpでシェアボタンを表示する する:1 しない:0を選択できるようにした。
@@ -218,11 +217,11 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 [2018/08/22] v1.44.1 lot.180822
 【障害対応】
-　・軽微ななエラー対応（by さとぴあ）
+　・軽微なエラー対応（by さとぴあ）
 
 [2018/06/05] v1.42.1 lot.180605
 【障害対応】
-　・軽微ななエラー対応（by さとぴあ）
+　・軽微なエラー対応（by さとぴあ）
 
 [2018/05/07] 改 v1.42 lot.180507
 【仕様変更】
