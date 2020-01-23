@@ -24,17 +24,8 @@
 
 　配布条件は「レッツPHP!」に準じます。改造、再配布は自由にどうぞ。
 
-　画像のリサイズは、GD版とrepng2jpeg版を用意しています。
-　これのチェックスクリプトが当サイト<http://www.punyu.net/php/oekaki.php#check>
-　にありますので、これでチェックした後どちらを使用するか決めて下さい。
-　repng2jpeg版を利用するには「菅処」<http://sugachan.dip.jp/download/>
-　の repng2jpeg が必要です。下記URLから入手してください。
-http://sugachan.dip.jp/download/komono.php#repng2jpeg
-
 　このスクリプトの改造部分に関する質問は「レッツPHP!」,「ふたば★ちゃん
-　ねる」,「菅処」に問い合わせても答えが得られない場合があります。
-
-　ご質問は、<http://www.punyu.net/bbs/ibbs/ibbs.php>までどうぞ。
+　ねる」,「ぷにゅねっと」に問い合わせても答えが得られない場合があります。
 
 
 ■バージョンアップ方法　※POTI-board v1.0以降が前提
@@ -72,13 +63,10 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 ■設置方法（旧）
 
-　詳しくは設置手順書( http://www.punyu.net/php/readme.php?txt=potisetup )
-を御覧下さい。
-
 ※以下、neeを例に簡易説明
 
-　所望のディレクトリのパーミッションを777にします。(さくらでは変更の必要なし)
-　srcディレクトリとthumbディレクトリを作り、パーミッションを777にします。(さくらでは自動で作成されます)
+　所望のディレクトリのパーミッションを755(または705)にします。(何もしなければ755)
+　srcディレクトリとthumbディレクトリを作り、パーミッションを707にします。(さくらでは自動で作成されます)
 　お絵かき機能を使用する場合は同様にtmpディレクトリも作ります。(さくらでは自動で作成されます)
 
 　設定は、config.phpを書き換えて行います。
@@ -86,16 +74,12 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 　ルが自動設定されます)
 
 【ディレクトリ構造】( )内はパーミッション値。変更の必要がない者は省略。
-./-- ルート (動かなければ777)
+./-- ルート (755)
   ｜config.php
   ｜htmltemplate.inc
   ｜potiboard.php
   ｜thumbnail_gd.php
-  ｜thumbnail_re.php
   ｜loadcookie.js
-  ｜
-  ｜※repng2jpeg版 を使用する場合、以下も必要
-  ｜repng2jpeg バイナリ
   ｜
   ｜※NEO本体
   ｜neo.js
@@ -114,8 +98,8 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
   ｜siihelp.php
   ｜_nee_conf.scss
   ｜
-  ＋--./src/       (777) ディレクトリ
-  ＋--./thumb/     (777) ディレクトリ
+  ＋--./src/       (707) ディレクトリ
+  ＋--./thumb/     (707) ディレクトリ
 
 
 ※お絵かき機能を使用する場合、下記を追加
@@ -123,7 +107,7 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
   ｜picpost.php
   ｜palette.txt
   ｜
-  ＋--./tmp/ (777) ディレクトリ
+  ＋--./tmp/ (707) ディレクトリ
   ｜
 ＝＝＝以下のファイルはしぃちゃんのホームページ（Vector）より入手してください＝＝＝＝
   ｜            <http://hp.vector.co.jp/authors/VA016309/>
@@ -141,7 +125,7 @@ http://sugachan.dip.jp/download/komono.php#repng2jpeg
 
 ※メール通知機能を使用する場合、下記を追加
 ./-- 同ルート
-  ｜noticemail.inc (644)
+  ｜noticemail.inc
 ☆ファイルは<http://www.punyu.net/php/>より入手してください
 →php7対応版を同梱いたしました
 

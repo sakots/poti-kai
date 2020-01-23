@@ -2,7 +2,7 @@
 // ini_set('error_reporting', E_ALL);
 /*
   *
-  * POTI-board改 v1.54.4 lot.200114
+  * POTI-board改 v1.54.5 lot.200123
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -185,8 +185,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.4');
-define('POTI_VERLOT' , '改 v1.54.4 lot.200114');
+define('POTI_VER' , '改 v1.54.5');
+define('POTI_VERLOT' , '改 v1.54.5 lot.200123');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -755,7 +755,7 @@ unset($value);
 						,$src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h);
 			}
 			// レス記事一括格納
-			if(isset($rres)){//未定義エラー対策
+			if($counttreeline>1){//レスがある時
 			$dat['oya'][$oya]['res'] = $rres[$oya];
 			}
 			unset($rres); //クリア
