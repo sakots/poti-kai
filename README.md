@@ -33,6 +33,10 @@ potiboard.zip がスクリプト一式です。
 
 ## 履歴
 
+### [2020/01/26]
+
+- getenv("REMOTE_ADDR")でipを取得できないサーバに対応。(by さとぴあ)
+
 ### [2020/01/19]
 
 - readme整理。markdown。
