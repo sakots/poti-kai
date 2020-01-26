@@ -2,7 +2,7 @@
 // ini_set('error_reporting', E_ALL);
 /*
   *
-  * POTI-board改 v1.54.5 lot.200123
+  * POTI-board改 v1.54.6 lot.200125
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -185,8 +185,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.5');
-define('POTI_VERLOT' , '改 v1.54.5 lot.200123');
+define('POTI_VER' , '改 v1.54.6');
+define('POTI_VERLOT' , '改 v1.54.6 lot.200125');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -357,6 +357,17 @@ function get_gd_ver(){
 	return false;
 	}
 }
+//ユーザーip
+function get_uip(){
+	$userip = getenv("HTTP_CLIENT_IP");
+	if(!$userip){
+		$userip = getenv("HTTP_X_FORWARDED_FOR");
+	} 
+	if(!$userip){
+		$userip = getenv("REMOTE_ADDR");
+	} 
+	return $userip;
+	}
 
 /* ヘッダ */
 function head(&$dat){
@@ -898,7 +909,8 @@ function error($mes,$dest=''){
 }
 
 function proxy_connect($port) {
-	$fp = fsockopen (getenv("REMOTE_ADDR"), $port,$a,$b,2);
+	$userip = get_uip();
+		$fp = fsockopen ($userip, $port,$a,$b,2);
 	if(!$fp){return 0;}else{return 1;}
 }
 
@@ -914,7 +926,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	global $REQUEST_METHOD,$temppath,$ptime;
 	global $fcolor,$usercode;
 	global $admin,$badstr_A,$badstr_B;
-	
+	$userip = get_uip();
+		
 
 	// 時間
 	$time = time();
@@ -934,9 +947,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			$userdata = fread($fp, 1024);
 			fclose($fp);
 			list($uip,$uhost,,,$ucode,) = explode("\t", rtrim($userdata));
-			$userip = getenv("HTTP_CLIENT_IP");
-//			if(!$userip) $userip = getenv("HTTP_X_FORWARDED_FOR");
-			if(!$userip) $userip = getenv("REMOTE_ADDR");
 			if(($ucode != $usercode) && (IP_CHECK && $uip != $userip)){error(MSG007);}
 		}else{error(MSG007);}
 	}
@@ -1059,7 +1069,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
-	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
+	$host = gethostbyaddr($userip);
 
 	foreach($badip as $value){ //拒絶host
 		if(preg_match("/$value$/i",$host)) error(MSG016,$dest);
@@ -1113,7 +1123,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($email&&DISP_ID==1){
 			$now .= " ID:???";
 		}else{
-			$now .= " ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", $time)),'id'),-8);
+			$now .= " ID:".substr(crypt(md5($userip.ID_SEED.date("Ymd", $time)),'id'),-8);
 		}
 	}
 	//カンマを変換
@@ -1512,7 +1522,6 @@ function CleanCom($str){//コメントは管理者以外タグ禁止
 /* ユーザー削除 */
 function usrdel($del,$pwd){
 	global $path,$pwdc,$onlyimgdel;
-//	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
 
 	if(is_array($del)){
 		sort($del);
@@ -1728,9 +1737,9 @@ function init(){
 function paintform($picw,$pich,$palette,$anime,$pch=""){
 	global $admin,$shi,$ctype,$type,$no,$pwd,$ext;
 	global $resto,$mode,$savetype,$quality,$qualitys,$usercode;
-
 	global $useneo; //NEOを使う
 	if ($useneo) $dat['useneo'] = true; //NEOを使う
+	$userip = get_uip();
 
 //pchファイルアップロードペイント
 if($admin===ADMIN_PASS){
@@ -2015,8 +2024,8 @@ $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 
 	//差し換え時の認識コード追加
 	if($type==='rep'){
-//		$repcode = substr(crypt(md5($no.getenv("REMOTE_ADDR").$pwd.date("Ymd", time()))),-8);
-		$repcode = substr(crypt(md5($no.getenv("REMOTE_ADDR").$pwd.date("Ymd", time())),time()),-8);
+		$time=time();
+		$repcode = substr(crypt(md5($no.$userip.$pwd.date("Ymd", $time)),$time),-8);
 		//念の為にエスケープ文字があればアルファベットに変換
 		$repcode = strtr($repcode,"!\"#$%&'()+,/:;<=>?@[\\]^`/{|}~","ABCDEFGHIJKLMNOabcdefghijklmn");
 		$dat['mode'] = 'picrep&amp;no='.$no.'&amp;pwd='.$pwd.'&amp;repcode='.$repcode;
@@ -2037,7 +2046,8 @@ $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 /* お絵かきコメント */
 function paintcom($resto=''){
 	global $admin,$usercode;
-
+	$userip = get_uip();
+	
 	if(USE_RESUB && $resto) {
 		$lines = file(LOGFILE);
 		$flag = FALSE;
@@ -2077,9 +2087,6 @@ function paintcom($resto=''){
 		}
 		//user-codeでhitしなければIPで再チェック
 		if(count($tmp)==0){
-			$userip = getenv("HTTP_CLIENT_IP");
-//			if(!$userip) $userip = getenv("HTTP_X_FORWARDED_FOR");
-			if(!$userip) $userip = getenv("REMOTE_ADDR");
 			foreach($tmplist as $tmpimg){
 				list($ucode,$uip,$ufilename) = explode("\t", $tmpimg);
 				if(!IP_CHECK || $uip == $userip)
@@ -2263,7 +2270,6 @@ function editform($del,$pwd){
 	global $pwdc,$addinfo;
 	global $fontcolors;
 
-//	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
 	if(is_array($del)){
 		sort($del);
 		reset($del);
@@ -2330,8 +2336,9 @@ function editform($del,$pwd){
 function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	global $badstring,$badip;
 	global $REQUEST_METHOD;
-	global $fcolor,$badstr_A,$badstr_B;;
-
+	global $fcolor,$badstr_A,$badstr_B;
+	$userip = get_uip();
+	
 	// 時間
 	$time = time();
 
@@ -2385,7 +2392,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
-	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
+	$host = gethostbyaddr($userip);
 
 	foreach($badip as $value){ //拒絶host
 		if(preg_match("/$value$/i",$host)) error(MSG016);
@@ -2428,7 +2435,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($email&&DISP_ID==1){
 			$now .= " ID:???";
 		}else{
-			$now.=" ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", $time)),'id'),-8);
+			$now.=" ID:".substr(crypt(md5($userip.ID_SEED.date("Ymd", $time)),'id'),-8);
 		}
 	}
 	$now = str_replace(",", "&#44;", $now);//カンマを変換
@@ -2538,9 +2545,10 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 /* 画像差し換え */
 function replace($no,$pwd,$stime){
 	global $path,$temppath,$badip,$badfile,$repcode;
-
+	$userip = get_uip();
+	
 	//ホスト取得
-	$host = gethostbyaddr(getenv("REMOTE_ADDR"));
+	$host = gethostbyaddr($userip);
 
 	foreach($badip as $value){ //拒絶host
 		if(preg_match("/$value$/i",$host)) error(MSG016);
@@ -2713,7 +2721,7 @@ function replace($no,$pwd,$stime){
 				if($email&&DISP_ID==1){
 					$now .= " ID:???";
 				}else{
-					$now.=" ID:".substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", $time)),'id'),-8);
+					$now.=" ID:".substr(crypt(md5($userip.ID_SEED.date("Ymd", $time)),'id'),-8);
 				}
 			}
 			//描画時間追加
@@ -3025,7 +3033,8 @@ deltemp();
 
 //user-codeの発行
 if(!$usercode){//falseなら発行
-	$usercode = substr(crypt(md5(getenv("REMOTE_ADDR").ID_SEED.date("Ymd", time())),'id'),-12);
+	$userip = get_uip();
+	$usercode = substr(crypt(md5($userip.ID_SEED.date("Ymd", time())),'id'),-12);
 	//念の為にエスケープ文字があればアルファベットに変換
 	$usercode = strtr($usercode,"!\"#$%&'()+,/:;<=>?@[\\]^`/{|}~","ABCDEFGHIJKLMNOabcdefghijklmn");
 }

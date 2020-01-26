@@ -7,6 +7,7 @@
 ** https://sakots.red/poti/
 ** by sakots
 **
+** 2020/01/25 "REMOTE_ADDR"が使えないサーバに対応。
 ** 2019/07/24 変換元のエンコードをutf-8に。コード整理。
 ** 2019/07/21 コード整理
 ** 2019/06/25 コード整理
@@ -94,7 +95,15 @@ class noticemail{
 	// メール本文作成
 	$Message = '■'.$data['subject']."\n";
 	$Message .= 'Date: '.date("Y/m/d H:i:s",time())."\n";
-	$Message .= 'Host: '.gethostbyaddr(getenv("REMOTE_ADDR"))."\n";
+	//ユーザーip
+	$userip = getenv("HTTP_CLIENT_IP");
+	if(!$userip){
+		$userip = getenv("HTTP_X_FORWARDED_FOR");
+	} 
+	if(!$userip){
+		$userip = getenv("REMOTE_ADDR");
+	} 
+	$Message .= 'Host: '.gethostbyaddr($userip)."\n";
 	$Message .= 'UserAgent: '.getenv("HTTP_USER_AGENT")."\n";
 	$Message .= $line;
 	$Message .= 'Name: '.$name."\n";

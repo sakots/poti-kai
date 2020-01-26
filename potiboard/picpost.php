@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2020/01/25 REMOTE_ADDRが取得できないサーバに対応 ファイルロック修正
 // 2019/12/03 軽微なエラー修正。datファイルのパーミッションを600に
 // 2019/08/23 コード整理
 // 2018/07/13 動画が記録できなくなっていたのを修正
@@ -41,7 +42,7 @@ function error($error){
 	$now = gmdate("y/m/d",$time+9*60*60)."(".(string)$yd.")".gmdate("H:i",$time+9*60*60);
 	if(is_file($syslog)) $lines = file($syslog);
 	$ep = @fopen($syslog , "w") or die($syslog."が開けません");
-	flock($ep, 2);
+	flock($ep, LOCK_EX);
 	fwrite($ep, $imgfile."  ".$error." [".$now."]\n");//最新のエラー情報
 	foreach($lines as $i=>$val){//これまでのエラー情報
 		if($i<$syslogmax){//記録行数上限
@@ -49,21 +50,15 @@ function error($error){
 		}	
 	}
 	unset($val);
+	fflush($ep);
+	flock($ep, LOCK_UN);
 	fclose($ep);
-}
-//ファイルmd5計算 
-function md5_of_file($inFile){
-	if(is_file($inFile)){
-			return md5_file($inFile);
-	}else{
-		return false;
-	}
 }
 
 /* ■■■■■ メイン処理 ■■■■■ */
 
 $u_ip = getenv("HTTP_CLIENT_IP");
-//if(!$u_ip) $u_ip = getenv("HTTP_X_FORWARDED_FOR");
+if(!$u_ip) $u_ip = getenv("HTTP_X_FORWARDED_FOR");
 if(!$u_ip) $u_ip = getenv("REMOTE_ADDR");
 $u_host = gethostbyaddr($u_ip);
 $u_agent = getenv("HTTP_USER_AGENT");
@@ -114,23 +109,27 @@ if(!$fp){
 	error("画像ファイルのオープンに失敗しました。お絵かき画像は保存されません。");
 	exit;
 }else{
-	flock($fp, 2);
+	flock($fp, LOCK_EX);
 	fwrite($fp, $imgdata);
+	fflush($fp);
+	flock($fp, LOCK_UN);
 	fclose($fp);
 }
 // 不正画像チェック(検出したら削除)
-$size = getimagesize($full_imgfile);
-if($size[0] > PMAX_W || $size[1] > PMAX_H){
-	unlink($full_imgfile);
-	error("規定サイズ違反を検出しました。画像は保存されません。");
-	exit;
-}
-$chk = md5_of_file($full_imgfile);
-foreach($badfile as $value){
-	if(preg_match("/^$value/",$chk)){
+if(is_file($full_imgfile)){
+	$size = getimagesize($full_imgfile);
+	if($size[0] > PMAX_W || $size[1] > PMAX_H){
 		unlink($full_imgfile);
-		error("拒絶画像を検出しました。画像は保存されません。");
+		error("規定サイズ違反を検出しました。画像は保存されません。");
 		exit;
+	}
+	$chk = md5_file($full_imgfile);
+	foreach($badfile as $value){
+		if(preg_match("/^$value/",$chk)){
+			unlink($full_imgfile);
+			error("拒絶画像を検出しました。画像は保存されません。");
+			exit;
+		}
 	}
 }
 
@@ -169,8 +168,10 @@ if($pchLength!=0){
 		error("PCHファイルのオープンに失敗しました。PCHは保存されません。");
 		exit;
 	}else{
-		flock($fp, 2);
+		flock($fp, LOCK_EX);
 		fwrite($fp, $PCHdata);
+		fflush($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
 }
@@ -199,8 +200,10 @@ if(!$fp){
 	error("情報ファイルのオープンに失敗しました。投稿者情報は記録されません。");
 	exit;
 }else{
-	flock($fp, 2);
+	flock($fp, LOCK_EX);
 	fwrite($fp, $userdata);
+	fflush($fp);
+	flock($fp, LOCK_UN);
 	fclose($fp);
 	chmod(TEMP_DIR.$imgfile.'.dat',0600);
 }
