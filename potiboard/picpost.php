@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.191203  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.200211  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2020/02/11 コード整理
 // 2020/01/25 REMOTE_ADDRが取得できないサーバに対応 ファイルロック修正
 // 2019/12/03 軽微なエラー修正。datファイルのパーミッションを600に
 // 2019/08/23 コード整理
@@ -40,16 +41,19 @@ function error($error){
 	$youbi = array('日','月','火','水','木','金','土');
 	$yd = $youbi[gmdate("w", $time+9*60*60)] ;
 	$now = gmdate("y/m/d",$time+9*60*60)."(".(string)$yd.")".gmdate("H:i",$time+9*60*60);
-	if(is_file($syslog)) $lines = file($syslog);
+	if(is_file($syslog)) {
+		$lines = file($syslog);
+		array_splice($lines, $syslogmax-1);//記録上限
+		$line=implode('',$lines);//これまでのエラー情報
+	}
+	else{
+		$line='';
+	}
 	$ep = @fopen($syslog , "w") or die($syslog."が開けません");
 	flock($ep, LOCK_EX);
-	fwrite($ep, $imgfile."  ".$error." [".$now."]\n");//最新のエラー情報
-	foreach($lines as $i=>$val){//これまでのエラー情報
-		if($i<$syslogmax){//記録行数上限
-		fwrite($ep, $val);
-		}	
-	}
-	unset($val);
+	$newline=$imgfile."  ".$error." [".$now."]\n";//最新のエラー情報
+	$newline.=$line;//最新とこれまでをまとめる
+	fwrite($ep,$newline);
 	fflush($ep);
 	flock($ep, LOCK_UN);
 	fclose($ep);

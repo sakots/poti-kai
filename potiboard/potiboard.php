@@ -2,7 +2,7 @@
 // ini_set('error_reporting', E_ALL);
 /*
   *
-  * POTI-board改 v1.54.6 lot.200125
+  * POTI-board改 v1.54.7 lot.200211
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -185,8 +185,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.6');
-define('POTI_VERLOT' , '改 v1.54.6 lot.200125');
+define('POTI_VER' , '改 v1.54.7');
+define('POTI_VERLOT' , '改 v1.54.7 lot.200211');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -518,7 +518,7 @@ unset($value);
 			$st = $page;
 		}
 		for($i = $st; $i < $st+PAGE_DEF; ++$i){
-//			if($tree[$i]=="") continue;
+			//if($tree[$i]=="") continue;
 			if(!isset($tree[$i])){
 			continue;
 			}
@@ -594,6 +594,7 @@ unset($value);
 				$resub = '';
 			}
 			// レス省略
+			$skipres = '';
 			if(!$resno){
 				$counttreeline = count($treeline);//190619
 				$s=$counttreeline - DSP_RES;
@@ -604,7 +605,7 @@ unset($value);
 				if(RES_UPLOAD){
 					//画像テーブル作成
 					$imgline=array();
-//					$counttreeline = count($treeline);//190619
+					//$counttreeline = count($treeline);//190619
 					for($k = $s; $k < $counttreeline; $k++){
 						$disptree = $treeline[$k];
 						$j=$lineindex[$disptree] - 1;
@@ -624,8 +625,8 @@ unset($value);
 						$s++;
 						$resimgs = array_count_values($imgline);
 					}
-				}
-					if($s>1) $skipres = $s - 1; //再計算
+					}
+					if($s>1) {$skipres = $s - 1;}//再計算
 				}
 			}else{
 				$s=1;
@@ -658,12 +659,9 @@ unset($value);
 			$com = preg_replace("{<br( *)/>}i","<br>",$com);
 			//独自タグ変換
 			if(USE_POTITAG) $com = potitag($com);
-	//メタタグに使うコメントから
-	//タグを除去
-	$descriptioncom=strip_tags($com);
-	if(!isset($skipres)){
-		$skipres="";
-	}
+			//メタタグに使うコメントから
+			//タグを除去
+			$descriptioncom=strip_tags($com);
 
 			// 親記事格納
 			$dat['oya'][$oya] = compact('src','srcname','size','painttime','pch','continue','thumb','imgsrc','w','h','no','sub','name','now','com','descriptioncom','limit','skipres','resub','url','email','id','updatemark','trip','tab','fontcolor');
@@ -671,6 +669,7 @@ unset($value);
 			unset($src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h,$no,$sub,$name,$now,$com,$descriptioncom,$limit,$skipres,$resub,$url,$email);
 
 			//レス作成
+			$rres=array();
 			$counttreeline = count($treeline);
 			for($k = $s; $k < $counttreeline; $k++){
 				$disptree = $treeline[$k];
@@ -766,7 +765,7 @@ unset($value);
 						,$src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h);
 			}
 			// レス記事一括格納
-			if($counttreeline>1){//レスがある時
+			if($rres){//レスがある時
 			$dat['oya'][$oya]['res'] = $rres[$oya];
 			}
 			unset($rres); //クリア
@@ -1999,7 +1998,7 @@ $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 		$dat['anime'] = false;
 		$dat['imgfile'] = './'.PCH_DIR.$pch.$ext;
 	}
-	if(ADMIN_NEWPOST&&$admin===ADMIN_PASS) $dat['admin'] = 'picpost';
+	// if(ADMIN_NEWPOST&&$admin===ADMIN_PASS) $dat['admin'] = 'picpost';
 
 	if(isset($C_Palette)){
 		for ($n = 1;$n < 7;++$n)
@@ -2113,7 +2112,7 @@ function paintcom($resto=''){
 			$dat['tmp'][] = compact('src','srcname','date');
 		}
 	}
-	if(ADMIN_NEWPOST&&$admin=='picpost') $dat['admin'] = $admin;
+	// if(ADMIN_NEWPOST&&$admin=='picpost') $dat['admin'] = $admin;
 	form($dat,$resto,'',$tmp);
 	htmloutput(OTHERFILE,$dat);
 }
@@ -3094,7 +3093,7 @@ paintform($picw,$pich,$palette,$anime);
 	case 'contpaint':
 //パスワードが必要なのは差し換えの時だけ
 		if(CONTINUE_PASS||$type==='rep') usrchk($no,$pwd);
-		if(ADMIN_NEWPOST) $admin=$pwd;
+		// if(ADMIN_NEWPOST) $admin=$pwd;
 		$palette="";
 		paintform($picw,$pich,$palette,$anime,$pch);
 		break;
