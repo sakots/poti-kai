@@ -2,7 +2,7 @@
 // ini_set('error_reporting', E_ALL);
 /*
   *
-  * POTI-board改 v1.54.7 lot.200211
+  * POTI-board改 v1.54.8 lot.200216
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -147,11 +147,11 @@ $REQUEST_METHOD = ( isset($_SERVER["REQUEST_METHOD"]) === true ) ? ($_SERVER["RE
 
 $upfile_name = ( isset( $_FILES["upfile"]["name"]) === true ) ? ($_FILES["upfile"]["name"]): "";//190603
 if (strpos($upfile_name, '/') !== false) {//ファイル名に/がなければ続行
-$upfile_name="";
-$upfile ="";
+	$upfile_name="";
+	$upfile ="";
 }
 else{
-$upfile = ( isset( $_FILES["upfile"]["tmp_name"]) === true ) ? ($_FILES["upfile"]["tmp_name"]): "";}
+	$upfile = ( isset( $_FILES["upfile"]["tmp_name"]) === true ) ? ($_FILES["upfile"]["tmp_name"]): "";}
 
 }
 //設定の読み込み
@@ -185,8 +185,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.7');
-define('POTI_VERLOT' , '改 v1.54.7 lot.200211');
+define('POTI_VER' , '改 v1.54.8');
+define('POTI_VERLOT' , '改 v1.54.8 lot.200216');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1295,7 +1295,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	ftruncate($fp,0);
 	set_file_buffer($fp, 0);
 	rewind($fp);
-	fwrite($fp, charconvert($newline));
+	// fwrite($fp, charconvert($newline));
+	fwrite($fp, $newline);
+
 
 	//ツリー更新
 	$find = false;
@@ -1348,18 +1350,19 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	//-- クッキー保存 --
 	//漢字を含まない項目はこちらの形式で追加
-	setcookie ("pwdc", $c_pass,time()+SAVE_COOKIE*24*3600);
-	setcookie ("fcolorc", $fcolor,time()+SAVE_COOKIE*24*3600);
+	setcookie ("pwdc", $c_pass,time()+(SAVE_COOKIE*24*3600));
+	setcookie ("fcolorc", $fcolor,time()+(SAVE_COOKIE*24*3600));
 
 	//クッキー項目："クッキー名<>クッキー値"　※漢字を含む項目はこちらに追加 //190528
 	$cooks = array("namec<>".$names,"emailc<>".$email,"urlc<>".$url);
-	foreach ( $cooks as $cook ) {
-		list($c_name,$c_cook) = explode('<>',$cook);
-			mb_language(LANG);
-			$c_cookie = mb_convert_encoding($c_cook, "UTF-8", "auto");	//to UTF-8
-			$c_cookie = str_replace("&amp;", "&", $c_cookie);
 
-		setcookie ($c_name, $c_cookie,time()+SAVE_COOKIE*24*3600);
+	foreach ( $cooks as $cook ) {
+		
+		list($c_name,$c_cookie) = explode('<>',$cook);
+			// mb_language(LANG);
+			// $c_cookie = mb_convert_encoding($c_cook, "UTF-8", "auto");	//to UTF-8
+			// $c_cookie = str_replace("&amp;", "&", $c_cookie);
+		setcookie ($c_name, $c_cookie,time()+(SAVE_COOKIE*24*3600));
 	}
 
 	if($dest&&$is_file_dest){
@@ -1441,15 +1444,6 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
 	echo $str;
 }
-
-//ファイルmd5計算
-// function md5_of_file($inFile) {
-// 	if (is_file($inFile)){
-// 			return md5_file($inFile);
-// 	}else{
-// 		return false;
-// 	}
-// }
 
 //ツリー削除
 function treedel($delno){
@@ -1655,13 +1649,13 @@ function admindel($pass){
 		//$now=preg_replace('/\(.*\)/',' ',$now);
 		$now  = preg_replace("/( ID:.*)/","",$now);//ID以降除去
 		$name = strip_tags($name);//タグ除去
-		if(strlen($name) > 10) $name = substr($name,0,9).".";
-		if(strlen($sub) > 10) $sub = substr($sub,0,9).".";
+		if(strlen($name) > 10) $name = mb_strcut($name,0,9).".";
+		if(strlen($sub) > 10) $sub = mb_strcut($sub,0,9).".";
 		if($email) $name="<a href=\"mailto:$email\">$name</a>";
 		$com = preg_replace("{<br(( *)|( *)/)>}i"," ",$com);
 		//$com = str_replace("<br />"," ",$com);
 		$com = htmlspecialchars($com,ENT_QUOTES,'utf-8');
-		if(strlen($com) > 20) $com = substr($com,0,18) . ".";
+		if(strlen($com) > 20) $com = mb_strcut($com,0,18) . ".";
 		// 画像があるときはリンク
 		if($ext && is_file($path.$time.$ext)){
 			$img_flag = TRUE;
@@ -1686,7 +1680,7 @@ function admindel($pass){
 }
 
 function init(){
-	$err=''; //未定義変数エラー対策
+	$err='';
 	$chkfile=array(LOGFILE,TREEFILE);
 	if(!is_writable(realpath("./")))error("カレントディレクトリに書けません<br>");
 	foreach($chkfile as $value){
@@ -1850,31 +1844,31 @@ if($admin===ADMIN_PASS){
 	else{
 	$w = $picw + 150;//PaintBBSの時の幅
 	$h = $pich + 170;//PaintBBSの時の高さ
-}
+	}
 	if($w < 400){$w = 400;}
 	if($h < 420){$h = 420;}
-//	if($w < 500 && $shi){$w = 500;}
-//	if($h < 500 && $shi==2){$h = 500;}
-//NEOを使う時はPaintBBSの設定
+	//	if($w < 500 && $shi){$w = 500;}
+	//	if($h < 500 && $shi==2){$h = 500;}
+	//NEOを使う時はPaintBBSの設定
 	if($w < 500 && !$useneo && $shi){$w = 500;}
 	if($h < 520 && !$useneo && $shi){$h = 520;}
 
 	$dat['paint_mode'] = true;
 	head($dat);
-//ピンチイン
-$ipad = ((bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPad'));
-$mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
+	//ピンチイン
+	$ipad = ((bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPad'));
+	$mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 	if($picw>=700){//横幅700以上だったら
 			$dat['pinchin']=true;
-//		echo 'ピンチインが有効みたい。';
+	//echo 'ピンチインが有効みたい。';
 	}
 	elseif($picw>=500){//横幅500以上だったら
 	if(!$ipad){//iPadじゃなかったら
-//		echo "iPadじゃないよ";
+	//echo "iPadじゃないよ";
 		if($mobile){//スマートフォンだったら
 		
 			$dat['pinchin']=true;
-//		echo 'ピンチインが有効みたい。';
+	//echo 'ピンチインが有効みたい。';
 		}
 		else{//タブレットだったら
 			$dat['pinchin']=false;
@@ -1938,10 +1932,7 @@ $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 	$dat['compress_level'] = COMPRESS_LEVEL;
 	$dat['layer_count'] = LAYER_COUNT;
 	if($shi) $dat['quality'] = $quality ? $quality : $qualitys[0];
-//	if($shi==1){ $dat['normal'] = true; }
-//	elseif($shi==2){ $dat['pro'] = true; }
-//	else{ $dat['paintbbs'] = true; }
-//NEOを使う時はPaintBBSの設定
+	//NEOを使う時はPaintBBSの設定
 	if(!$useneo && $shi==1){ $dat['normal'] = true; }
 	elseif(!$useneo && $shi==2){ $dat['pro'] = true; }
 	else{ $dat['paintbbs'] = true; }
@@ -1976,7 +1967,7 @@ $mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
 	$dat['pich'] = $pich;
 	$stime = time();
 	$dat['stime'] = $stime;
-//	if($pwd) $pwd = substr(md5($pwd),2,8);
+	//if($pwd) $pwd = substr(md5($pwd),2,8);
 	if($pwd){
 	$pwd=openssl_encrypt ($pwd,crypt_method, crypt_pass, true, crypt_iv);//暗号化
 	$pwd=bin2hex($pwd);//16進数に
@@ -2341,15 +2332,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	// 時間
 	$time = time();
 
-	$name  = charconvert($name );
-	$sub   = charconvert($sub  );
-	$com   = charconvert($com  );
-	$email = charconvert($email);
-	$url   = charconvert($url  );
-
-	if(!isset($dest)){
-		$dest="";
-	}
+	$dest="";
 
 	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
 	if($REQUEST_METHOD !== "POST") error(MSG006);
@@ -2426,8 +2409,6 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	}
 
 	// 時間とURLフォーマット
-//	$pass = ($pwd) ? substr(md5($pwd),2,8) : "*";
-	// $pass = ($pwd) ? password_hash($pwd,PASSWORD_BCRYPT,['cost' => 5]) : "*";
 	$now = now_date($time);//日付取得
 	$now .= UPDATE_MARK;
 	if(DISP_ID){
@@ -2520,7 +2501,8 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fwrite($fp, charconvert($newline));
+	// fwrite($fp, charconvert($newline));
+	fwrite($fp, $newline);
 	fflush($fp);
 	flock($fp, LOCK_UN);
 	fclose($fp);
@@ -2528,11 +2510,11 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	updatelog();
 
 	header("Content-type: text/html; charset=UTF-8");
-if(defined('URL_PARAMETER') && URL_PARAMETER){
+	if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "?$time";//パラメータをつけてキャッシュを表示しないようにする工夫。
 	}else{
 		$urlparameter = "";
-}
+	}
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'"><meta name="robots" content="noindex,nofollow">'."\n";
 	
 	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"><title></title></head>'."\n";
@@ -2746,7 +2728,8 @@ function replace($no,$pwd,$stime){
 	set_file_buffer($fp, 0);
 	rewind($fp);
 	$newline = implode('', $line);
-	fwrite($fp, charconvert($newline));
+	// fwrite($fp, charconvert($newline));
+	fwrite($fp, $newline);
 	fflush($fp);
 	flock($fp, LOCK_UN);
 	fclose($fp);
@@ -3016,8 +2999,8 @@ function charconvert($str){
 
 /* HTML出力 */
 function htmloutput($template,$dat,$buf_flag=''){
-	mb_language(LANG);
-	$buf=mb_convert_encoding(HtmlTemplate::t_buffer($template,$dat), "UTF-8", "auto");
+
+	$buf=HtmlTemplate::t_buffer($template,$dat);
 	if($buf_flag){
 		return $buf;
 	}else{
