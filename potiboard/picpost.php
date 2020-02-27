@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.200211  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.200225  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -8,10 +8,9 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
-// 2020/02/11 コード整理
-// 2020/01/25 REMOTE_ADDRが取得できないサーバに対応 ファイルロック修正
+// 2020/02/25 flock()修正タイムゾーンを'Asia/Tokyo'に
+// 2020/01/25 REMOTE_ADDRが取得できないサーバに対応
 // 2019/12/03 軽微なエラー修正。datファイルのパーミッションを600に
-// 2019/08/23 コード整理
 // 2018/07/13 動画が記録できなくなっていたのを修正
 // 2018/06/14 軽微なエラー修正
 // 2018/01/12 php7対応
@@ -28,6 +27,8 @@
 
 //設定
 include(__DIR__.'/config.php');
+//タイムゾーン
+date_default_timezone_set('Asia/Tokyo');
 //容量違反チェックをする する:1 しない:0
 define('SIZE_CHECK', '1');
 
@@ -39,20 +40,29 @@ function error($error){
 	global $imgfile,$syslog,$syslogmax;
 	$time = time();
 	$youbi = array('日','月','火','水','木','金','土');
-	$yd = $youbi[gmdate("w", $time+9*60*60)] ;
-	$now = gmdate("y/m/d",$time+9*60*60)."(".(string)$yd.")".gmdate("H:i",$time+9*60*60);
-	if(is_file($syslog)) {
-		$lines = file($syslog);
-		array_splice($lines, $syslogmax-1);//記録上限
-		$line=implode('',$lines);//これまでのエラー情報
+	$yd = $youbi[date("w", $time)] ;
+	$now = date("y/m/d",$time)."(".(string)$yd.")".date("H:i",$time);
+	if(!is_file($syslog)){//$syslogがなければ作成
+		file_put_contents($syslog,"\n", LOCK_EX);
+		chmod($syslog,0606);
 	}
-	else{
-		$line='';
-	}
-	$ep = @fopen($syslog , "w") or die($syslog."が開けません");
+	$ep = fopen($syslog , "r+") or die($syslog."が開けません");
 	flock($ep, LOCK_EX);
+	rewind($ep);
+	$key=0;
+	while($line=fgets($ep,4096)){//ログを配列に
+		if($line!==''){
+		$lines[$key]=$line;
+	}
+	++$key;
+	if($key>($syslogmax-2)){//記録上限
+	break;
+	}
+	}
+	$line=implode('',$lines);//これまでのエラー情報
 	$newline=$imgfile."  ".$error." [".$now."]\n";//最新のエラー情報
 	$newline.=$line;//最新とこれまでをまとめる
+	rewind($ep);
 	fwrite($ep,$newline);
 	fflush($ep);
 	flock($ep, LOCK_UN);
@@ -69,10 +79,7 @@ $u_agent = getenv("HTTP_USER_AGENT");
 $u_agent = str_replace("\t", "", $u_agent);
 
 //raw POST データ取得
-//ini_set("always_populate_raw_post_data", "1");
-//$buffer = $_REQUEST['HTTP_RAW_POST_DATA'];
 $buffer = file_get_contents('php://input');
-//if(!$buffer) $buffer = $HTTP_RAW_POST_DATA;
 if(!$buffer){
 	$stdin = @fopen("php://input", "rb");
 	$buffer = @fread($stdin, $_ENV['CONTENT_LENGTH']);

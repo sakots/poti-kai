@@ -2,7 +2,7 @@
 // ini_set('error_reporting', E_ALL);
 /*
   *
-  * POTI-board改 v1.54.8 lot.200216
+  * POTI-board改 v1.54.9 lot.200225
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -185,8 +185,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.8');
-define('POTI_VERLOT' , '改 v1.54.8 lot.200216');
+define('POTI_VER' , '改 v1.54.9');
+define('POTI_VERLOT' , '改 v1.54.9 lot.200225');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -926,7 +926,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	global $fcolor,$usercode;
 	global $admin,$badstr_A,$badstr_B;
 	$userip = get_uip();
-		
+	$mes="";
 
 	// 時間
 	$time = time();
@@ -1440,8 +1440,7 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'"><meta name="robots" content="noindex,nofollow">'."\n";
 	
 	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"><title></title></head>'."\n";
-	if(!isset($mes)){$mes="";}
-	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
+	$str.= '<body>'.$mes.'画面を切り替えます</body></html>';
 	echo $str;
 }
 
@@ -2518,8 +2517,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'"><meta name="robots" content="noindex,nofollow">'."\n";
 	
 	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"><title></title></head>'."\n";
-	if(!isset($mes)){$mes="";}
-	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
+	$str.= '<body>画面を切り替えます</body></html>';
 	echo $str;
 }
 
@@ -2527,6 +2525,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 function replace($no,$pwd,$stime){
 	global $path,$temppath,$badip,$badfile,$repcode;
 	$userip = get_uip();
+	$mes="";
 	
 	//ホスト取得
 	$host = gethostbyaddr($userip);
@@ -2743,10 +2742,8 @@ if(defined('URL_PARAMETER') && URL_PARAMETER){
 		$urlparameter = "";
 }
 	$str = '<!DOCTYPE html>'."\n".'<html lang="ja"><head><meta http-equiv="refresh" content="1; URL='.PHP_SELF2.$urlparameter.'"><meta name="robots" content="noindex,nofollow">'."\n";
-	
 	$str.= '<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">'."\n".'<meta charset="UTF-8"><title></title></head>'."\n";
-	if(!isset($mes)){$mes="";}
-	$str.= '<body>'.$mes.' 画面を切り替えます</body></html>';
+	$str.= '<body>'.$mes.'画面を切り替えます</body></html>';
 	echo $str;
 }
 
