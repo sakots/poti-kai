@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.200225  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.200302  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://sakots.red/poti/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -127,7 +127,7 @@ if(!$fp){
 	fclose($fp);
 }
 // 不正画像チェック(検出したら削除)
-if(is_file($full_imgfile)){
+// if(is_file($full_imgfile)){
 	$size = getimagesize($full_imgfile);
 	if($size[0] > PMAX_W || $size[1] > PMAX_H){
 		unlink($full_imgfile);
@@ -142,7 +142,7 @@ if(is_file($full_imgfile)){
 			exit;
 		}
 	}
-}
+// }
 
 // PCHファイルの長さを取り出す
 $pchLength = substr($buffer, 1 + 8 + $headerLength + 8 + 2 + $imgLength, 8);
