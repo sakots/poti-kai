@@ -1,8 +1,9 @@
 <?php
 // ini_set('error_reporting', E_ALL);
+//$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.54.9 lot.200225
+  * POTI-board改 v1.55.0 lot.200302
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -185,8 +186,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.54.9');
-define('POTI_VERLOT' , '改 v1.54.9 lot.200225');
+define('POTI_VER' , '改 v1.55.0');
+define('POTI_VERLOT' , '改 v1.55.0 lot.200302');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -924,7 +925,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	global $path,$badstring,$badfile,$badip,$pwdc,$textonly;
 	global $REQUEST_METHOD,$temppath,$ptime;
 	global $fcolor,$usercode;
-	global $admin,$badstr_A,$badstr_B;
+	global $admin,$badstr_A,$badstr_B,$badname;
 	$userip = get_uip();
 	$mes="";
 
@@ -1019,7 +1020,27 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 
-	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
+	foreach($badstring as $value){
+		if($value===''){
+		break;
+		}
+		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+			error(MSG032,$dest);
+		}
+	}
+	unset($value);	
+	if(isset($badname)){//使えない名前
+		foreach($badname as $value){
+			if($value===''){
+			break;
+			}
+			if(preg_match("/$value/u",$name)){
+				error(MSG037,$dest);
+			}
+		}
+		unset($value);	
+	}
+
 	if($REQUEST_METHOD !== "POST") error(MSG006,$dest);
 
 //指定文字列が2つあると拒絶
@@ -1172,7 +1193,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	$fp=fopen(LOGFILE,"r+");
 	flock($fp, LOCK_EX);
 	rewind($fp);
-	$buf=fread($fp,2097152);
+	$buf=fread($fp,5242880);
 	if($buf==''){error(MSG019,$dest);}
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
@@ -1306,7 +1327,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	set_file_buffer($tp, 0);
 	flock($tp, LOCK_EX); //*
 	rewind($tp);
-	$buf=fread($tp,2097152);
+	$buf=fread($tp,5242880);
 	if($buf==''){error(MSG023,$dest);}
 	$line = explode("\n",$buf);
 		foreach($line as &$value){
@@ -1450,7 +1471,7 @@ function treedel($delno){
 	set_file_buffer($fp, 0);
 	flock($fp, LOCK_EX);
 	rewind($fp);
-	$buf=fread($fp,2097152);
+	$buf=fread($fp,5242880);
 	if($buf==''){error(MSG024);}
 	$line = explode("\n",$buf);
 	$countline=count($line);//必要
@@ -1523,7 +1544,7 @@ function usrdel($del,$pwd){
 		set_file_buffer($fp, 0);
 		flock($fp, LOCK_EX);
 		rewind($fp);
-		$buf=fread($fp,2097152);
+		$buf=fread($fp,5242880);
 		if($buf==''){error(MSG027);}
 		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
@@ -1593,7 +1614,7 @@ function admindel($pass){
 		set_file_buffer($fp, 0);
 		flock($fp, LOCK_EX);
 		rewind($fp);
-		$buf=fread($fp,2097152);
+		$buf=fread($fp,5242880);
 		if($buf==''){error(MSG030);}
 		$buf = charconvert($buf);
 		$line = explode("\n",$buf);
@@ -2265,7 +2286,7 @@ function editform($del,$pwd){
 		if($pwd==""&&$pwdc!="") $pwd=$pwdc;
 		$fp=fopen(LOGFILE,"r");
 		flock($fp, LOCK_EX);
-		$buf=fread($fp,2097152);
+		$buf=fread($fp,5242880);
 		fflush($fp);
 		flock($fp, LOCK_UN);
 		fclose($fp);
@@ -2325,7 +2346,7 @@ function editform($del,$pwd){
 function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	global $badstring,$badip;
 	global $REQUEST_METHOD;
-	global $fcolor,$badstr_A,$badstr_B;
+	global $fcolor,$badstr_A,$badstr_B,$badname;
 	$userip = get_uip();
 	
 	// 時間
@@ -2333,7 +2354,27 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	$dest="";
 
-	foreach($badstring as $value){if(preg_match("/$value/i",$com)||preg_match("/$value/i",$sub)||preg_match("/$value/i",$name)||preg_match("/$value/i",$email)){error(MSG032,$dest);}}
+	foreach($badstring as $value){
+		if($value===''){
+		break;
+		}
+		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+			error(MSG032,$dest);
+		}
+	}
+	unset($value);	
+	if(isset($badname)){
+		foreach($badname as $value){//使えない名前
+			if($value===''){
+			break;
+			}
+			if(preg_match("/$value/u",$name)){
+				error(MSG037,$dest);
+			}
+		}
+		unset($value);	
+	}
+
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
 //指定文字列が2つあると拒絶
@@ -2462,7 +2503,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	$fp=fopen(LOGFILE,"r+");
 	flock($fp, LOCK_EX);
 	rewind($fp);
-	$buf=fread($fp,2097152);
+	$buf=fread($fp,5242880);
 	if($buf==''){error(MSG019);}
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
@@ -2621,7 +2662,7 @@ function replace($no,$pwd,$stime){
 	$fp=fopen(LOGFILE,"r+");
 	flock($fp, LOCK_EX);
 	rewind($fp);
-	$buf=fread($fp,2097152);
+	$buf=fread($fp,5242880);
 	if($buf==''){error(MSG019);}
 	$buf = charconvert($buf);
 	$line = explode("\n",$buf);
@@ -3106,3 +3147,7 @@ paintform($picw,$pich,$palette,$anime);
 			echo '<!DOCTYPE html>'."\n".'<head><meta http-equiv="refresh" content="0; URL='.PHP_SELF2.'"><title></title></head>';
 		}
 }
+//$time = microtime(true) - $time_start; echo "{$time} 秒";
+
+?>
+
