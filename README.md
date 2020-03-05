@@ -33,6 +33,11 @@ potiboard.zip がスクリプト一式です。
 
 ## 履歴
 
+### [2020/03/05] v1.55.0 lot.200302
+
+- 「使用できない名前」の設定項目を追加など(by さとぴあ)
+ くわしくは[ こちら ](https://github.com/sakots/poti-kai/pull/68)
+
 ### [2020/01/26]
 
 - getenv("REMOTE_ADDR")でipを取得できないサーバに対応。(by さとぴあ)
