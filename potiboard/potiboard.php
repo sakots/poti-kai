@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.0 lot.200302
+  * POTI-board改 v1.55.1 lot.200308
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -186,8 +186,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.0');
-define('POTI_VERLOT' , '改 v1.55.0 lot.200302');
+define('POTI_VER' , '改 v1.55.1');
+define('POTI_VERLOT' , '改 v1.55.1 lot.200308');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -240,7 +240,7 @@ class tag_ifeq extends DataTag{
 public $matchregexp='/<!--\{ifeq ([^\}:]+):([^\}:]+)\}-->/i';
 public $fromstring="<!--{ifeq %1\$s:%2\$s}-->";
 public $tostring="<?php
-if(\$val%1\$s === '%3\$s'){ ?>";
+if(\$val%1\$s == '%3\$s'){ ?>";
 public $closestring="<!--{/ifeq}-->";
 }
 //<!--{ifne hoge:val}-->～<!--{/ifne}-->
@@ -249,7 +249,7 @@ class tag_ifne extends DataTag{
 public $matchregexp='/<!--\{ifne ([^\}:]+):([^\}:]+)\}-->/i';
 public $fromstring="<!--{ifne %1\$s:%2\$s}-->";
 public $tostring="<?php
-if(\$val%1\$s !== '%3\$s'){ ?>";
+if(\$val%1\$s != '%3\$s'){ ?>";
 public $closestring="<!--{/ifne}-->";
 }
 //<!--{iflt hoge:val}-->～<!--{/iflt}-->
