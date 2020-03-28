@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.1 lot.200308
+  * POTI-board改 v1.55.2 lot.200328
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -186,8 +186,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.1');
-define('POTI_VERLOT' , '改 v1.55.1 lot.200308');
+define('POTI_VER' , '改 v1.55.2');
+define('POTI_VERLOT' , '改 v1.55.2 lot.200328');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -641,7 +641,7 @@ unset($value);
 			//日付と編集マークを分離
 			$updatemark='';
 			if(UPDATE_MARK){
-				if(strstr($now,UPDATE_MARK)){
+				if(strpos($now,UPDATE_MARK)!==false){
 					$updatemark = UPDATE_MARK;
 					$now=str_replace(UPDATE_MARK,"",$now);
 				}
@@ -740,7 +740,7 @@ unset($value);
 				//日付と編集マークを分離
 				$updatemark='';
 				if(UPDATE_MARK){
-					if(strstr($now,UPDATE_MARK)){
+					if(strpos($now,UPDATE_MARK)!==false){
 						$updatemark = UPDATE_MARK;
 						$now=str_replace(UPDATE_MARK,"",$now);
 					}
@@ -1019,8 +1019,18 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		$is_file_dest=false;//is_file($dest）の変数化
 	}
 
+	if($REQUEST_METHOD !== "POST") error(MSG006);
 
-	foreach($badstring as $value){
+	//本文に日本語がなければ拒絶
+	if (USE_JAPANESEFILTER) {
+		mb_regex_encoding("UTF-8");
+		if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
+	}
+
+	//本文へのURLの書き込みを禁止
+	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
+
+	foreach($badstring as $value){//拒絶する文字列
 		if($value===''){
 		break;
 		}
@@ -1041,20 +1051,30 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		unset($value);	
 	}
 
-	if($REQUEST_METHOD !== "POST") error(MSG006,$dest);
+	$bstr_A_find=false;
+	$bstr_B_find=false;
 
-//指定文字列が2つあると拒絶
-	if(isset($badstr_A,$badstr_B)){
-	foreach($badstr_A as $v_a){
-	foreach($badstr_B as $v_b){
-		if($v_a===''||$v_b===''){
-			break;
+	foreach($badstr_A as $value){//指定文字列が2つあると拒絶
+		if($value===''){
+		break;
 		}
-		if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$name) && preg_match("/$v_b/u", $name)){error(MSG032,$dest);}
+		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+			$bstr_A_find=true;
+		}
 	}
+	unset($value);
+	foreach($badstr_B as $value){
+		if($value===''){
+		break;
+		}
+		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+			$bstr_B_find=true;
+		}
 	}
-}
-
+	unset($value);
+	if($bstr_A_find && $bstr_B_find){
+		error(MSG032,$dest);
+	}
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
@@ -1078,15 +1098,6 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if(strlen($email) > MAX_EMAIL) error(MSG013,$dest);
 	if(strlen($sub) > MAX_SUB) error(MSG014,$dest);
 	if(strlen($resto) > 10) error(MSG015,$dest);
-
-	//本文に日本語がなければ拒絶
-	if (USE_JAPANESEFILTER) {
-			mb_regex_encoding("UTF-8");
-			if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
-	}
-
-	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr($userip);
@@ -1758,99 +1769,97 @@ function paintform($picw,$pich,$palette,$anime,$pch=""){
 if($admin===ADMIN_PASS){
 	if(isset($_FILES['pch_upload']['name'])){
 		$pchfilename=$_FILES['pch_upload']['name'];
-		if($pchfilename!==""){//空文字でなければ続行
-			$pchfilename=CleanStr($pchfilename);
-			if (strpos($pchfilename, '/') !== false) {//ファイル名に/がなければ続行
-				echo "不正なファイルです。";
-				$pchfilename="";
-				$pchtmp="";
-			}
-		else{//チェック通過
-				//拡張子チェック
-				$tim = time().substr(microtime(),2,3);
-				$ext=pathinfo($pchfilename, PATHINFO_EXTENSION);
-				$ext=strtolower($ext);//すべて小文字に
-				if($ext==="pch"){
-					$type_pch=true;
-					$type_spch=false;
-					$pchup = TEMP_DIR.'pchup-'.$tim.'-tmp.pch';//アップロードされるファイル名
-					$pchtmp=$_FILES['pch_upload']['tmp_name'];
-				}
-				elseif($ext==="spch"){
-					$type_pch=false;
-					$type_spch=true;
-					$pchup = TEMP_DIR.'pchup-'.$tim.'-tmp.spch';//アップロードされるファイル名
-					$pchtmp=$_FILES['pch_upload']['tmp_name'];
-			}
-			else{//拡張子が一致しなかったら
+	}
+	else{
+		$_FILES['pch_upload']['tmp_name']="";
+		$pchfilename='';
+	}
+
+	if($pchfilename!==""){//空文字でなければ続行
+		$pchfilename=CleanStr($pchfilename);
+		if (strpos($pchfilename, '/') !== false) {//ファイル名に/がなければ続行
+			echo "不正なファイルです。";
 			$pchfilename="";
-			$pchup="";
 			$pchtmp="";
+		}
+		else{//チェック通過
+			//拡張子チェック
+			$tim = time().substr(microtime(),2,3);
+			$ext=pathinfo($pchfilename, PATHINFO_EXTENSION);
+			$ext=strtolower($ext);//すべて小文字に
+
 			$type_pch=false;
 			$type_spch=false;
-			echo "アニメファイルをアップしてください。";
+			if($ext==="pch"){
+				$type_pch=true;
+				$pchup = TEMP_DIR.'pchup-'.$tim.'-tmp.pch';//アップロードされるファイル名
+				$pchtmp=$_FILES['pch_upload']['tmp_name'];
 			}
-			unset($pchfilename,$ext);//元のファル名の情報を残さない
+			elseif($ext==="spch"){
+				$type_spch=true;
+				$pchup = TEMP_DIR.'pchup-'.$tim.'-tmp.spch';//アップロードされるファイル名
+				$pchtmp=$_FILES['pch_upload']['tmp_name'];
+			}
+			else{//拡張子が一致しなかったら
+				$pchfilename="";
+				$pchup="";
+				$pchtmp="";
+				echo "アニメファイルをアップしてください。";
+			}
+				unset($pchfilename,$ext);//元のファル名の情報を残さない
 			if(move_uploaded_file($pchtmp, $pchup)){//アップロード成功なら続行
-			$pchup=TEMP_DIR.basename($pchup);//ファイルを開くディレクトリを固定
-			if(mime_content_type($pchup)==="application/octet-stream"){//mimetypeが正しければ続行
-			// var_dump(mime_content_type($pchup));
-			$fp = fopen("$pchup", "rb");
-			$line = bin2hex(fgets($fp ,4096)) ;
-			//var_dump($line);
-			//var_dump(mime_content_type($pchup));
-				if($type_pch){
-			$line = substr($line,0,6);
-			if($line==="4e454f"){
-			$useneo=true;
-			$dat['useneo'] = true;
-			}
-			else{//NEOのpchでなければ
-			echo"NEOのPCHではありません。";
-			// var_dump($line);
-			unlink($pchup);
-			}
-			}
-			elseif($type_spch){
-			$line = substr($line,0,24);
-			// $line2 = substr($line,0,30);
-			if($line==="6c617965725f636f756e743d"||$line==="000d0a"){
-			$useneo=false;
-			$dat['useneo'] = false;
-			}else{//しぃぺのspchでなければ
-			echo"しぃペインターのSPCHではありません。";
-			unlink($pchup);
-			}
-			// var_dump($line);
-
+				$pchup=TEMP_DIR.basename($pchup);//ファイルを開くディレクトリを固定
+				if(mime_content_type($pchup)==="application/octet-stream"){//mimetypeが正しければ続行
+					// var_dump(mime_content_type($pchup));
+					$fp = fopen("$pchup", "rb");
+					$line = bin2hex(fgets($fp ,4096)) ;
+					//var_dump($line);
+					//var_dump(mime_content_type($pchup));
+					if($type_pch){
+						$line = substr($line,0,6);
+						if($line==="4e454f"){
+						$useneo=true;
+						$dat['useneo'] = true;
+						}
+						else{//NEOのpchでなければ
+						echo"NEOのPCHではありません。";
+						// var_dump($line);
+						unlink($pchup);
+						}
+					}
+					elseif($type_spch){
+						$line = substr($line,0,24);
+						// $line2 = substr($line,0,30);
+						if($line==="6c617965725f636f756e743d"||$line==="000d0a"){
+						$useneo=false;
+						$dat['useneo'] = false;
+						}else{//しぃぺのspchでなければ
+						echo"しぃペインターのSPCHではありません。";
+						unlink($pchup);
+						}
+						// var_dump($line);
+					}
+					else{
+					unlink($pchup);
+					echo"アニメファイルをアップしてください。";
+					}
+					fclose($fp);
+					$dat['pchfile'] = $pchup;
 				}
-			else{
-			unlink($pchup);
-			echo"アニメファイルをアップしてください。";
-			}
-			fclose($fp);
-			$dat['pchfile'] = $pchup;
-			}
-			else{//mime_content_typeが違ったら
-			unlink($pchup);
-			echo"アニメファイルをアップしてください。";
-			// error(MSG001);
-			}
-
+				else{//mime_content_typeが違ったら
+				unlink($pchup);
+				echo"アニメファイルをアップしてください。";
+				// error(MSG001);
+				}
 			}
 		}//不正なファイルでは無い時は
 	}//空文字列でなければ処理続行。
-		else{
-		$pchfilename="";
-		$pchup="";
-		$pchtmp="";
-		}
-		}
-	else{//未定義なら
-	$_FILES['pch_upload']['tmp_name']="";
+	else{
+	$pchup="";
+	$pchtmp="";
 	}
 }
-	//pchファイルアップロードペイントここまで
+//pchファイルアップロードペイントここまで
 
 	if($picw < 100) $picw = 100;
 	if($pich < 100) $pich = 100;
@@ -1876,23 +1885,28 @@ if($admin===ADMIN_PASS){
 	$dat['paint_mode'] = true;
 	head($dat);
 	//ピンチイン
-	$ipad = ((bool) strpos($_SERVER['HTTP_USER_AGENT'],'iPad'));
-	$mobile = (bool) strpos($_SERVER['HTTP_USER_AGENT'],'Mobile');
+	$ipad = false;
+	if(strpos($_SERVER['HTTP_USER_AGENT'],'iPad')!==false){
+		$ipad= true;
+	}
+	$mobile = false;
+	if(strpos($_SERVER['HTTP_USER_AGENT'],'Mobile')!==false){
+		$mobile = true;
+	}
 	if($picw>=700){//横幅700以上だったら
 			$dat['pinchin']=true;
 	//echo 'ピンチインが有効みたい。';
 	}
 	elseif($picw>=500){//横幅500以上だったら
-	if(!$ipad){//iPadじゃなかったら
-	//echo "iPadじゃないよ";
-		if($mobile){//スマートフォンだったら
-		
-			$dat['pinchin']=true;
-	//echo 'ピンチインが有効みたい。';
-		}
-		else{//タブレットだったら
-			$dat['pinchin']=false;
-		}
+		if(!$ipad){//iPadじゃなかったら
+			//echo "iPadじゃないよ";
+			if($mobile){//スマートフォンだったら
+				$dat['pinchin']=true;
+			//echo 'ピンチインが有効みたい。';
+			}
+			else{//タブレットだったら
+				$dat['pinchin']=false;
+			}
 		}
 	}
 	form($dat,$resto);
@@ -2354,7 +2368,18 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	$dest="";
 
-	foreach($badstring as $value){
+	if($REQUEST_METHOD !== "POST") error(MSG006);
+
+	//本文に日本語がなければ拒絶
+	if (USE_JAPANESEFILTER) {
+		mb_regex_encoding("UTF-8");
+		if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
+	}
+
+	//本文へのURLの書き込みを禁止
+	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
+
+	foreach($badstring as $value){//拒絶する文字列
 		if($value===''){
 		break;
 		}
@@ -2363,8 +2388,8 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		}
 	}
 	unset($value);	
-	if(isset($badname)){
-		foreach($badname as $value){//使えない名前
+	if(isset($badname)){//使えない名前
+		foreach($badname as $value){
 			if($value===''){
 			break;
 			}
@@ -2375,19 +2400,30 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		unset($value);	
 	}
 
-	if($REQUEST_METHOD !== "POST") error(MSG006);
+	$bstr_A_find=false;
+	$bstr_B_find=false;
 
-//指定文字列が2つあると拒絶
-	if(isset($badstr_A,$badstr_B)){
-	foreach($badstr_A as $v_a){
-	foreach($badstr_B as $v_b){
-		if($v_a===''||$v_b===''){
-			break;
+	foreach($badstr_A as $value){//指定文字列が2つあると拒絶
+		if($value===''){
+		break;
 		}
-		if(preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$com) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $com)||preg_match("/$v_a/u",$sub) && preg_match("/$v_b/u", $sub)||preg_match("/$v_a/u",$name) && preg_match("/$v_b/u", $name)){error(MSG032,$dest);}
+		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+			$bstr_A_find=true;
+		}
 	}
+	unset($value);
+	foreach($badstr_B as $value){
+		if($value===''){
+		break;
+		}
+		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+			$bstr_B_find=true;
+		}
 	}
-}
+	unset($value);
+	if($bstr_A_find && $bstr_B_find){
+		error(MSG032,$dest);
+	}
 
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
@@ -2403,15 +2439,6 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if(strlen($name) > MAX_NAME) error(MSG012);
 	if(strlen($email) > MAX_EMAIL) error(MSG013);
 	if(strlen($sub) > MAX_SUB) error(MSG014);
-
-	//本文に日本語がなければ拒絶
-	if (USE_JAPANESEFILTER) {
-			mb_regex_encoding("UTF-8");
-			if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
-	}
-
-	//本文へのURLの書き込みを禁止
-	if(DENY_COMMENTS_URL && $admin!==ADMIN_PASS && preg_match('/:\/\/|\.co|\.ly|\.gl|\.net|\.org|\.cc|\.ru|\.su|\.ua|\.gd/i', $com)) error(MSG036,$dest);
 
 	//ホスト取得
 	$host = gethostbyaddr($userip);
@@ -2860,7 +2887,7 @@ function catalog(){
 			//日付と編集マークを分離
 			$updatemark='';
 			if(UPDATE_MARK){
-				if(strstr($now,UPDATE_MARK)){
+				if(strpos($now,UPDATE_MARK)!==false){
 					$updatemark = UPDATE_MARK;
 					$now=str_replace(UPDATE_MARK,"",$now);
 				}
