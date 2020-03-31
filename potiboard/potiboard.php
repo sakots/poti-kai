@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.3 lot.200401
+  * POTI-board改 v1.55.3 lot.200408
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ define('USE_MB' , '1');
 
 //バージョン
 define('POTI_VER' , '改 v1.55.3');
-define('POTI_VERLOT' , '改 v1.55.3 lot.200401');
+define('POTI_VERLOT' , '改 v1.55.3 lot.200408');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1022,8 +1022,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
 	//チェックする項目から改行や空白を消す
-	$chk_com  = preg_replace("/(\r\n|\r|\n)/", "", $com );
-	$chk_com  = preg_replace("/( |　)/", "", $chk_com );
+	$chk_com  = preg_replace("/(\r\n|\r|\n| |　)/", "", $com );
 	$chk_name = preg_replace("/( |　)/", "", $name );
 	$chk_sub = preg_replace("/( |　)/", "", $sub );
 
@@ -2380,8 +2379,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
 	//チェックする項目から改行や空白を消す
-	$chk_com  = preg_replace("/(\r\n|\r|\n)/", "", $com );
-	$chk_com  = preg_replace("/( |　)/", "", $chk_com );
+	$chk_com  = preg_replace("/(\r\n|\r|\n| |　)/", "", $com );
 	$chk_name = preg_replace("/( |　)/", "", $name );
 	$chk_sub = preg_replace("/( |　)/", "", $sub );
 
