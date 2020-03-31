@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.2 lot.200328
+  * POTI-board改 v1.55.3 lot.200401
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -186,8 +186,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.2');
-define('POTI_VERLOT' , '改 v1.55.2 lot.200328');
+define('POTI_VER' , '改 v1.55.3');
+define('POTI_VERLOT' , '改 v1.55.3 lot.200401');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1021,10 +1021,16 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
+	//チェックする項目から改行や空白を消す
+	$chk_com  = preg_replace("/(\r\n|\r|\n)/", "", $com );
+	$chk_com  = preg_replace("/( |　)/", "", $chk_com );
+	$chk_name = preg_replace("/( |　)/", "", $name );
+	$chk_sub = preg_replace("/( |　)/", "", $sub );
+
 	//本文に日本語がなければ拒絶
 	if (USE_JAPANESEFILTER) {
 		mb_regex_encoding("UTF-8");
-		if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
+		if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$chk_com)) error(MSG035,$dest);
 	}
 
 	//本文へのURLの書き込みを禁止
@@ -1034,7 +1040,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
 			error(MSG032,$dest);
 		}
 	}
@@ -1044,7 +1050,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			if($value===''){
 			break;
 			}
-			if(preg_match("/$value/u",$name)){
+			if(preg_match("/$value/u",$chk_name)){
 				error(MSG037,$dest);
 			}
 		}
@@ -1058,8 +1064,9 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
 			$bstr_A_find=true;
+		break;
 		}
 	}
 	unset($value);
@@ -1067,14 +1074,16 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
 			$bstr_B_find=true;
+		break;
 		}
 	}
 	unset($value);
 	if($bstr_A_find && $bstr_B_find){
 		error(MSG032,$dest);
 	}
+
 	// フォーム内容をチェック
 	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
 	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
@@ -2370,10 +2379,16 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
+	//チェックする項目から改行や空白を消す
+	$chk_com  = preg_replace("/(\r\n|\r|\n)/", "", $com );
+	$chk_com  = preg_replace("/( |　)/", "", $chk_com );
+	$chk_name = preg_replace("/( |　)/", "", $name );
+	$chk_sub = preg_replace("/( |　)/", "", $sub );
+
 	//本文に日本語がなければ拒絶
 	if (USE_JAPANESEFILTER) {
 		mb_regex_encoding("UTF-8");
-		if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$com)) error(MSG035,$dest);
+		if (strlen($com) > 0 && !preg_match("/[ぁ-んァ-ヶー一-龠]+/u",$chk_com)) error(MSG035,$dest);
 	}
 
 	//本文へのURLの書き込みを禁止
@@ -2383,7 +2398,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
 			error(MSG032,$dest);
 		}
 	}
@@ -2393,7 +2408,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 			if($value===''){
 			break;
 			}
-			if(preg_match("/$value/u",$name)){
+			if(preg_match("/$value/u",$chk_name)){
 				error(MSG037,$dest);
 			}
 		}
@@ -2407,8 +2422,9 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
 			$bstr_A_find=true;
+		break;
 		}
 	}
 	unset($value);
@@ -2416,8 +2432,9 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$com)||preg_match("/$value/u",$sub)||preg_match("/$value/u",$name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
 			$bstr_B_find=true;
+		break;
 		}
 	}
 	unset($value);
