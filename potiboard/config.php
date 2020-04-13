@@ -1,6 +1,6 @@
 <?php
 /*
-  * POTI-board改 v1.55.2 lot.200401
+  * POTI-board改 v1.55.4 lot.200413
   * by sakots >> https://sakots.red/poti/
   *
   * POTI-board改の設定ファイルです。
@@ -386,7 +386,7 @@ define('TEMP_DIR', 'tmp/');
 define('TEMP_LIMIT', '3');
 
 //お絵描き最大サイズ（これ以上は強制でこの値
-//最小値は幅、高さともに 100 固定です
+//最小値は幅、高さともに 300 固定です
 define('PMAX_W', '600');	//幅
 define('PMAX_H', '600');	//高さ
 

@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.3 lot.200408
+  * POTI-board改 v1.55.4 lot.200413
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -186,8 +186,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.3');
-define('POTI_VERLOT' , '改 v1.55.3 lot.200408');
+define('POTI_VER' , '改 v1.55.4');
+define('POTI_VERLOT' , '改 v1.55.4 lot.200413');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1021,10 +1021,11 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
-	//チェックする項目から改行や空白を消す
-	$chk_com  = preg_replace("/(\r\n|\r|\n| |　)/", "", $com );
-	$chk_name = preg_replace("/( |　)/", "", $name );
-	$chk_sub = preg_replace("/( |　)/", "", $sub );
+	//チェックする項目から改行・スペース・タブを消す
+	$chk_com  = preg_replace("/\s/u", "", $com );
+	$chk_name = preg_replace("/\s/u", "", $name );
+	$chk_sub = preg_replace("/\s/u", "", $sub );
+	$chk_email = preg_replace("/\s/u", "", $email );
 
 	//本文に日本語がなければ拒絶
 	if (USE_JAPANESEFILTER) {
@@ -1039,7 +1040,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/ui",$chk_com)||preg_match("/$value/ui",$chk_sub)||preg_match("/$value/ui",$chk_name)||preg_match("/$value/ui",$chk_email)){
 			error(MSG032,$dest);
 		}
 	}
@@ -1049,7 +1050,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			if($value===''){
 			break;
 			}
-			if(preg_match("/$value/u",$chk_name)){
+			if(preg_match("/$value/ui",$chk_name)){
 				error(MSG037,$dest);
 			}
 		}
@@ -1063,7 +1064,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/ui",$chk_com)||preg_match("/$value/ui",$chk_sub)||preg_match("/$value/ui",$chk_name)||preg_match("/$value/ui",$chk_email)){
 			$bstr_A_find=true;
 		break;
 		}
@@ -1073,7 +1074,7 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/ui",$chk_com)||preg_match("/$value/ui",$chk_sub)||preg_match("/$value/ui",$chk_name)||preg_match("/$value/ui",$chk_email)){
 			$bstr_B_find=true;
 		break;
 		}
@@ -1084,11 +1085,11 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 	}
 
 	// フォーム内容をチェック
-	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
-	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
-	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(preg_match("/&lt;|</",$email))   $email="";//190602
-	if(!$url||!preg_match("/^ *?https?:\/\//",$url)||preg_match("/&lt;|</",$url))   $url="";
+	if(!$name||preg_match("/\A\s*\z/u",$name)) $name="";
+	if(!$com||preg_match("/\A\s*\z/u",$com)) $com="";
+	if(!$sub||preg_match("/\A\s*\z/u",$sub))   $sub="";
+	if(!$email||preg_match("/\A\s*\z|&lt;|</ui",$email)) $email="";
+	if(!$url||!preg_match("/\A *https?:\/\//",$url)||preg_match("/&lt;|</i",$url)) $url="";
 	if(!$resto&&!$textonly&&!$is_file_dest) error(MSG007,$dest);
 	if(RES_UPLOAD&&$resto&&!$textonly&&!$is_file_dest) error(MSG007,$dest);
 
@@ -1869,8 +1870,8 @@ if($admin===ADMIN_PASS){
 }
 //pchファイルアップロードペイントここまで
 
-	if($picw < 100) $picw = 100;
-	if($pich < 100) $pich = 100;
+	if($picw < 300) $picw = 300;
+	if($pich < 300) $pich = 300;
 	if($picw > PMAX_W) $picw = PMAX_W;
 	if($pich > PMAX_H) $pich = PMAX_H;
 //	$w = $picw + 150;
@@ -1879,8 +1880,20 @@ if($admin===ADMIN_PASS){
 	$h = $pich + 120;//しぃぺの時の高さ
 	}
 	else{
-	$w = $picw + 150;//PaintBBSの時の幅
-	$h = $pich + 170;//PaintBBSの時の高さ
+		if($pich<=300){
+			$w = $picw + 150;//PaintBBSの時の幅
+			$h = $pich + 255;//PaintBBSの時の高さ
+			}
+		elseif($pich<=350){
+				$w = $picw + 150;//PaintBBSの時の幅
+				$h = $pich + 220;//PaintBBSの時の高さ
+	
+		}
+		else{
+			$w = $picw + 150;//PaintBBSの時の幅
+			$h = $pich + 172;//PaintBBSの時の高さ
+
+		}
 	}
 	if($w < 400){$w = 400;}
 	if($h < 420){$h = 420;}
@@ -2378,10 +2391,11 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 
 	if($REQUEST_METHOD !== "POST") error(MSG006);
 
-	//チェックする項目から改行や空白を消す
-	$chk_com  = preg_replace("/(\r\n|\r|\n| |　)/", "", $com );
-	$chk_name = preg_replace("/( |　)/", "", $name );
-	$chk_sub = preg_replace("/( |　)/", "", $sub );
+	//チェックする項目から改行・スペース・タブを消す
+	$chk_com  = preg_replace("/\s/u", "", $com );
+	$chk_name = preg_replace("/\s/u", "", $name );
+	$chk_sub = preg_replace("/\s/u", "", $sub );
+	$chk_email = preg_replace("/\s/u", "", $email );
 
 	//本文に日本語がなければ拒絶
 	if (USE_JAPANESEFILTER) {
@@ -2396,7 +2410,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/ui",$chk_com)||preg_match("/$value/ui",$chk_sub)||preg_match("/$value/ui",$chk_name)||preg_match("/$value/ui",$chk_email)){
 			error(MSG032,$dest);
 		}
 	}
@@ -2406,7 +2420,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 			if($value===''){
 			break;
 			}
-			if(preg_match("/$value/u",$chk_name)){
+			if(preg_match("/$value/ui",$chk_name)){
 				error(MSG037,$dest);
 			}
 		}
@@ -2420,7 +2434,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/ui",$chk_com)||preg_match("/$value/ui",$chk_sub)||preg_match("/$value/ui",$chk_name)||preg_match("/$value/ui",$chk_email)){
 			$bstr_A_find=true;
 		break;
 		}
@@ -2430,7 +2444,7 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 		if($value===''){
 		break;
 		}
-		if(preg_match("/$value/u",$chk_com)||preg_match("/$value/u",$chk_sub)||preg_match("/$value/u",$chk_name)||preg_match("/$value/u",$email)){
+		if(preg_match("/$value/ui",$chk_com)||preg_match("/$value/ui",$chk_sub)||preg_match("/$value/ui",$chk_name)||preg_match("/$value/ui",$chk_email)){
 			$bstr_B_find=true;
 		break;
 		}
@@ -2441,11 +2455,11 @@ function rewrite($no,$name,$email,$sub,$com,$url,$pwd,$admin){
 	}
 
 	// フォーム内容をチェック
-	if(!$name||preg_match("/^[ |　|]*$/",$name)) $name="";
-	if(!$com||preg_match("/^[ |　|\t]*$/",$com)) $com="";
-	if(!$sub||preg_match("/^[ |　|]*$/",$sub))   $sub="";
-	if(preg_match("/&lt;|</",$email))   $email="";
-	if(!$url||!preg_match("/^ *?https?:\/\//",$url)||preg_match("/&lt;|</",$url))   $url="";
+	if(!$name||preg_match("/\A\s*\z/u",$name)) $name="";
+	if(!$com||preg_match("/\A\s*\z/u",$com)) $com="";
+	if(!$sub||preg_match("/\A\s*\z/u",$sub))   $sub="";
+	if(!$email||preg_match("/\A\s*\z|&lt;|</ui",$email)) $email="";
+	if(!$url||!preg_match("/\A *https?:\/\//",$url)||preg_match("/&lt;|</i",$url)) $url="";
 
 	//$name=preg_replace("/管理/","\"管理\"",$name);
 	//$name=preg_replace("/削除/","\"削除\"",$name);
