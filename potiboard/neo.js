@@ -11,11 +11,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 var Neo = function() {};
 
-Neo.version = "1.5.4";
+Neo.version = "1.5.5";
 Neo.painter;
 Neo.fullScreen = false;
 Neo.uploaded = false;
 Neo.viewer = false;
+Neo.toolSide = false;
 
 Neo.config = {
     width: 300,
@@ -1016,6 +1017,23 @@ Neo.tintImage = function(ctx, c) {
 };
 
 
+Neo.setToolSide = function(side) {
+    if (side === 'left') side = true;
+    if (side === 'right') side = false;
+    Neo.toolSide = !!side;
+
+    if (!Neo.toolSide) {
+        Neo.addRule(".NEO #toolsWrapper", "right", "0");
+        Neo.addRule(".NEO #toolsWrapper", "left", "auto");
+        Neo.addRule(".NEO #painterWrapper", "padding", "0 55px 0 0 !important");
+        Neo.addRule(".NEO #upper", "padding-right", "75px !important");
+    } else {
+        Neo.addRule(".NEO #toolsWrapper", "right", "auto");
+        Neo.addRule(".NEO #toolsWrapper", "left", "0");
+        Neo.addRule(".NEO #painterWrapper", "padding", "0 0 0 55px !important");
+        Neo.addRule(".NEO #upper", "padding-right", "20px !important");
+    }
+};
 
 'use strict';
 
@@ -5665,6 +5683,9 @@ Neo.ActionManager.prototype.line = function(
         x1 = item[14];
         y1 = item[15];
     }
+    if (x1 === null) x1 = x0
+    if (y1 === null) y1 = y0
+  
     oe.drawLine(oe.canvasCtx[layer], x0, y0, x1, y1, lineType);
     oe.updateDestCanvas(0, 0, oe.canvasWidth, oe.canvasHeight);
 

@@ -474,6 +474,11 @@
 				<div class="palette">
 					<form name="Palette">
 						<fieldset>
+							<legend>TOOL</legend>
+							<input class="button" type="button" value="左" onclick="Neo.setToolSide(true)">
+								<input class="button" type="button" value="右" onclick="Neo.setToolSide(false)">
+						</fieldset>	
+						<fieldset>
 							<legend>PALETTE</legend>
 							<select class="form" name="select" size="{$palsize}" onChange="setPalette()">
 								<option>一時パレット</option>
