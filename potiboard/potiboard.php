@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.4 lot.200413
+  * POTI-board改 v1.55.5 lot.200415
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -186,8 +186,8 @@ define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.4');
-define('POTI_VERLOT' , '改 v1.55.4 lot.200413');
+define('POTI_VER' , '改 v1.55.5');
+define('POTI_VERLOT' , '改 v1.55.5 lot.200415');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -1880,28 +1880,14 @@ if($admin===ADMIN_PASS){
 	$h = $pich + 120;//しぃぺの時の高さ
 	}
 	else{
-		if($pich<=300){
-			$w = $picw + 150;//PaintBBSの時の幅
-			$h = $pich + 255;//PaintBBSの時の高さ
-			}
-		elseif($pich<=350){
-				$w = $picw + 150;//PaintBBSの時の幅
-				$h = $pich + 220;//PaintBBSの時の高さ
-	
-		}
-		else{
-			$w = $picw + 150;//PaintBBSの時の幅
-			$h = $pich + 172;//PaintBBSの時の高さ
-
-		}
+		$w = $picw + 150;//PaintBBSの時の幅
+		$h = $pich + 172;//PaintBBSの時の高さ
 	}
-	if($w < 400){$w = 400;}
-	if($h < 420){$h = 420;}
-	//	if($w < 500 && $shi){$w = 500;}
-	//	if($h < 500 && $shi==2){$h = 500;}
+	// if($w < 400){$w = 400;}//PaintBBSの時の最低幅
+	if($h < 560){$h = 560;}//共通の最低高
 	//NEOを使う時はPaintBBSの設定
-	if($w < 500 && !$useneo && $shi){$w = 500;}
-	if($h < 520 && !$useneo && $shi){$h = 520;}
+	// if($w < 610 && !$useneo && $shi){$w = 610;}//しぃぺの時の最低幅
+	// if($h < 520 && !$useneo && $shi){$h = 520;}
 
 	$dat['paint_mode'] = true;
 	head($dat);
