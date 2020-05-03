@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.5 lot.200415
+  * POTI-board改 v1.55.6 lot.200501
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -182,12 +182,17 @@ define('crypt_pass','qRyFfhV6nyUggSb');//暗号鍵初期値
 define('crypt_method','aes-128-cbc');
 define('crypt_iv','T3pkYxNyjN7Wz3pu');//半角英数16文字
 
+//指定した日数を過ぎたスレッドのフォームを閉じる
+if(!defined('ELAPSED_DAYS')){//config.phpで未定義なら0
+	define('ELAPSED_DAYS','0');
+}
+
 //MB関数を使うか？ 使う:1 使わない:0
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.5');
-define('POTI_VERLOT' , '改 v1.55.5 lot.200415');
+define('POTI_VER' , '改 v1.55.6');
+define('POTI_VERLOT' , '改 v1.55.6 lot.200501');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -463,7 +468,9 @@ function form(&$dat,$resno,$admin="",$tmp=""){
 	$dat['maxbyte'] = MAX_KB * 1024;
 	$dat['usename'] = USE_NAME ? ' *' : '';
 	$dat['usesub']  = USE_SUB ? ' *' : '';
-	if(USE_COM||$resno) $dat['usecom'] = ' *';
+	// if(USE_COM||$resno) $dat['usecom'] = ' *';
+	//↓本文必須の設定では無い時はレスでも画像かコメントがあれば通る
+	if(USE_COM) $dat['usecom'] = ' *';
 	if((!$resno && !$tmp) || (RES_UPLOAD && !$tmp)) $dat['upfile'] = true;
 	$dat['maxkb']   = MAX_KB;
 	$dat['maxw']    = $resno ? MAX_RESW : MAX_W;
@@ -530,6 +537,26 @@ unset($value);
 			if($line[$j]==="") continue;   //$jが範囲外なら次の行
 			list($no,$now,$name,$email,$sub,$com,$url,
 				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim($line[$j]));
+
+				 $r_threads = false;
+				 if(ELAPSED_DAYS){//古いスレッドのフォームを閉じる日数が設定されていたら
+				 $ntime = time();
+				 $ltime=substr($time,-13,-3);
+				 $elapsed_time = ELAPSED_DAYS*86400;
+					 if(($ntime-$ltime) <= $elapsed_time){//指定日数以内
+					 $r_threads = true;//フォームを表示する
+					 }
+				 }
+				 else{//フォームを閉じる日数が未設定なら
+				 $r_threads = true;
+				 }
+				 if(!$r_threads){
+					 if($resno){//レスなら
+					 $dat['form'] = false;//フォームを閉じる
+					 $dat['paintform'] = false;
+					 }
+				 }
+ 
 			// URLとメールにリンク
 			//if($email) $name = "<a href=\"mailto:$email\">$name</a>";
 			if(AUTOLINK) $com = auto_link($com);
@@ -856,7 +883,11 @@ unset($value);
 		}
 
 		if($resno){htmloutput(RESFILE,$dat);break;}
-		$dat['resform'] = RES_FORM ? true : false;
+		// $dat['resform'] = RES_FORM ? true : false;
+		$dat['resform'] = false;	
+		if(RES_FORM && !ELAPSED_DAYS){
+			$dat['resform'] = true;	
+		}
 		htmltemplate::removeTag("q_escape");
 		htmltemplate::addTag("q_escape2");
 		$buf = htmloutput(MAINFILE,$dat,true);
