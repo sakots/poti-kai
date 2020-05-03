@@ -539,7 +539,6 @@ unset($value);
 				 $host,$pwd,$ext,$w,$h,$time,$chk,$ptime,$fcolor) = explode(",", rtrim($line[$j]));
 
 				 $r_threads = false;
-				 $res_button = true;
 				 if(ELAPSED_DAYS){//古いスレッドのフォームを閉じる日数が設定されていたら
 				 $ntime = time();
 				 $ltime=substr($time,-13,-3);
