@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.6 lot.200501
+  * POTI-board改 v1.55.6 lot.200505
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ define('USE_MB' , '1');
 
 //バージョン
 define('POTI_VER' , '改 v1.55.6');
-define('POTI_VERLOT' , '改 v1.55.6 lot.200501');
+define('POTI_VERLOT' , '改 v1.55.6 lot.200505');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -468,9 +468,8 @@ function form(&$dat,$resno,$admin="",$tmp=""){
 	$dat['maxbyte'] = MAX_KB * 1024;
 	$dat['usename'] = USE_NAME ? ' *' : '';
 	$dat['usesub']  = USE_SUB ? ' *' : '';
-	// if(USE_COM||$resno) $dat['usecom'] = ' *';
-	//↓本文必須の設定では無い時はレスでも画像かコメントがあれば通る
-	if(USE_COM) $dat['usecom'] = ' *';
+	if(USE_COM||($resno&&!RES_UPLOAD)) $dat['usecom'] = ' *';
+	//本文必須の設定では無い時はレスでも画像かコメントがあれば通る
 	if((!$resno && !$tmp) || (RES_UPLOAD && !$tmp)) $dat['upfile'] = true;
 	$dat['maxkb']   = MAX_KB;
 	$dat['maxw']    = $resno ? MAX_RESW : MAX_W;
