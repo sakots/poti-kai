@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.6 lot.200505
+  * POTI-board改 v1.55.7 lot.200510
   *   (C)sakots >> https://sakots.red/poti/
   *
   *----------------------------------------------------------------------------------
@@ -191,8 +191,8 @@ if(!defined('ELAPSED_DAYS')){//config.phpで未定義なら0
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.6');
-define('POTI_VERLOT' , '改 v1.55.6 lot.200505');
+define('POTI_VER' , '改 v1.55.7');
+define('POTI_VERLOT' , '改 v1.55.7 lot.200510');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -632,9 +632,10 @@ unset($value);
 				if(RES_UPLOAD){
 					//画像テーブル作成
 					$imgline=array();
-					//$counttreeline = count($treeline);//190619
-					for($k = $s; $k < $counttreeline; $k++){
-						$disptree = $treeline[$k];
+					foreach($treeline as $k => $disptree){
+						if($k<$s){//レス表示件数
+							continue;
+						}
 						$j=$lineindex[$disptree] - 1;
 						if($line[$j]==="") continue;
 						list(,,,,,,,,,$rext,,,$rtime,,,) = explode(",", rtrim($line[$j]));
@@ -697,9 +698,10 @@ unset($value);
 
 			//レス作成
 			$rres=array();
-			$counttreeline = count($treeline);
-			for($k = $s; $k < $counttreeline; $k++){
-				$disptree = $treeline[$k];
+			foreach($treeline as $k => $disptree){
+				if($k<$s){//レス表示件数
+					continue;
+				}
 				$j=$lineindex[$disptree] - 1;
 				if($line[$j]==="") continue;
 				list($no,$now,$name,$email,$sub,$com,$url,
