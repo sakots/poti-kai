@@ -1,7 +1,7 @@
 <?php
 /*
-  * POTI-board改 v1.55.6 lot.200501
-  * by sakots >> https://sakots.red/poti/
+  * POTI-board改 v1.55.8 lot.200511
+  * by sakots >> https://poti-k.info/
   *
   * POTI-board改の設定ファイルです。
   *
@@ -99,7 +99,7 @@ define('DENY_COMMENTS_URL', '0');
 // 2:中　　…　低レベルの条件に加え、名前・メールアドレス・URL・題名のいずれかが同じ場合
 // 3:高　　…　低レベルの条件に加え、名前・メールアドレス・URL・題名のいずれかが類似率を上回る場合
 // 4:最高　…　無条件でチェック。最新ログ20件と連続・二重投稿チェックする事になる
-//※中・高レベルのとき、見入力項目は無視
+//※中・高レベルのとき、未入力項目は無視
 define('POST_CHECKLEVEL', '2');
 
 // 連続・二重投稿対象セキュリティレベルが 高 のときの類似率(単位％)
@@ -127,6 +127,7 @@ define('LANG', 'Japanese');
 
 /* ---------- ADD:2004/06/22 ---------- */
 // 独自タグ使用 (0=no 1=yes)
+// 0を強く推奨
 define('USE_POTITAG', '0');
 
 // -- 独自タグの種類（font以外）--
@@ -145,6 +146,7 @@ define('USER_DEL', '1');
 
 /* ---------- ADD:2004/03/16 ---------- */
 //文字色選択を使用する する:1 しない:0
+//0を推奨
 define('USE_FONTCOLOR', '0');
 
 //レスで画像貼りを許可する する:1 しない:0
@@ -152,8 +154,8 @@ define('USE_FONTCOLOR', '0');
 define('RES_UPLOAD', '1');
 
 //レス用投稿サイズ（これ以上はサイズを縮小
-define('MAX_RESW', '200');	//幅
-define('MAX_RESH', '200');	//高さ
+define('MAX_RESW', '400');	//幅
+define('MAX_RESH', '400');	//高さ
 
 //レス画像貼りを許可した場合の画像付きレスを表示させる件数
 //1スレで表示させるレスを画像付きレス表示数になるまで省略します
@@ -174,7 +176,7 @@ define('UNDO_IN_MG', '45');
 //・保存タイプが AUTOの場合、JPEGに変換
 //・保存タイプが PNG の場合、減色処理
 //ただし、保存タイプが JPEGの場合は、この値を無視してJPEGに変換
-define('IMAGE_SIZE', '600');
+define('IMAGE_SIZE', '800');
 
 //PNGの減色率とJPEGの圧縮率
 define('COMPRESS_LEVEL', '15');
@@ -206,7 +208,7 @@ define('C_SECURITY_TIMER', '10');
 
 /* ---------- ADD:2004/02/03 ---------- */
 //そろそろ消える表示のボーダー。最大ログ数からみたパーセンテージ
-define('LOG_LIMIT', '95');
+define('LOG_LIMIT', '92');
 
 /* ---------- ADD:2004/01/26 ---------- */
 /* ---------- メール通知設定 ---------- */
@@ -228,7 +230,7 @@ define('SEND_COM', '0');
 
 /* ---------- メイン設定 ---------- */
 
-//ログファイル名
+//ログファイル名　変更しないとわかる人にはログが丸見え
 define('LOGFILE', 'img.log');
 define('TREEFILE', 'tree.log');
 
@@ -242,9 +244,11 @@ define('THUMB_DIR', 'thumb/');
 define('TITLE', 'お絵かき掲示板');
 
 //「ホーム」へのリンク
+// 自分のサイトにお絵かき掲示板がある、という慣習からのものです。
+// 自分のサイトのURL（絶対パスも可）をどうぞ。
 define('HOME', '../');
 
-//管理者パス
+//管理者パス　変更してくださいね
 define('ADMIN_PASS', 'adminpass');
 
 //このスクリプト名
@@ -264,8 +268,8 @@ define('ADMIN_NEWPOST', '0');
 define('MAX_KB', '1000');
 
 //投稿サイズ（これ以上はサイズを縮小
-define('MAX_W', '300');	//幅
-define('MAX_H', '300');	//高さ
+define('MAX_W', '600');	//幅
+define('MAX_H', '600');	//高さ
 
 //名前の制限文字数。半角で
 define('MAX_NAME', '100');
@@ -280,7 +284,7 @@ define('MAX_SUB', '100');
 define('MAX_COM', '1000');
 
 //一ページに表示する記事
-define('PAGE_DEF', '5');
+define('PAGE_DEF', '7');
 
 //最大ログ数
 define('LOG_MAX', '400');
@@ -289,7 +293,7 @@ define('LOG_MAX', '400');
 //レスがこの値より多いと古いレスから省略されます
 //返信画面で全件表示されます
 //[新規投稿は管理者のみ]にした場合の 0 はレスを表示しません
-define('DSP_RES', '5');
+define('DSP_RES', '7');
 
 //クッキー保存日数
 define('SAVE_COOKIE', '30');
@@ -313,14 +317,15 @@ define('DISP_ID', '0');
 define('ID_SEED', 'IDの種');
 
 //改行を抑制する行数 しない:0
-define('BR_CHECK', '15');
+//改行荒らし対策だったものです(たぶん)
+define('BR_CHECK', '0');
 
 //URLを自動リンクする する:1 しない:0
 define('AUTOLINK', '1');
 
 //名前を必須にする する:1 しない:0
 define('USE_NAME', '0');
-define('DEF_NAME', '名無し');	//未入力時の名前
+define('DEF_NAME', '名無しさん');	//未入力時の名前
 
 //本文を必須にする する:1 しない:0
 define('USE_COM', '0');
@@ -339,6 +344,7 @@ define('RES_FORM', '0');
 //フォーム下の追加お知らせ
 //(例)'<LI>お知らせデース
 //     <LI>サーバの規約で<font color=red><big><B>アダルト禁止</B></big></font>'
+//使わないことを推奨
 $addinfo='';
 
 //拒絶する文字列
@@ -357,7 +363,7 @@ $badip = array("addr.dummy.com","addr2.dummy.com");
 /* ---------- サムネイル設定 ---------- */
 
 //サムネイルを作成する する:1 しない:0
-define('USE_THUMB', '1');
+define('USE_THUMB', '0');
 
 //サムネイルルーチンの指定 自動判別:0 GD版:1 
 //自動判別は万能じゃありません
@@ -399,8 +405,8 @@ define('TEMP_LIMIT', '3');
 
 //お絵描き最大サイズ（これ以上は強制でこの値
 //最小値は幅、高さともに 300 固定です
-define('PMAX_W', '600');	//幅
-define('PMAX_H', '600');	//高さ
+define('PMAX_W', '700');	//幅
+define('PMAX_H', '700');	//高さ
 
 //お絵描きデフォルトサイズ
 define('PDEF_W', '300');	//幅

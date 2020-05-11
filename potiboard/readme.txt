@@ -1,7 +1,7 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   POTI-board改
-  by sakots >> https://sakots.red/poti/
+  by sakots >> https://poti-k.info/
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -126,11 +126,15 @@
 ※メール通知機能を使用する場合、下記を追加
 ./-- 同ルート
   ｜noticemail.inc
-☆ファイルは<http://www.punyu.net/php/>より入手してください
 →php7対応版を同梱いたしました
 
 
 ■thanks!!
+
+　　【ぷにゅねっと<https://www.punyu.net/>SakaQさん】
+　POTI改の親です。
+
+以下SakaQさんのthanks
 
 　　【ちょむ工房<http://www.chomkoubou.com/>のTakeponG殿】
 　picpost.cgi のPHP化ありがとうございます。これのおかげで開発する意欲が
@@ -157,7 +161,7 @@
 
 ■著作権
 
-　POTI-boaed改                       by sakots「赤原文庫」
+　POTI-boaed改                       by sakots
 
 　POTI-board v1.32                   (C)SakaQ「ぷにゅねっと」
 

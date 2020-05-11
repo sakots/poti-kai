@@ -4,9 +4,10 @@
 **
 ** http://www.punyu.net/php/
 ** by SakaQ
-** https://sakots.red/poti/
+** https://poti-k.info/
 ** by sakots
 **
+** 2020/05/11 説明追加、POTI改のURL変更。
 ** 2020/01/25 "REMOTE_ADDR"が使えないサーバに対応。
 ** 2019/07/24 変換元のエンコードをutf-8に。コード整理。
 ** 2019/07/21 コード整理
@@ -20,6 +21,8 @@
 
 このスクリプトは、PHPの掲示板等にメール通知機能を追加するクラスです。
 ※通知を目的にしているので添付ファイルに対応していません。
+
+※POTI-board改で使用する場合は、config.phpで使用する設定に切り替え、このファイルをpotiboard.phpと同じフォルダに置くだけで大丈夫です。
 
 【使用方法】
  このクラスを使いたいスクリプトの先頭で noticemail.inc を require() か include() して下さい。
