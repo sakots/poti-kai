@@ -25,13 +25,18 @@ potiboard.zip がスクリプト一式です。
 このスクリプトはスキン機能に対応しています。[poti-kai-skins](https://github.com/sakots/poti-kai-skins)でスキンを用意しておりますのでご参照ください。
 デフォルトでneeスキンを同梱しております。
 
-## サンプル/サポート掲示板
+## サンプル/サポート
 
-サンプルとして[「nee」](https://sakots.red/nee/)[「5u」](https://sakots.red/5u/)[「5r」](https://sakots.red/5r/)をオープンしました。質問や動作確認にご利用ください。
+[POTI改公式サイト](https://poti-k.info/) をオープンしました。質問や動作確認にご利用ください。
 
 ---
 
 ## 履歴
+
+### [2020/05/10]
+
+- neo更新
+- サポートをPOTI改公式サイトに変更
 
 ### [2020/05/10] v1.55.7 lot.200510
 
