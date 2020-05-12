@@ -176,7 +176,7 @@ define('UNDO_IN_MG', '45');
 //・保存タイプが AUTOの場合、JPEGに変換
 //・保存タイプが PNG の場合、減色処理
 //ただし、保存タイプが JPEGの場合は、この値を無視してJPEGに変換
-	define('IMAGE_SIZE', '800');
+define('IMAGE_SIZE', '800');
 
 //PNGの減色率とJPEGの圧縮率
 define('COMPRESS_LEVEL', '15');
