@@ -15,8 +15,11 @@ Punyu Net
 
 という [PaintBBS NEO](https://github.com/funige/neo/) を応援するためにphp7に対応させ、改良を進めています。  
 
-potiboard.zip がスクリプト一式です。  
-ディレクトリ内に未圧縮ソースが入っています。
+
+## サンプル/サポート
+
+[POTI改公式サイト](https://poti-k.info/) をオープンしました。質問や動作確認にご利用ください。
+
 掲示板設置法等は~~中のテキストファイルを読んで下さい。~~
 さとぴあさんが[詳しく書いて下さっています](http://stp.sblo.jp/article/185357941.html)。
 
@@ -24,10 +27,6 @@ potiboard.zip がスクリプト一式です。
 
 このスクリプトはスキン機能に対応しています。[poti-kai-skins](https://github.com/sakots/poti-kai-skins)でスキンを用意しておりますのでご参照ください。
 デフォルトでneeスキンを同梱しております。
-
-## サンプル/サポート
-
-[POTI改公式サイト](https://poti-k.info/) をオープンしました。質問や動作確認にご利用ください。
 
 ---
 
