@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.8 lot.200511
+  * POTI-board改 v1.55.9 lot.200519
   *   (C)sakots >> https://poti-k.info/
   *
   *----------------------------------------------------------------------------------
@@ -131,12 +131,8 @@ $mode = "tag";
 
 //var_dump($_COOKIE);
 
-$urlc = filter_input(INPUT_COOKIE, 'urlc');
-$namec = filter_input(INPUT_COOKIE, 'namec');
-$emailc = filter_input(INPUT_COOKIE, 'emailc');
 $pwdc = filter_input(INPUT_COOKIE, 'pwdc');
 $usercode = filter_input(INPUT_COOKIE, 'usercode');//nullならuser-codeを発行
-$fcolorc = filter_input(INPUT_COOKIE, 'fcolorc');
 
 //$_SERVERから変数を取得
 //var_dump($_SERVER);
@@ -191,8 +187,8 @@ if(!defined('ELAPSED_DAYS')){//config.phpで未定義なら0
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.8');
-define('POTI_VERLOT' , '改 v1.55.8 lot.200511');
+define('POTI_VER' , '改 v1.55.9');
+define('POTI_VERLOT' , '改 v1.55.9 lot.200519');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -691,6 +687,8 @@ unset($value);
 			//タグを除去
 			$descriptioncom=strip_tags($com);
 
+			$oyaname=$name;//投稿者名をコピー
+
 			// 親記事格納
 			$dat['oya'][$oya] = compact('src','srcname','size','painttime','pch','continue','thumb','imgsrc','w','h','no','sub','name','now','com','descriptioncom','limit','skipres','resub','url','email','id','updatemark','trip','tab','fontcolor');
 			// 変数クリア
@@ -789,12 +787,29 @@ unset($value);
 				// レス記事一時格納
 				$rres[$oya][] = compact('no','sub','name','now','com','url','email','id','updatemark','trip','fontcolor'
 								,'src','srcname','size','painttime','pch','continue','thumb','imgsrc','w','h');
+
+				$rresname[] = $name;//投稿者名を配列にいれる
+
 				// 変数クリア
 				unset($no,$sub,$name,$now,$com,$url,$email
 						,$src,$srcname,$size,$painttime,$pch,$continue,$thumb,$imgsrc,$w,$h);
 			}
 			// レス記事一括格納
 			if($rres){//レスがある時
+
+				$rresname=array_unique($rresname);//投稿者名重複削除
+				foreach($rresname as $key=>$val){
+					if($rresname[$key]===$oyaname){
+						unset($rresname[$key]);
+					}
+				}
+				unset($val);
+				if($rresname){
+
+					$resname=implode('さん ',$rresname);//文字列として結合
+					$dat['resname']=$resname;//投稿者名一覧
+				}
+
 			$dat['oya'][$oya]['res'] = $rres[$oya];
 			}
 			unset($rres); //クリア
