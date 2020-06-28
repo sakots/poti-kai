@@ -38,6 +38,7 @@ Punyu Net
 ### [2020/06/28]
 
 - POTI-board改、保守作業およびサポートを終了。
+- 今後は[POTI-board改二](https://github.com/sakots/poti-kaini)へ移行します。
 
 ### [2020/06/02]
 
