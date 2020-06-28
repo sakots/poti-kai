@@ -18,7 +18,8 @@ Punyu Net
 
 ## サンプル/サポート
 
-今後のスクリプトの保守は改二に移行する予定です。 新規設置を検討されている方は、より高速に動作する[POTI-board改二](https://github.com/sakots/poti-kaini)の利用をご検討ください。
+スクリプトの保守は完全に[POTI-board改二](https://github.com/sakots/poti-kaini)に移行しました。
+新規設置、バージョンアップは、より高速に動作するPOTI-board改二をご利用ください。
 
 [POTI改公式サイト](https://poti-k.info/) をオープンしました。質問や動作確認にご利用ください。
 
@@ -33,6 +34,10 @@ Punyu Net
 ---
 
 ## 履歴
+
+### [2020/06/28]
+
+- POTI-board改、保守作業を終了。
 
 ### [2020/06/02]
 
