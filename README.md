@@ -15,16 +15,13 @@ Punyu Net
 
 という [PaintBBS NEO](https://github.com/funige/neo/) を応援するためにphp7に対応させ、改良を進めています。  
 
-
 ## サンプル/サポート
 
 スクリプトの保守は完全に[POTI-board改二](https://github.com/sakots/poti-kaini)に移行しました。
-新規設置、バージョンアップは、より高速に動作するPOTI-board改二をご利用ください。
+新規設置、バージョンアップは、より高速に動作するPOTI-board改二をご利用ください。  
+なお、POTI-board改v1.5x系はphp8以降に対応する予定もございません。
 
 [POTI改公式サイト](https://poti-k.info/) をオープンしました。質問や動作確認にご利用ください。
-
-掲示板設置法等は~~中のテキストファイルを読んで下さい。~~
-さとぴあさんが[詳しく書いて下さっています](http://stp.sblo.jp/article/185357941.html)。
 
 ## スキンについて
 
@@ -47,9 +44,6 @@ Punyu Net
 ### [2020/05/24]
 
 - config.phpの初期値(しぃペインターのセキュリティクリック関連)変更
-
-### [2020/05/24]
-
 - デフォルトテーマでカラーマトリックス等の機能が使えなかったの修正
 
 ### [2020/05/19] v1.55.9 lot.200519
@@ -94,7 +88,7 @@ iPad+Apple Pencilで描く時などに右手がツールに接触して色が意
 ### [2020/03/31] v1.55.3 lot.200408
 
 - スペースや改行が入っていてもNGワードで拒絶できるように改良(by さとぴあ)
- くわしくは[ こちら ](https://github.com/sakots/poti-kai/pull/72)
+ くわしくは[こちら](https://github.com/sakots/poti-kai/pull/72)
 
 ### [2020/03/09] v1.55.1 lot.200308
 
@@ -103,7 +97,7 @@ iPad+Apple Pencilで描く時などに右手がツールに接触して色が意
 ### [2020/03/05] v1.55.0 lot.200302
 
 - 「使用できない名前」の設定項目を追加など(by さとぴあ)
- くわしくは[ こちら ](https://github.com/sakots/poti-kai/pull/68)
+ くわしくは[こちら](https://github.com/sakots/poti-kai/pull/68)
 
 ### [2020/01/26]
 
