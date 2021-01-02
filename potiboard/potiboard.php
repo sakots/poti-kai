@@ -3,7 +3,7 @@
 //$time_start = microtime(true);
 /*
   *
-  * POTI-board改 v1.55.9 lot.200519
+  * POTI-board改 v1.56.0 lot.210102
   *   (C)sakots >> https://poti-k.info/
   *
   *----------------------------------------------------------------------------------
@@ -187,8 +187,8 @@ if(!defined('ELAPSED_DAYS')){//config.phpで未定義なら0
 define('USE_MB' , '1');
 
 //バージョン
-define('POTI_VER' , '改 v1.55.9');
-define('POTI_VERLOT' , '改 v1.55.9 lot.200519');
+define('POTI_VER' , '改 v1.56.0');
+define('POTI_VERLOT' , '改 v1.56.0 lot.210102');
 
 //メール通知クラスのファイル名
 define('NOTICEMAIL_FILE' , 'noticemail.inc');
@@ -538,7 +538,7 @@ unset($value);
 				 $ntime = time();
 				 $ltime=substr($time,-13,-3);
 				 $elapsed_time = ELAPSED_DAYS*86400;
-					 if(($ntime-$ltime) <= $elapsed_time){//指定日数以内
+					 if(($ntime-(int)$ltime) <= $elapsed_time){//指定日数以内
 					 $r_threads = true;//フォームを表示する
 					 }
 				 }
@@ -1307,8 +1307,8 @@ function regist($name,$email,$sub,$com,$url,$pwd,$upfile,$upfile_name,$resto,$pi
 			if($pchk){
 			//KASIRAが入らない10桁のUNIX timeを取り出す
 			if(strlen($ltime)>10){$ltime=substr($ltime,-13,-3);}
-			if(RENZOKU && $time - $ltime < RENZOKU){error(MSG020,$dest);}
-			if(RENZOKU2 && $time - $ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
+			if(RENZOKU && $time - (int)$ltime < RENZOKU){error(MSG020,$dest);}
+			if(RENZOKU2 && $time - (int)$ltime < RENZOKU2 && $upfile_name){error(MSG021,$dest);}
 			if($com){
 				if($textonly){//画像なしの時
 				$dest="";

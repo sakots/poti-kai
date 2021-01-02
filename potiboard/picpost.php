@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-// picpost.php lot.200302  by SakaQ >> http://www.punyu.net/php/
+// picpost.php lot.210102  by SakaQ >> http://www.punyu.net/php/
 // & sakots >> https://poti-k.info/
 //
 // しぃからPOSTされたお絵かき画像をTEMPに保存
@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2020/01/02 php8で画像の取得に失敗する問題に対処。
 // 2020/02/25 flock()修正タイムゾーンを'Asia/Tokyo'に
 // 2020/01/25 REMOTE_ADDRが取得できないサーバに対応
 // 2019/12/03 軽微なエラー修正。datファイルのパーミッションを600に
@@ -166,7 +167,7 @@ if($h=='S'){
 	$ext = '.pch';
 }
 
-if($pchLength!=0){
+if($pchLength){
 	// PCHイメージを取り出す
 	$PCHdata = substr($buffer, 1 + 8 + $headerLength + 8 + 2 + $imgLength + 8, $pchLength);
 	// 同名のファイルが存在しないかチェック
